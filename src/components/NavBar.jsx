@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const Main = styled.div`
   width: 100%;
@@ -48,24 +48,17 @@ const Address = styled.p`
 
 const NavBar = ({ account }) => {
   return (
-    <Main>
-      <Text>EcoSync</Text>
-      <Sub>
-        <Text>
-          <A to={`/project/${account}`}>MY COMPANY</A>
-        </Text>
-        <Text>
-          <A to='/global'>GLOBAL</A>
-        </Text>
-        {account ? (
-          <Address>
-            {account.slice(0, 5)}...{account.slice(-5)}
-          </Address>
-        ) : (
-          <></>
-        )}
-      </Sub>
-    </Main>
+    // <Main>
+    //   <Text></Text>
+    //   <Sub>
+    //     {account && (
+    //       <Address>
+    //         {account.slice(0, 5)}...{account.slice(-5)}
+    //       </Address>
+    //     )}
+    //   </Sub>
+    // </Main>
+    <></>
   );
 };
 

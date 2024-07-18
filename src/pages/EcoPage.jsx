@@ -221,14 +221,18 @@ const EcoPage = () => {
       {ecosQuery.loading ? <Loader /> : <></>}
       <FieldAndButton>
         <Field>
-          <Label>Add the project address to ecosystem</Label>
+          <Label>Cluster ID</Label>
+          <Input onChange={handleAddToEcoInput} />
+        </Field>
+        <Field>
+          <Label>Cluster Size</Label>
           <Input onChange={handleAddToEcoInput} />
         </Field>
         <Add src={add} onClick={addToEco} />
       </FieldAndButton>
       <Cols>
         <Col>
-          <ColHead>Includes:</ColHead>
+          <ColHead>Sets</ColHead>
           <ColBody>
             {ecosQuery.data?.ecos
               .filter((e) => e.company1Address === address)
@@ -238,15 +242,6 @@ const EcoPage = () => {
                 );
                 return (
                   <Project key={company2Address}>
-                    <ProjectLogo
-                      src={
-                        project?.profilePhoto
-                          ? `${import.meta.env.VITE_PINATA_GATEWAY}/ipfs/${
-                              project.profilePhoto
-                            }`
-                          : undefined
-                      }
-                    />
                     <ProjectDetails>
                       <ProjectName>{project?.name ?? "???"}</ProjectName>
                       <ProjectAddress>{company2Address}</ProjectAddress>
@@ -264,7 +259,7 @@ const EcoPage = () => {
           </ColBody>
         </Col>
         <Col>
-          <ColHead>Is included in:</ColHead>
+          <ColHead>Sequencers</ColHead>
           <ColBody>
             {ecosQuery.data?.ecos
               .filter((e) => e.company2Address === address)
