@@ -1,0 +1,26 @@
+:root {
+  font-family: Gluten, Roboto, Inter, system-ui, Avenir, Helvetica, Arial,
+    sans-serif;
+  box-sizing: border-box;
+  background-color: #373f68;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  background-image: url('/map.svg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
