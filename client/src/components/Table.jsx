@@ -102,6 +102,24 @@ const StatusText = styled(CellText)`
     (status === "success" && "var(--Green-500, #14804A)")};
 `;
 
+const Button = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 15px;
+  min-width: 90px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: Inter;
+  font-weight: bold;
+  background: #58cbd1;
+  color: #fff;
+  &:hover {
+    background: #58aad1;
+  }
+`;
+
 const shorten = (ethAddr) =>
   ethAddr?.length > 14
     ? ethAddr.slice(0, 5) + "..." + ethAddr.slice(-3)
@@ -131,6 +149,7 @@ const Table = ({ headers, entries, handleDisplayedCluster }) => {
                   </CellWrapper>
                 );
               })}
+              {headers[2] === "quota" && <Button>JOIN</Button>}
             </Row>
           );
         })}

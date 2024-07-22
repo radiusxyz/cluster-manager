@@ -137,6 +137,27 @@ const RightArr = styled.div`
   color: #5a9bb0;
 `;
 
+const InputCluster = styled(SearchInput)``;
+
+const Button = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 45px;
+  min-width: 300px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 22px;
+  font-family: Inter;
+  font-weight: bold;
+  background: #58cbd1;
+  color: #fff;
+  &:hover {
+    background: #58aad1;
+  }
+`;
+
 const RootLayout = () => {
   const [value, setValue] = useState("");
   const handleChange = (e) => {
@@ -166,6 +187,11 @@ const RootLayout = () => {
       <Head>
         <HeadTop>
           <HeadTopLeft>
+            <Button>GENERATE CLUSTER</Button>
+          </HeadTopLeft>
+          <HeadTopRight>
+            {/* <Logo src={magnifier} /> */}
+            {/* <Text>RADIUS</Text> */}
             <Search>
               <img src={search} />
               <SearchInput
@@ -178,10 +204,6 @@ const RootLayout = () => {
             <FilterBtn onClick={handleFilter}>
               <img src={filter} />
             </FilterBtn>
-          </HeadTopLeft>
-          <HeadTopRight>
-            <Logo src={magnifier} />
-            <Text>RADIUS</Text>
           </HeadTopRight>
         </HeadTop>
       </Head>
