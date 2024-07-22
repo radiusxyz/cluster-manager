@@ -2,15 +2,11 @@ import React, { useState } from "react";
 import styled from "styled-components";
 
 import cuid from "cuid";
-import { useTxs } from "../contexts/TxsContext";
+import { useClusters } from "../contexts/ClustersContext";
 import { Link } from "react-router-dom";
 import Copy from "./Copy";
 
 const PlaceHolder = styled.p`
-  width: 100%;
-  height: 100%;
-  top: 50%;
-  left: 50%;
   font-family: Inter;
   font-size: 14px;
   font-style: normal;
@@ -67,7 +63,7 @@ const HeaderRow = styled(Row)`
 
 const Rows = styled.div`
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 105px);
   overflow-y: scroll;
 `;
 
@@ -106,14 +102,17 @@ const StatusText = styled(CellText)`
     (status === "success" && "var(--Green-500, #14804A)")};
 `;
 
-const shorten = (ethAddr) => ethAddr.slice(0, 5) + "..." + ethAddr.slice(-3);
+const shorten = (ethAddr) =>
+  ethAddr?.length > 14
+    ? ethAddr.slice(0, 5) + "..." + ethAddr.slice(-3)
+    : ethAddr;
 
 const handleCopy = (text) => {
   navigator.clipboard.writeText(text);
 };
 
 const Table = ({ headers, entries, handleDisplayedCluster }) => {
-  return (
+  return entries?.length ? (
     <Body>
       <HeaderRow>
         {headers.map((header) => {
@@ -127,13 +126,7 @@ const Table = ({ headers, entries, handleDisplayedCluster }) => {
               {headers.map((header) => {
                 return (
                   <CellWrapper key={cuid()}>
-                    <CellText>
-                      <StyledLink to={`/${header}/${entry[header]}`}>
-                        {entry[header]?.length > 14
-                          ? shorten(entry[header])
-                          : entry[header]}
-                      </StyledLink>
-                    </CellText>
+                    <CellText>{shorten(entry[header])}</CellText>
                     <Copy handler={() => handleCopy(entry[header])} />
                   </CellWrapper>
                 );
@@ -142,9 +135,24 @@ const Table = ({ headers, entries, handleDisplayedCluster }) => {
           );
         })}
       </Rows>
-      {!entries.length && (
+    </Body>
+  ) : (
+    <Body>
+      <HeaderRow>
+        {headers.map((header) => {
+          return <HeaderText key={cuid()}>{header}</HeaderText>;
+        })}
+      </HeaderRow>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
         <PlaceHolder>Click on a cluster to display its sequencers </PlaceHolder>
-      )}
+      </div>
     </Body>
   );
 };

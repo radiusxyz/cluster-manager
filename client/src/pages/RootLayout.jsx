@@ -104,7 +104,7 @@ const Footer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 70px;
+  min-height: 70px;
   background: #d6ebf2;
   position: sticky;
   bottom: 0;
@@ -145,12 +145,12 @@ const RootLayout = () => {
 
   const handleFilter = () => {
     if (!value) {
-      txsCtx.handleTxs(() => txsCtx.data);
+      clustersCtx.handleClusters(() => clustersCtx.data);
       return;
     }
-    txsCtx.handleTxs(() =>
-      txsCtx.data.filter((tx) => {
-        return Object.values(tx).includes(value);
+    clustersCtx.handleClusters(() =>
+      clustersCtx.data.filter((cluster) => {
+        return Object.values(cluster).includes(value);
       })
     );
   };
