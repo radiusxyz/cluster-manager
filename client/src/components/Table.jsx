@@ -17,11 +17,39 @@ const PlaceHolder = styled.p`
   color: #5a9bb0;
 `;
 
+const Head = styled.div`
+  position: sticky;
+  top: 64px;
+`;
+
 const StyledLink = styled(Link)`
   color: inherit;
   text-decoration: none;
   border: none;
   outline: none;
+`;
+
+const TableTitles = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+`;
+
+const TableTitle = styled.p`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  font-family: Inter;
+  background: #f4fcff;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.44px;
+  text-transform: uppercase;
+  flex: 1;
+  color: #5a9bb0;
 `;
 
 const HeaderText = styled.span`
@@ -55,15 +83,14 @@ const Row = styled.div`
 `;
 
 const HeaderRow = styled(Row)`
-  position: sticky;
-  top: 64px;
   background: #d6ebf2;
   border-bottom: 1px solid var(--Gray-50, #e9edf5);
 `;
 
 const Rows = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  height: calc(100vh - 105px);
   overflow-y: scroll;
 `;
 
@@ -102,21 +129,45 @@ const StatusText = styled(CellText)`
     (status === "success" && "var(--Green-500, #14804A)")};
 `;
 
-const Button = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px 15px;
-  min-width: 90px;
-  border: none;
-  border-radius: 8px;
+const Join = styled.button`
+  background-color: #e1ecf4;
+  border-radius: 3px;
+  border: 1px solid #7aa7c7;
+  box-shadow: rgba(255, 255, 255, 0.7) 0 1px 0 0 inset;
+  box-sizing: border-box;
+  color: #39739d;
   cursor: pointer;
-  font-family: Inter;
-  font-weight: bold;
-  background: #58cbd1;
-  color: #fff;
-  &:hover {
-    background: #58aad1;
+  display: inline-block;
+  font-family: -apple-system, system-ui, "Segoe UI", "Liberation Sans",
+    sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.15385;
+  margin: 0;
+  outline: none;
+  padding: 8px 0.8em;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  white-space: nowrap;
+
+  &:hover,
+  &:focus {
+    background-color: #b3d3ea;
+    color: #2c5777;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 4px rgba(0, 149, 255, 0.15);
+  }
+
+  &:active {
+    background-color: #a0c7e4;
+    box-shadow: none;
+    color: #2c5777;
   }
 `;
 
@@ -132,11 +183,16 @@ const handleCopy = (text) => {
 const Table = ({ headers, entries, handleDisplayedCluster }) => {
   return entries?.length ? (
     <Body>
-      <HeaderRow>
-        {headers.map((header) => {
-          return <HeaderText key={cuid()}>{header}</HeaderText>;
-        })}
-      </HeaderRow>
+      <Head>
+        <TableTitles>
+          <TableTitle>Clusters</TableTitle>
+        </TableTitles>
+        <HeaderRow>
+          {headers.map((header) => {
+            return <HeaderText key={cuid()}>{header}</HeaderText>;
+          })}
+        </HeaderRow>
+      </Head>
       <Rows>
         {entries.map((entry) => {
           return (
@@ -144,12 +200,17 @@ const Table = ({ headers, entries, handleDisplayedCluster }) => {
               {headers.map((header) => {
                 return (
                   <CellWrapper key={cuid()}>
-                    <CellText>{shorten(entry[header])}</CellText>
-                    <Copy handler={() => handleCopy(entry[header])} />
+                    {header === "action" ? (
+                      <Join>JOIN</Join>
+                    ) : (
+                      <>
+                        <CellText>{shorten(entry[header])}</CellText>
+                        <Copy handler={() => handleCopy(entry[header])} />
+                      </>
+                    )}
                   </CellWrapper>
                 );
               })}
-              {headers[2] === "quota" && <Button>JOIN</Button>}
             </Row>
           );
         })}
@@ -157,11 +218,16 @@ const Table = ({ headers, entries, handleDisplayedCluster }) => {
     </Body>
   ) : (
     <Body>
-      <HeaderRow>
-        {headers.map((header) => {
-          return <HeaderText key={cuid()}>{header}</HeaderText>;
-        })}
-      </HeaderRow>
+      <Head>
+        <TableTitles>
+          <TableTitle>Sequencers</TableTitle>
+        </TableTitles>
+        <HeaderRow>
+          {headers.map((header) => {
+            return <HeaderText key={cuid()}>{header}</HeaderText>;
+          })}
+        </HeaderRow>
+      </Head>
       <div
         style={{
           display: "flex",
