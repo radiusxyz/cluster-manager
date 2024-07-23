@@ -1,30 +1,24 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { Outlet } from "react-router";
-import { WagmiContext, useAccount, useConnect } from "wagmi";
-import { injected } from "@wagmi/core";
+
+import Arrow from "../components/Arrow";
 import {
-  ConnetWallet,
-  Footer,
-  GenerateCluster,
+  TableWrapper,
   Head,
   HeadTop,
   HeadTopLeft,
   HeadTopRight,
-  LeftArr,
+  Footer,
   Pagination,
+  Element,
+  LeftArr,
   RightArr,
-  TableWrapper,
+  GenerateCluster,
+  ConnetWallet,
 } from "./RootLayoutStyles";
-import Arrow from "../components/Arrow";
 
 const RootLayout = () => {
-  const { connect } = useConnect();
-  const wagmiCtx = useContext(WagmiContext);
-  const { address } = useAccount();
-
-  console.log(wagmiCtx);
-  console.log(address);
   const [value, setValue] = useState("");
   const handleChange = (e) => {
     setValue(e.target.value.trim());
@@ -56,9 +50,7 @@ const RootLayout = () => {
             <GenerateCluster>Generate Cluster</GenerateCluster>
           </HeadTopLeft>
           <HeadTopRight>
-            <ConnetWallet onClick={() => connect()}>
-              {/* {address ? address : "Connect Wallet"} */}
-            </ConnetWallet>
+            <ConnetWallet></ConnetWallet>
           </HeadTopRight>
         </HeadTop>
       </Head>
