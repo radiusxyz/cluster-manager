@@ -1,15 +1,33 @@
 import React, { useState } from "react";
-import { useConnect, useReadContract } from "wagmi";
+import { useReadContract, useWriteContract, useAccount } from "wagmi";
 import { config, contractAbi } from "../config.js";
 import { contractAddress } from "../config.js";
-import { useWriteContract } from "wagmi";
-import { useAccount } from "wagmi";
-import { injected } from "@wagmi/core";
 import classes from "./Test.module.css";
 
 const Test = () => {
   const [output, setOutput] = useState("");
   const { address } = useAccount(config);
+  const [shouldFetch, setShouldFetch] = useState(false);
+  //   const { writeContract } = useWriteContract();
+
+  //   const result = writeContract({
+  //     abi: contractAbi,
+  //     address: contractAddress,
+  //     functionName: "initializeProposerSet",
+  //     args: [],
+  //     account: "0xFad9aD5f09F274d218F8Ff4CE2194A8a5e6EE938",
+  //   });
+
+  //   console.log(result);
+
+  const { data, error, isLoading } = useReadContract({
+    abi: contractAbi,
+    address: contractAddress,
+    functionName: "getSequencerList",
+    args: ["0xFad9aD5f09F274d218F8Ff4CE2194A8a5e6EE938"],
+    account: "0xFad9aD5f09F274d218F8Ff4CE2194A8a5e6EE938",
+    query: { enabled: shouldFetch },
+  });
 
   const connectWallet = () => {
     console.log("called connectWallet");
@@ -17,6 +35,7 @@ const Test = () => {
   };
 
   const initializeProposerSet = () => {
+    setShouldFetch(true);
     console.log("called initializeProposerSet");
     setOutput("called initializeProposerSet");
   };
@@ -36,31 +55,9 @@ const Test = () => {
     setOutput("called getSequencerList");
   };
 
-  //   const { writeContract } = useWriteContract();
-  //   const { connect } = useConnect();
-
-  //   const initializeProposerSet = () => {
-  //     const result = writeContract({
-  //       abi: contractAbi,
-  //       address: contractAddress,
-  //       functionName: "initializeProposerSet",
-  //       args: [],
-  //       account: "0xFad9aD5f09F274d218F8Ff4CE2194A8a5e6EE938",
-  //     });
-
-  //     console.log(result);
-  //   };
-
-  //   function getSequencerList() {
-  // const result = useReadContract({
-  //   abi: contractAbi,
-  //   address: contractAddress,
-  //   functionName: "getSequencerList",
-  //   args: ["0xFad9aD5f09F274d218F8Ff4CE2194A8a5e6EE938"],
-  //   account: "0xFad9aD5f09F274d218F8Ff4CE2194A8a5e6EE938",
-  // });
-  // console.log(result);
-  //   }
+  if (data) return <div>here is data </div>;
+  if (error) return <div>here is error </div>;
+  if (isLoading) return <div>here is loading </div>;
 
   return (
     <div
