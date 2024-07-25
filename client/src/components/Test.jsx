@@ -9,10 +9,11 @@ import classes from "./Test.module.css";
 
 const Test = () => {
   const [output, setOutput] = useState("");
+  const { address } = useAccount(config);
 
   const connectWallet = () => {
     console.log("called connectWallet");
-    setOutput("called connectWallet");
+    setOutput(`called connectWallet: ${address}`);
   };
 
   const initializeProposerSet = () => {
@@ -35,11 +36,9 @@ const Test = () => {
     setOutput("called getSequencerList");
   };
 
-  const { writeContract } = useWriteContract();
-  const { connect } = useConnect();
-  const { address } = useAccount(config);
+  //   const { writeContract } = useWriteContract();
+  //   const { connect } = useConnect();
 
-  console.log(address);
   //   const initializeProposerSet = () => {
   //     const result = writeContract({
   //       abi: contractAbi,
@@ -72,6 +71,7 @@ const Test = () => {
         justifyContent: "center",
         alignItems: "center",
         gap: "30px",
+        background: "lightblue",
       }}
     >
       <div
@@ -87,7 +87,7 @@ const Test = () => {
         }}
       >
         <button className={classes.btn} onClick={connectWallet}>
-          Connect Wallet
+          {address ? address : "Connect Wallet"}
         </button>
       </div>
       <div
