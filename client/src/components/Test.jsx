@@ -1,32 +1,74 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useReadContract, useWriteContract, useAccount } from "wagmi";
 import { config, contractAbi } from "../config.js";
 import { contractAddress } from "../config.js";
 import classes from "./Test.module.css";
+import { useWatchContractEvent } from "wagmi";
 
 const Test = () => {
   const [output, setOutput] = useState("");
   const { address } = useAccount(config);
-  const [shouldFetch, setShouldFetch] = useState(false);
-  //   const { writeContract } = useWriteContract();
 
-  //   const result = writeContract({
-  //     abi: contractAbi,
-  //     address: contractAddress,
-  //     functionName: "initializeProposerSet",
-  //     args: [],
-  //     account: "0xFad9aD5f09F274d218F8Ff4CE2194A8a5e6EE938",
-  //   });
+  // reading from the contract
 
-  //   console.log(result);
-
+  const [shouldRunGetSequencerList, setShouldRunGetSequencerList] =
+    useState(false);
   const { data, error, isLoading } = useReadContract({
     abi: contractAbi,
     address: contractAddress,
     functionName: "getSequencerList",
     args: ["0xFad9aD5f09F274d218F8Ff4CE2194A8a5e6EE938"],
     account: "0xFad9aD5f09F274d218F8Ff4CE2194A8a5e6EE938",
-    query: { enabled: shouldFetch },
+    query: { enabled: shouldRunGetSequencerList },
+  });
+
+  useEffect(() => {
+    if (shouldRunGetSequencerList) {
+      if (data) {
+        console.log("data: ", data);
+      }
+      if (error) {
+        console.log("error.message: ", error.message);
+      }
+
+      if (isLoading) {
+        console.log("isLoading: ", isLoading);
+      }
+    }
+  }, [shouldRunGetSequencerList, data, error, isLoading]);
+
+  // writing to the contract
+
+  const [shouldRunInitializeProposerSet, setShouldRunInitializeProposerSet] =
+    useState(false);
+
+  const { writeContract } = useWriteContract();
+
+  useEffect(() => {
+    if (shouldRunInitializeProposerSet) {
+      const resultOfInitializeProposerSet = writeContract({
+        abi: contractAbi,
+        address: contractAddress,
+        functionName: "initializeProposerSet",
+        args: [],
+        account: "0xFad9aD5f09F274d218F8Ff4CE2194A8a5e6EE938",
+        query: { enabled: shouldRunInitializeProposerSet },
+      });
+
+      console.log(
+        "resultOfInitializeProposerSet: ",
+        resultOfInitializeProposerSet
+      );
+    }
+  }, [shouldRunInitializeProposerSet]);
+
+  useWatchContractEvent({
+    address: contractAddress,
+    abi: contractAbi,
+    eventName: "InitializeProposerSet",
+    onLogs(logs) {
+      console.log("New logs!", logs);
+    },
   });
 
   const connectWallet = () => {
@@ -35,7 +77,7 @@ const Test = () => {
   };
 
   const initializeProposerSet = () => {
-    setShouldFetch(true);
+    setShouldRunInitializeProposerSet(true);
     console.log("called initializeProposerSet");
     setOutput("called initializeProposerSet");
   };
@@ -51,13 +93,10 @@ const Test = () => {
   };
 
   const getSequencerList = () => {
+    setShouldRunGetSequencerList(true);
     console.log("called getSequencerList");
     setOutput("called getSequencerList");
   };
-
-  if (data) return <div>here is data </div>;
-  if (error) return <div>here is error </div>;
-  if (isLoading) return <div>here is loading </div>;
 
   return (
     <div
