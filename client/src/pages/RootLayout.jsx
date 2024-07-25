@@ -17,6 +17,7 @@ import {
   GenerateCluster,
   ConnetWallet,
 } from "./RootLayoutStyles";
+import { useAccount } from "wagmi";
 
 const RootLayout = () => {
   const [value, setValue] = useState("");
@@ -42,6 +43,8 @@ const RootLayout = () => {
     }
   };
 
+  const { address } = useAccount();
+
   return (
     <TableWrapper>
       <Head>
@@ -50,7 +53,7 @@ const RootLayout = () => {
             <GenerateCluster>Generate Cluster</GenerateCluster>
           </HeadTopLeft>
           <HeadTopRight>
-            <ConnetWallet></ConnetWallet>
+            <ConnetWallet>{address ? address : "Connect Wallet"}</ConnetWallet>
           </HeadTopRight>
         </HeadTop>
       </Head>
