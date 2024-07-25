@@ -2,6 +2,11 @@ import React, { useState } from "react";
 
 import { Outlet } from "react-router";
 
+import { useConnect, useReadContract } from "wagmi";
+import { config, contractAbi } from "../config.js";
+import { contractAddress } from "../config.js";
+import { useWriteContract } from "wagmi";
+
 import Arrow from "../components/Arrow";
 import {
   TableWrapper,
@@ -18,8 +23,37 @@ import {
   ConnetWallet,
 } from "./RootLayoutStyles";
 import { useAccount } from "wagmi";
+import { injected } from "@wagmi/core";
 
 const RootLayout = () => {
+  const { writeContract } = useWriteContract();
+  const { connect } = useConnect();
+  const { address } = useAccount(config);
+
+  console.log(address);
+  const initializeProposerSet = () => {
+    const result = writeContract({
+      abi: contractAbi,
+      address: contractAddress,
+      functionName: "initializeProposerSet",
+      args: [],
+      account: "0xFad9aD5f09F274d218F8Ff4CE2194A8a5e6EE938",
+    });
+
+    console.log(result);
+  };
+
+  function getSequencerList() {
+    // const result = useReadContract({
+    //   abi: contractAbi,
+    //   address: contractAddress,
+    //   functionName: "getSequencerList",
+    //   args: ["0xFad9aD5f09F274d218F8Ff4CE2194A8a5e6EE938"],
+    //   account: "0xFad9aD5f09F274d218F8Ff4CE2194A8a5e6EE938",
+    // });
+    // console.log(result);
+  }
+
   const [value, setValue] = useState("");
   const handleChange = (e) => {
     setValue(e.target.value.trim());
@@ -43,14 +77,17 @@ const RootLayout = () => {
     }
   };
 
-  const { address } = useAccount();
-
   return (
     <TableWrapper>
+      <button onClick={() => connect({ connector: injected() })}>
+        Connect
+      </button>
       <Head>
         <HeadTop>
           <HeadTopLeft>
-            <GenerateCluster>Generate Cluster</GenerateCluster>
+            <GenerateCluster onClick={initializeProposerSet}>
+              Generate Cluster
+            </GenerateCluster>
           </HeadTopLeft>
           <HeadTopRight>
             <ConnetWallet>{address ? address : "Connect Wallet"}</ConnetWallet>
