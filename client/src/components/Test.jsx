@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useReadContract, useWriteContract, useAccount } from "wagmi";
-import { config, contractAbi } from "../config.js";
-import { contractAddress } from "../config.js";
+import { hhContractAbi, hhContractAddress } from "../config.js";
 import classes from "./Test.module.css";
 import { useWatchContractEvent } from "wagmi";
 
@@ -12,8 +11,8 @@ const Test = () => {
   // listening to the InitializeProposerSet event
 
   useWatchContractEvent({
-    address: contractAddress,
-    abi: contractAbi,
+    address: hhContractAddress,
+    abi: hhContractAbi,
     eventName: "InitializeProposerSet",
     onLogs(logs) {
       console.log("New logs!", logs);
@@ -25,8 +24,8 @@ const Test = () => {
   const [shouldRunGetSequencerList, setShouldRunGetSequencerList] =
     useState(false);
   const { data, error, isLoading } = useReadContract({
-    abi: contractAbi,
-    address: contractAddress,
+    abi: hhContractAbi,
+    address: hhContractAddress,
     functionName: "getSequencerList",
     args: [address],
     account: address,
@@ -67,14 +66,16 @@ const Test = () => {
 
   useEffect(() => {
     if (shouldRunInitializeProposerSet) {
+      console.log("inside useEffect for initializeProposerSet");
       writeContract({
-        abi: contractAbi,
-        address: contractAddress,
+        abi: hhContractAbi,
+        address: hhContractAddress,
         functionName: "initializeProposerSet",
         args: [],
         account: address,
         query: { enabled: shouldRunInitializeProposerSet },
       });
+      setShouldRunInitializeProposerSet(false);
     }
   }, [shouldRunInitializeProposerSet]);
 
