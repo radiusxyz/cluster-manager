@@ -7,7 +7,18 @@ import { useWatchContractEvent } from "wagmi";
 
 const Test = () => {
   const [output, setOutput] = useState("");
-  const { address } = useAccount(config);
+  const { address } = useAccount();
+
+  // listening to the InitializeProposerSet event
+
+  useWatchContractEvent({
+    address: contractAddress,
+    abi: contractAbi,
+    eventName: "InitializeProposerSet",
+    onLogs(logs) {
+      console.log("New logs!", logs);
+    },
+  });
 
   // reading from the contract
 
@@ -81,18 +92,6 @@ const Test = () => {
     console.log("called deregisterSequencer");
     setOutput("called deregisterSequencer");
   };
-
-  // listening to the InitializeProposerSet event
-
-  useWatchContractEvent({
-    address: contractAddress,
-    abi: contractAbi,
-    config: config,
-    eventName: "InitializeProposerSet",
-    onLogs(logs) {
-      console.log("New logs!", logs);
-    },
-  });
 
   return (
     <div
