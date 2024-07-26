@@ -6,7 +6,9 @@ import { useWatchContractEvent } from "wagmi";
 
 const Test = () => {
   const [output, setOutput] = useState("");
+  const [proposerSetId, setProposerSetId] = useState(undefined);
   const { address } = useAccount();
+  const { writeContract } = useWriteContract();
 
   // listening to the InitializeProposerSet event
 
@@ -16,10 +18,11 @@ const Test = () => {
     eventName: "InitializeProposerSet",
     onLogs(logs) {
       console.log("New logs!", logs);
+      setProposerSetId(logs[0].args.proposerSetId);
     },
   });
 
-  // reading from the contract
+  // getting the sequencer list of a proposer set
 
   const [shouldRunGetSequencerList, setShouldRunGetSequencerList] =
     useState(false);
@@ -27,7 +30,7 @@ const Test = () => {
     abi: hhContractAbi,
     address: hhContractAddress,
     functionName: "getSequencerList",
-    args: [address],
+    args: [proposerSetId],
     account: address,
     query: { enabled: shouldRunGetSequencerList },
   });
@@ -50,13 +53,13 @@ const Test = () => {
       if (isLoading) {
         console.log("isLoading: ", isLoading);
       }
+      setShouldRunGetSequencerList(false);
     }
   }, [shouldRunGetSequencerList, data, error, isLoading]);
 
-  // writing to the contract
+  // initializing the proposer set
   const [shouldRunInitializeProposerSet, setShouldRunInitializeProposerSet] =
     useState(false);
-  const { writeContract } = useWriteContract();
 
   const initializeProposerSet = () => {
     setShouldRunInitializeProposerSet(true);
@@ -84,10 +87,30 @@ const Test = () => {
     setOutput(`called connectWallet: ${address}`);
   };
 
+  // registering a sequencer to proposer set
+  const [shouldRunRegisterSequencer, setShouldRunRegisterSequencer] =
+    useState(false);
+
   const registerSequencer = () => {
+    setShouldRunRegisterSequencer(true);
     console.log("called registerSequencer");
     setOutput("called registerSequencer");
   };
+
+  useEffect(() => {
+    if (shouldRunRegisterSequencer) {
+      console.log("inside useEffect for shouldRunRegisterSequencer");
+      writeContract({
+        abi: hhContractAbi,
+        address: hhContractAddress,
+        functionName: "registerSequencer",
+        args: [proposerSetId, address],
+        account: address,
+        query: { enabled: shouldRunRegisterSequencer },
+      });
+      setShouldRunRegisterSequencer(false);
+    }
+  }, [shouldRunRegisterSequencer]);
 
   const deregisterSequencer = () => {
     console.log("called deregisterSequencer");
