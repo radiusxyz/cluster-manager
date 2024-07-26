@@ -17,10 +17,16 @@ const Test = () => {
     abi: contractAbi,
     address: contractAddress,
     functionName: "getSequencerList",
-    args: ["0xFad9aD5f09F274d218F8Ff4CE2194A8a5e6EE938"],
-    account: "0xFad9aD5f09F274d218F8Ff4CE2194A8a5e6EE938",
+    args: [address],
+    account: address,
     query: { enabled: shouldRunGetSequencerList },
   });
+
+  const getSequencerList = () => {
+    setShouldRunGetSequencerList(true);
+    console.log("called getSequencerList");
+    setOutput("called getSequencerList");
+  };
 
   useEffect(() => {
     if (shouldRunGetSequencerList) {
@@ -38,48 +44,32 @@ const Test = () => {
   }, [shouldRunGetSequencerList, data, error, isLoading]);
 
   // writing to the contract
-
   const [shouldRunInitializeProposerSet, setShouldRunInitializeProposerSet] =
     useState(false);
-
   const { writeContract } = useWriteContract();
-
-  useEffect(() => {
-    if (shouldRunInitializeProposerSet) {
-      const resultOfInitializeProposerSet = writeContract({
-        abi: contractAbi,
-        address: contractAddress,
-        functionName: "initializeProposerSet",
-        args: [],
-        account: "0xFad9aD5f09F274d218F8Ff4CE2194A8a5e6EE938",
-        query: { enabled: shouldRunInitializeProposerSet },
-      });
-
-      console.log(
-        "resultOfInitializeProposerSet: ",
-        resultOfInitializeProposerSet
-      );
-    }
-  }, [shouldRunInitializeProposerSet]);
-
-  useWatchContractEvent({
-    address: contractAddress,
-    abi: contractAbi,
-    eventName: "InitializeProposerSet",
-    onLogs(logs) {
-      console.log("New logs!", logs);
-    },
-  });
-
-  const connectWallet = () => {
-    console.log("called connectWallet");
-    setOutput(`called connectWallet: ${address}`);
-  };
 
   const initializeProposerSet = () => {
     setShouldRunInitializeProposerSet(true);
     console.log("called initializeProposerSet");
     setOutput("called initializeProposerSet");
+  };
+
+  useEffect(() => {
+    if (shouldRunInitializeProposerSet) {
+      writeContract({
+        abi: contractAbi,
+        address: contractAddress,
+        functionName: "initializeProposerSet",
+        args: [],
+        account: address,
+        query: { enabled: shouldRunInitializeProposerSet },
+      });
+    }
+  }, [shouldRunInitializeProposerSet]);
+
+  const connectWallet = () => {
+    console.log("called connectWallet");
+    setOutput(`called connectWallet: ${address}`);
   };
 
   const registerSequencer = () => {
@@ -92,11 +82,17 @@ const Test = () => {
     setOutput("called deregisterSequencer");
   };
 
-  const getSequencerList = () => {
-    setShouldRunGetSequencerList(true);
-    console.log("called getSequencerList");
-    setOutput("called getSequencerList");
-  };
+  // listening to the InitializeProposerSet event
+
+  useWatchContractEvent({
+    address: contractAddress,
+    abi: contractAbi,
+    config: config,
+    eventName: "InitializeProposerSet",
+    onLogs(logs) {
+      console.log("New logs!", logs);
+    },
+  });
 
   return (
     <div
