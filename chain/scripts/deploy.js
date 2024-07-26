@@ -7,7 +7,7 @@
 const hre = require("hardhat");
 
 async function main() {
-  const myContract = await hre.ethers.deployContract("Ssal.sol");
+  const myContract = await hre.ethers.deployContract("Ssal");
   await myContract.waitForDeployment();
   console.log("MyContract deployed to:", myContract.target);
 }
