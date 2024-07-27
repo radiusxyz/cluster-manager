@@ -53,7 +53,8 @@ contract Ssal {
 
         proposerSet.isRegisteredSequencer[msg.sender] = true;
 
-        // Add sequencer to the array
+        // Remove sequencer from the array
+        // for (uint256 i = 0; i < proposerSet.currentSequencerCount; i++) {
         for (uint256 i = 0; i < MAX_SEQUENCER_COUNT; i++) {
             if (proposerSet.sequencerAddresses[i] == address(0)) {
                 proposerSet.sequencerAddresses[i] = msg.sender;
