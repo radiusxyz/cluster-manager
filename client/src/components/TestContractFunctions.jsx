@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useReadContract, useWriteContract, useAccount } from "wagmi";
 import { hhContractAbi, hhContractAddress } from "../config.js";
-import classes from "./Test.module.css";
+import classes from "./TestContractFunctions.module.css";
 import { useWatchContractEvent } from "wagmi";
 
-const Test = () => {
+const TestContractFunctions = () => {
   const [output, setOutput] = useState("");
   const [proposerSetId, setProposerSetId] = useState(undefined);
   const { address } = useAccount();
@@ -206,4 +206,4 @@ const Test = () => {
   );
 };
 
-export default Test;
+export default TestContractFunctions;

@@ -2,7 +2,8 @@ import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RootLayout from "./pages/RootLayout";
 import TotalView from "./pages/TotalView";
-import Test from "./components/Test";
+import TestContractFunctions from "./components/TestContractFunctions";
+import TestNonContractFunctions from "./components/TestNonContractFunctions";
 
 const router = createBrowserRouter([
   {
@@ -24,7 +25,7 @@ const router = createBrowserRouter([
 
 function App() {
   // return <RouterProvider router={router} />;
-  return <Test />;
+  return <TestNonContractFunctions />;
 }
 
 export default App;
