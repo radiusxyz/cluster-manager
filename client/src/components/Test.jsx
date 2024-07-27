@@ -104,7 +104,7 @@ const Test = () => {
         abi: hhContractAbi,
         address: hhContractAddress,
         functionName: "registerSequencer",
-        args: [proposerSetId, address],
+        args: [proposerSetId],
         account: address,
         query: { enabled: shouldRunRegisterSequencer },
       });
@@ -112,10 +112,30 @@ const Test = () => {
     }
   }, [shouldRunRegisterSequencer]);
 
+  // deregistering a sequencer from proposer set
+  const [shouldRunDeregisterSequencer, setShouldRunDeregisterSequencer] =
+    useState(false);
+
   const deregisterSequencer = () => {
+    setShouldRunDeregisterSequencer(true);
     console.log("called deregisterSequencer");
     setOutput("called deregisterSequencer");
   };
+
+  useEffect(() => {
+    if (shouldRunDeregisterSequencer) {
+      console.log("inside useEffect for shouldRunDeregisterSequencer");
+      writeContract({
+        abi: hhContractAbi,
+        address: hhContractAddress,
+        functionName: "deregisterSequencer",
+        args: [proposerSetId],
+        account: address,
+        query: { enabled: shouldRunDeregisterSequencer },
+      });
+      setShouldRunDeregisterSequencer(false);
+    }
+  }, [shouldRunDeregisterSequencer]);
 
   return (
     <div
