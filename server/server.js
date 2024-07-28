@@ -2,7 +2,15 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import axios from "axios";
-import { createPublicClient, defineChain, http } from "viem";
+import {
+  createPublicClient,
+  createWalletClient,
+  custom,
+  defineChain,
+  http,
+  parseEther,
+} from "viem";
+import { privateKeyToAccount } from "viem/accounts";
 
 const app = express();
 
@@ -11,7 +19,8 @@ const PORT = process.env.PORT || 3333;
 app.use(cors());
 app.use(express.json());
 
-dotenv.config({ path: "../.env" });
+dotenv.config({ path: "./.env" });
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 const localhost = /*#__PURE__*/ defineChain({
   id: 31337,
@@ -25,15 +34,23 @@ const localhost = /*#__PURE__*/ defineChain({
     default: { http: ["http://127.0.0.1:8545"] },
   },
 });
+const account = privateKeyToAccount("0x" + PRIVATE_KEY);
 
-const client = createPublicClient({
+const client = createWalletClient({
+  account,
   chain: localhost,
   transport: http(),
 });
 
-const blockNumber = await client.getBlockNumber();
+const [address] = await client.getAddresses();
 
-console.log(blockNumber);
+const hash = await client.sendTransaction({
+  account: address,
+  to: "0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC",
+  value: parseEther("0.001"),
+});
+
+console.log(hash);
 
 app.listen(PORT, () => {
   console.log("Server is running on port: ", PORT);
