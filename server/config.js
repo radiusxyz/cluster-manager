@@ -13,7 +13,7 @@ export const localhost = /*#__PURE__*/ defineChain({
   },
 });
 
-export const hhContractAddress = "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6";
+export const hhContractAddress = "0xc5a5C42992dECbae36851359345FE25997F5C42d";
 export const hhContractAbi = [
   {
     anonymous: false,

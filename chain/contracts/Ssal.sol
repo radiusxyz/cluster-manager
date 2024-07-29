@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.24;
 
-// Uncomment this line to use console.log
-// import "hardhat/console.sol";
-
 contract Ssal {
     mapping(bytes32 => ProposerSet) private proposerSets;
 
@@ -13,6 +10,7 @@ contract Ssal {
     struct ProposerSet {
         address owner; // Owner is rollup contract address
         mapping(address => bool) isRegisteredSequencer;
+        mapping(address => uint256) sequencerIndex; // Maps address to index in the array
         address[MAX_SEQUENCER_COUNT] sequencerAddresses;
         uint256 currentSequencerCount;
     }
@@ -43,6 +41,10 @@ contract Ssal {
         ProposerSet storage proposerSet = proposerSets[proposerSetId];
 
         require(
+            proposerSet.owner != address(0),
+            "Proposer set not initialized"
+        );
+        require(
             !proposerSet.isRegisteredSequencer[msg.sender],
             "Already registered sequencer"
         );
@@ -52,15 +54,10 @@ contract Ssal {
         );
 
         proposerSet.isRegisteredSequencer[msg.sender] = true;
-
-        // Add sequencer to the array
-        for (uint256 i = 0; i < MAX_SEQUENCER_COUNT; i++) {
-            if (proposerSet.sequencerAddresses[i] == address(0)) {
-                proposerSet.sequencerAddresses[i] = msg.sender;
-                break;
-            }
-        }
-
+        proposerSet.sequencerAddresses[proposerSet.currentSequencerCount] = msg
+            .sender;
+        proposerSet.sequencerIndex[msg.sender] = proposerSet
+            .currentSequencerCount;
         proposerSet.currentSequencerCount++;
 
         emit RegisterSequencer(proposerSetId, msg.sender);
@@ -70,21 +67,28 @@ contract Ssal {
         ProposerSet storage proposerSet = proposerSets[proposerSetId];
 
         require(
+            proposerSet.owner != address(0),
+            "Proposer set not initialized"
+        );
+        require(
             proposerSet.isRegisteredSequencer[msg.sender],
             "Not registered sequencer"
         );
 
         proposerSet.isRegisteredSequencer[msg.sender] = false;
 
-        // Remove sequencer from the array
-        for (uint256 i = 0; i < proposerSet.currentSequencerCount; i++) {
-            if (proposerSet.sequencerAddresses[i] == msg.sender) {
-                proposerSet.sequencerAddresses[i] = address(0);
-                break;
-            }
+        // Swap and pop to remove the sequencer
+        uint256 index = proposerSet.sequencerIndex[msg.sender];
+        uint256 lastIndex = proposerSet.currentSequencerCount - 1;
+        if (index != lastIndex) {
+            address lastSequencer = proposerSet.sequencerAddresses[lastIndex];
+            proposerSet.sequencerAddresses[index] = lastSequencer;
+            proposerSet.sequencerIndex[lastSequencer] = index;
         }
-
+        proposerSet.sequencerAddresses[lastIndex] = address(0);
         proposerSet.currentSequencerCount--;
+
+        delete proposerSet.sequencerIndex[msg.sender];
 
         emit DeregisterSequencer(proposerSetId, msg.sender);
     }
