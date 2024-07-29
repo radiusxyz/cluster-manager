@@ -13,7 +13,7 @@ contract Ssal {
     struct ProposerSet {
         address owner; // Owner is rollup contract address
         mapping(address => bool) isRegisteredSequencer;
-        mapping(address => uint256) sequencerIndex; //
+        mapping(address => uint256) sequencerIndex; // Maps address to index in the array
         address[MAX_SEQUENCER_COUNT] sequencerAddresses;
         uint256 currentSequencerCount;
     }
