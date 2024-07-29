@@ -13,6 +13,7 @@ import {
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { localhost, hhContractAbi, hhContractAddress } from "./config.js";
+import { hhAccounts } from "./accounts.js";
 
 const app = express();
 
@@ -27,6 +28,12 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY;
 // setting the wallet client
 
 const account = privateKeyToAccount("0x" + PRIVATE_KEY);
+
+const accountsHH = hhAccounts.map((account) =>
+  privateKeyToAccount(account.hhPrivateKey)
+);
+
+console.log(accountsHH);
 
 const client = createWalletClient({
   account,
@@ -168,6 +175,8 @@ app.get("/deregister", async (req, res) => {
     console.error("error message:", error.message);
   }
 });
+
+// test
 
 app.listen(PORT, () => {
   console.log("Server is running on port: ", PORT);
