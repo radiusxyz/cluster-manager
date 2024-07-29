@@ -13,7 +13,7 @@ export const localhost = /*#__PURE__*/ defineChain({
   },
 });
 
-export const hhContractAddress = "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB";
+export const hhContractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 export const hhContractAbi = [
   {
     anonymous: false,
@@ -109,6 +109,44 @@ export const hhContractAbi = [
     name: "deregisterSequencer",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+    ],
+    name: "getProposerSetsByOwner",
+    outputs: [
+      {
+        internalType: "bytes32[]",
+        name: "",
+        type: "bytes32[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "sequencer",
+        type: "address",
+      },
+    ],
+    name: "getProposerSetsBySequencer",
+    outputs: [
+      {
+        internalType: "bytes32[]",
+        name: "",
+        type: "bytes32[]",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {

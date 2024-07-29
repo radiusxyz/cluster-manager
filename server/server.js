@@ -80,6 +80,44 @@ app.get("/get", async (req, res) => {
   }
 });
 
+// get the list of proposers for the given owner account
+app.get("/owners-proposer-sets", async (req, res) => {
+  try {
+    const data = await client.readContract({
+      account,
+      address: hhContractAddress,
+      abi: hhContractAbi,
+      functionName: "getProposerSetsByOwner",
+      args: [account.address],
+    });
+    res.status(200).json({
+      message: `got the list of proposer sets for owner ${account.address}`,
+      sequencerList: data,
+    });
+  } catch (error) {
+    console.error("error message:", error.message);
+  }
+});
+
+// get the list of proposers for the given sequencer account
+app.get("/sequencers-proposer-sets", async (req, res) => {
+  try {
+    const data = await client.readContract({
+      account,
+      address: hhContractAddress,
+      abi: hhContractAbi,
+      functionName: "getProposerSetsBySequencer",
+      args: [account.address],
+    });
+    res.status(200).json({
+      message: `got the list of proposer sets for sequencer ${account.address}`,
+      sequencerList: data,
+    });
+  } catch (error) {
+    console.error("error message:", error.message);
+  }
+});
+
 // initialize a proposer set
 app.get("/init", async (req, res) => {
   try {
