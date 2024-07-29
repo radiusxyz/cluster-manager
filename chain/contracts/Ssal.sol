@@ -6,6 +6,8 @@ pragma solidity ^0.8.24;
 
 contract Ssal {
     mapping(bytes32 => ProposerSet) private proposerSets;
+    mapping(address => bytes32[]) private proposerSetByOwner;
+    mapping(address => bytes32[]) private proposerSetBySequencer;
 
     uint256 public constant MAX_SEQUENCER_COUNT = 30;
     uint256 public constant BLOCK_MARGIN = 7;
@@ -37,6 +39,8 @@ contract Ssal {
         proposerSet.owner = msg.sender;
         proposerSet.currentSequencerCount = 0;
 
+        proposerSetByOwner[msg.sender].push(proposerSetId);
+
         emit InitializeProposerSet(proposerSetId, msg.sender);
     }
 
@@ -62,6 +66,8 @@ contract Ssal {
         proposerSet.sequencerIndex[msg.sender] = proposerSet
             .currentSequencerCount;
         proposerSet.currentSequencerCount++;
+
+        proposerSetBySequencer[msg.sender].push(proposerSetId);
 
         emit RegisterSequencer(proposerSetId, msg.sender);
     }
@@ -93,6 +99,16 @@ contract Ssal {
 
         delete proposerSet.sequencerIndex[msg.sender];
 
+        // Remove from proposerSetBySequencer array
+        bytes32[] storage sequencerSets = proposerSetBySequencer[msg.sender];
+        for (uint i = 0; i < sequencerSets.length; i++) {
+            if (sequencerSets[i] == proposerSetId) {
+                sequencerSets[i] = sequencerSets[sequencerSets.length - 1];
+                sequencerSets.pop();
+                break;
+            }
+        }
+
         emit DeregisterSequencer(proposerSetId, msg.sender);
     }
 
@@ -108,5 +124,17 @@ contract Ssal {
     ) public view returns (bool) {
         return
             proposerSets[proposerSetId].isRegisteredSequencer[sequencerAddress];
+    }
+
+    function getProposerSetsByOwner(
+        address owner
+    ) public view returns (bytes32[] memory) {
+        return proposerSetByOwner[owner];
+    }
+
+    function getProposerSetsBySequencer(
+        address sequencer
+    ) public view returns (bytes32[] memory) {
+        return proposerSetBySequencer[sequencer];
     }
 }
