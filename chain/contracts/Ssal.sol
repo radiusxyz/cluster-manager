@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.24;
 
+// Uncomment this line to use console.log
+// import "hardhat/console.sol";
+
 contract Ssal {
     mapping(bytes32 => ProposerSet) private proposerSets;
 
@@ -10,7 +13,7 @@ contract Ssal {
     struct ProposerSet {
         address owner; // Owner is rollup contract address
         mapping(address => bool) isRegisteredSequencer;
-        mapping(address => uint256) sequencerIndex; // Maps address to index in the array
+        mapping(address => uint256) sequencerIndex; //
         address[MAX_SEQUENCER_COUNT] sequencerAddresses;
         uint256 currentSequencerCount;
     }
@@ -97,5 +100,13 @@ contract Ssal {
         bytes32 proposerSetId
     ) public view returns (address[MAX_SEQUENCER_COUNT] memory) {
         return proposerSets[proposerSetId].sequencerAddresses;
+    }
+
+    function isRegistered(
+        bytes32 proposerSetId,
+        address sequencerAddress
+    ) public view returns (bool) {
+        return
+            proposerSets[proposerSetId].isRegisteredSequencer[sequencerAddress];
     }
 }
