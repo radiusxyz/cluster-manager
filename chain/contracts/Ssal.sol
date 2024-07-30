@@ -89,16 +89,8 @@ contract Ssal {
 
         proposerSet.isRegisteredSequencer[msg.sender] = false;
 
-        // Swap and pop to remove the sequencer
         uint256 index = proposerSet.sequencerIndex[msg.sender];
-        uint256 lastIndex = proposerSet.currentSequencerCount - 1;
-        if (index != lastIndex) {
-            address lastSequencer = proposerSet.sequencerAddresses[lastIndex];
-            proposerSet.sequencerAddresses[index] = lastSequencer;
-            proposerSet.sequencerIndex[lastSequencer] = index;
-        }
-        proposerSet.sequencerAddresses[lastIndex] = address(0);
-        proposerSet.currentSequencerCount--;
+        proposerSet.sequencerAddresses[index] = address(0);
 
         delete proposerSet.sequencerIndex[msg.sender];
 
@@ -117,8 +109,20 @@ contract Ssal {
 
     function getSequencerList(
         bytes32 proposerSetId
-    ) public view returns (address[MAX_SEQUENCER_COUNT] memory) {
-        return proposerSets[proposerSetId].sequencerAddresses;
+    )
+        public
+        view
+        returns (address[MAX_SEQUENCER_COUNT] memory validSequencers)
+    {
+        ProposerSet storage proposerSet = proposerSets[proposerSetId];
+        uint256 count = 0;
+
+        for (uint256 i = 0; i < proposerSet.currentSequencerCount; i++) {
+            if (proposerSet.sequencerAddresses[i] != address(0)) {
+                validSequencers[count] = proposerSet.sequencerAddresses[i];
+                count++;
+            }
+        }
     }
 
     function isRegistered(
