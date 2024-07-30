@@ -20,6 +20,7 @@ contract Ssal {
         mapping(address => uint256) sequencerIndex; // Maps address to index in the array
         address[MAX_SEQUENCER_COUNT] sequencerAddresses;
         uint256 currentSequencerCount;
+        uint256[] emptySlots; // Keeps track of empty slots
     }
 
     event InitializeProposerSet(bytes32 proposerSetId, address owner);
@@ -40,6 +41,10 @@ contract Ssal {
 
         proposerSet.owner = msg.sender;
         proposerSet.currentSequencerCount = 0;
+
+        for (uint256 i = 0; i < MAX_SEQUENCER_COUNT; i++) {
+            proposerSet.emptySlots.push(i);
+        }
 
         proposerSetByOwner[msg.sender].push(proposerSetId);
         allProposerSetIds.push(proposerSetId);
@@ -64,10 +69,13 @@ contract Ssal {
         );
 
         proposerSet.isRegisteredSequencer[msg.sender] = true;
-        proposerSet.sequencerAddresses[proposerSet.currentSequencerCount] = msg
-            .sender;
-        proposerSet.sequencerIndex[msg.sender] = proposerSet
-            .currentSequencerCount;
+        uint256 slotIndex = proposerSet.emptySlots[
+            proposerSet.emptySlots.length - 1
+        ];
+        proposerSet.emptySlots.pop();
+
+        proposerSet.sequencerAddresses[slotIndex] = msg.sender;
+        proposerSet.sequencerIndex[msg.sender] = slotIndex;
         proposerSet.currentSequencerCount++;
 
         proposerSetBySequencer[msg.sender].push(proposerSetId);
@@ -93,6 +101,8 @@ contract Ssal {
         proposerSet.sequencerAddresses[index] = address(0);
 
         delete proposerSet.sequencerIndex[msg.sender];
+        proposerSet.currentSequencerCount--;
+        proposerSet.emptySlots.push(index);
 
         // Remove from proposerSetBySequencer array
         bytes32[] storage sequencerSets = proposerSetBySequencer[msg.sender];
@@ -117,12 +127,13 @@ contract Ssal {
         ProposerSet storage proposerSet = proposerSets[proposerSetId];
         uint256 count = 0;
 
-        for (uint256 i = 0; i < proposerSet.currentSequencerCount; i++) {
+        for (uint256 i = 0; i < MAX_SEQUENCER_COUNT; i++) {
             if (proposerSet.sequencerAddresses[i] != address(0)) {
                 validSequencers[count] = proposerSet.sequencerAddresses[i];
                 count++;
             }
         }
+        return validSequencers;
     }
 
     function isRegistered(
