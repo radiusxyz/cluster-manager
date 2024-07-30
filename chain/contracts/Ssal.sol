@@ -9,6 +9,8 @@ contract Ssal {
     mapping(address => bytes32[]) private proposerSetByOwner;
     mapping(address => bytes32[]) private proposerSetBySequencer;
 
+    bytes32[] private allProposerSetIds;
+
     uint256 public constant MAX_SEQUENCER_COUNT = 30;
     uint256 public constant BLOCK_MARGIN = 7;
 
@@ -40,6 +42,7 @@ contract Ssal {
         proposerSet.currentSequencerCount = 0;
 
         proposerSetByOwner[msg.sender].push(proposerSetId);
+        allProposerSetIds.push(proposerSetId);
 
         emit InitializeProposerSet(proposerSetId, msg.sender);
     }
@@ -136,5 +139,9 @@ contract Ssal {
         address sequencer
     ) public view returns (bytes32[] memory) {
         return proposerSetBySequencer[sequencer];
+    }
+
+    function getAllProposerSetIds() public view returns (bytes32[] memory) {
+        return allProposerSetIds;
     }
 }
