@@ -149,8 +149,16 @@ If it sees an initialize proposer set event, it:
 // proposer sets into which current address is registered to
 // http://localhost:3333/address/0x0/proposer-sets
 
+// proposer sets that the current address has generated
+// http://localhost:3333/owner/0x0/proposer-sets
+
 // sequencer list by the given proposer set id
 // http://localhost:3333/proposer-set/0x1/sequencers
 
 // all proposer sets
 // http://localhost:333/
+
+// http://localhost:3333/proposer-sets/
+// http://localhost:3333/addresses/{walletAddress}/proposer-sets/generated
+// http://localhost:3333/addresses/{walletAddress}/proposer-sets/joined
+// http://localhost:3333/proposer-sets/{proposerSetId}/sequencers
