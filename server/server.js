@@ -1,6 +1,6 @@
-const dotenv = require("dotenv");
-const mongoose = require("mongoose");
-const app = require("./app.js");
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import app from "./app.js";
 
 dotenv.config({ path: "./.env" });
 
@@ -12,8 +12,7 @@ const DB = process.env.DATABASE.replace(
 mongoose
   .connect(DB, {
     useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
+
     useUnifiedTopology: true,
   })
   .then(() => console.log("DB connection successful!"))

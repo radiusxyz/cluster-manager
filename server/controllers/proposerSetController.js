@@ -1,5 +1,4 @@
-const ProposerSet = require("../models/proposerSetModel");
-const proposerSetService = require("../services/proposerSetService");
+import proposerSetService from "../services/proposerSetService.js";
 
 const getAllProposerSets = async (req, res) => {
   try {
@@ -46,9 +45,11 @@ const getSequencersInProposerSet = async (req, res) => {
   }
 };
 
-module.exports = {
+const proposerSetController = {
   getAllProposerSets,
   getGeneratedProposerSets,
   getJoinedProposerSets,
   getSequencersInProposerSet,
 };
+
+export default proposerSetController;

@@ -1,4 +1,7 @@
-const eventService = require("../services/eventService");
+import { createPublicClient, http } from "viem";
+import eventService from "../services/eventService.js";
+import dotenv from "dotenv";
+import { localhost } from "../config.js";
 
 dotenv.config({ path: "./.env" });
 
@@ -64,4 +67,4 @@ const startEventListeners = () => {
   watchDeregisterSequencer();
 };
 
-module.exports = startEventListeners;
+export default startEventListeners;

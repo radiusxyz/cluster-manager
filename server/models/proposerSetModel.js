@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const ProposerSetSchema = new Schema(
@@ -19,4 +19,4 @@ const ProposerSetSchema = new Schema(
 
 const ProposerSet = mongoose.model("ProposerSet", ProposerSetSchema);
 
-module.exports = ProposerSet;
+export default ProposerSet;

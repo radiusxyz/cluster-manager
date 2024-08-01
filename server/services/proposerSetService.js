@@ -1,4 +1,4 @@
-const ProposerSet = require("../models/proposerSetModel");
+import ProposerSet from "../models/proposerSetModel.js";
 
 const getAllProposerSets = async () => {
   return await ProposerSet.find();
@@ -113,7 +113,7 @@ const deregisterSequencer = async (logs) => {
   }
 };
 
-module.exports = {
+const proposerSetService = {
   getAllProposerSets,
   getGeneratedProposerSets,
   getJoinedProposerSets,
@@ -122,3 +122,5 @@ module.exports = {
   registerSequencer,
   deregisterSequencer,
 };
+
+export default proposerSetService;

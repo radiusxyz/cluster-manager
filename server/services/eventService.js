@@ -1,12 +1,8 @@
-const {
-  initializeProposerSet,
-  registerSequencer,
-  deregisterSequencer,
-} = require("../services/proposerSetService");
+import proposerSetService from "../services/proposerSetService.js";
 
 const handleInitializeProposerSet = async (logs) => {
   try {
-    await initializeProposerSet(logs);
+    await proposerSetService.initializeProposerSet(logs);
   } catch (error) {
     console.error("Error in handleInitializeProposerSet:", error.message);
   }
@@ -14,7 +10,7 @@ const handleInitializeProposerSet = async (logs) => {
 
 const handleRegisterSequencer = async (logs) => {
   try {
-    await registerSequencer(logs);
+    await proposerSetService.registerSequencer(logs);
   } catch (error) {
     console.error("Error in handleRegisterSequencer:", error.message);
   }
@@ -22,14 +18,16 @@ const handleRegisterSequencer = async (logs) => {
 
 const handleDeregisterSequencer = async (logs) => {
   try {
-    await deregisterSequencer(logs);
+    await proposerSetService.deregisterSequencer(logs);
   } catch (error) {
     console.error("Error in handleDeregisterSequencer:", error.message);
   }
 };
 
-module.exports = {
+const eventService = {
   handleInitializeProposerSet,
   handleRegisterSequencer,
   handleDeregisterSequencer,
 };
+
+export default eventService;
