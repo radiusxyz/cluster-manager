@@ -1,4 +1,5 @@
-import dotenv from "dotenv";
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
 const app = require("./app.js");
 
 dotenv.config({ path: "./.env" });
@@ -13,13 +14,18 @@ mongoose
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
+    useUnifiedTopology: true,
   })
-  .then(() => console.log("DB connection successful!"));
+  .then(() => console.log("DB connection successful!"))
+  .catch((error) => {
+    console.error("DB connection failed:", error.message);
+    process.exit(1);
+  });
 
 const PORT = process.env.PORT || 3333;
 
-app.listen(PORT, () => {
-  console.log("Server is running on port: ", PORT);
+const server = app.listen(PORT, () => {
+  console.log(`Server is running on port: ${PORT}`);
 });
 
 process.on("unhandledRejection", (err) => {
