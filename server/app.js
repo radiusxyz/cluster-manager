@@ -14,6 +14,7 @@ import {
 import { privateKeyToAccount } from "viem/accounts";
 import { localhost, hhContractAbi, hhContractAddress } from "./config.js";
 import { hhAccounts } from "./accounts.js";
+import startEventListeners from "./listeners/eventListeners.js";
 
 const app = express();
 
@@ -23,6 +24,8 @@ app.use(cors());
 app.use(express.json());
 
 dotenv.config({ path: "./.env" });
+
+startEventListeners();
 
 // setting the public client
 const client = createPublicClient({
