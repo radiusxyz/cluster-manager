@@ -12,7 +12,7 @@ import {
   publicActions,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { localhost, hhContractAbi, hhContractAddress } from "./config.js";
+import { localhost, hhContractAbi, hhContractAddress } from "../config.js";
 import { hhAccounts } from "./accounts.js";
 import { proposerSets } from "./proposerSets.js";
 
@@ -38,9 +38,19 @@ let proposerSetId;
 
 // watching InitializeProposerSet events
 
-const unwatch = client.watchContractEvent({
+const unwatchInitializeProposerSet = client.watchContractEvent({
   address: hhContractAddress,
   abi: hhContractAbi,
+  eventName: "InitializeProposerSet",
+  onLogs: (logs) => {
+    console.log(logs);
+  },
+});
+
+const unwatchRegisterSequencer = client.watchContractEvent({
+  address: hhContractAddress,
+  abi: hhContractAbi,
+  eventName: "DeregisterSequencer",
   onLogs: (logs) => {
     console.log(logs);
   },
@@ -182,11 +192,15 @@ const deregisterSequencer = async (account, proposerSetId) => {
 
 // register the same account into multiple proposer sets, check proposer sets by sequencer after registration and deregistration
 
-await registerSequencer(accountsHH[1], proposerSets[1].id);
-await registerSequencer(accountsHH[1], proposerSets[2].id);
-await deregisterSequencer(accountsHH[1], proposerSets[3].id);
+// await initializeProposerSet(accountsHH[7]);
 
-getProposerSetsBySequencer(accountsHH[1]);
+// if (proposerSetId) {
+//   await registerSequencer(accountsHH[1], proposerSetId);
+// }
+// await registerSequencer(accountsHH[1], proposerSetId);
+// await deregisterSequencer(accountsHH[1], proposerSetId);
+
+// getProposerSetsBySequencer(accountsHH[1]);
 
 // app.listen(PORT, () => {
 //   console.log("Server is running on port: ", PORT);
