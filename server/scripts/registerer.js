@@ -12,7 +12,7 @@ import {
   publicActions,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { localhost, hhContractAbi, hhContractAddress } from "./config.js";
+import { localhost, hhContractAbi, hhContractAddress } from "../config.js";
 import { hhAccounts } from "./accounts.js";
 import { proposerSets } from "./proposerSets.js";
 
@@ -31,30 +31,6 @@ const client = createWalletClient({
   chain: localhost,
   transport: http(),
 }).extend(publicActions);
-
-// contract interactions
-
-let proposerSetId;
-
-// watching InitializeProposerSet events
-
-const unwatchInitializeProposerSet = client.watchContractEvent({
-  address: hhContractAddress,
-  abi: hhContractAbi,
-  eventName: "InitializeProposerSet",
-  onLogs: (logs) => {
-    console.log(logs);
-  },
-});
-
-const unwatchRegisterSequencer = client.watchContractEvent({
-  address: hhContractAddress,
-  abi: hhContractAbi,
-  eventName: "DeregisterSequencer",
-  onLogs: (logs) => {
-    console.log(logs);
-  },
-});
 
 // get the list of sequencers for the given proposer set
 
@@ -192,11 +168,10 @@ const deregisterSequencer = async (account, proposerSetId) => {
 
 // register the same account into multiple proposer sets, check proposer sets by sequencer after registration and deregistration
 
-// await initializeProposerSet(accountsHH[7]);
+// await initializeProposerSet(accountsHH[8]);
 
-// if (proposerSetId) {
-//   await registerSequencer(accountsHH[1], proposerSetId);
-// }
+await initializeProposerSet(accountsHH[13]);
+
 // await registerSequencer(accountsHH[1], proposerSetId);
 // await deregisterSequencer(accountsHH[1], proposerSetId);
 

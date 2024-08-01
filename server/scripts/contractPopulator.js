@@ -12,8 +12,9 @@ import {
   publicActions,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { localhost, hhContractAbi, hhContractAddress } from "./config.js";
+import { localhost, hhContractAbi, hhContractAddress } from "../config.js";
 import { hhAccounts } from "./accounts.js";
+import { proposerSets } from "./proposerSets.js";
 
 const app = express();
 
@@ -22,19 +23,11 @@ const PORT = process.env.PORT || 3333;
 app.use(cors());
 app.use(express.json());
 
-dotenv.config({ path: "./.env" });
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
-
-// setting the wallet client
-
-const account = privateKeyToAccount("0x" + PRIVATE_KEY);
-
 const accountsHH = hhAccounts.map((account) =>
   privateKeyToAccount(account.hhPrivateKey)
 );
 
 const client = createWalletClient({
-  account,
   chain: localhost,
   transport: http(),
 }).extend(publicActions);
@@ -43,19 +36,29 @@ const client = createWalletClient({
 
 let proposerSetId;
 
-// watching the InitializeProposerSet events
+// watching InitializeProposerSet events
 
-const unwatch = client.watchContractEvent({
+const unwatchInitializeProposerSet = client.watchContractEvent({
   address: hhContractAddress,
   abi: hhContractAbi,
+  eventName: "InitializeProposerSet",
   onLogs: (logs) => {
-    proposerSetId = logs[logs.length - 1].args.proposerSetId;
-    console.log(proposerSetId);
+    console.log(logs);
+  },
+});
+
+const unwatchRegisterSequencer = client.watchContractEvent({
+  address: hhContractAddress,
+  abi: hhContractAbi,
+  eventName: "DeregisterSequencer",
+  onLogs: (logs) => {
+    console.log(logs);
   },
 });
 
 // get the list of sequencers for the given proposer set
-app.get("/get-sequencer-list", async (req, res) => {
+
+const getSequencerList = async (account, proposerSetId) => {
   try {
     const data = await client.readContract({
       account,
@@ -64,36 +67,15 @@ app.get("/get-sequencer-list", async (req, res) => {
       functionName: "getSequencerList",
       args: [proposerSetId],
     });
-    res.status(200).json({
-      message: `got the list of sequencers for ${proposerSetId}`,
-      sequencerList: data,
-    });
+    console.log(`got the list of sequencers for ${proposerSetId}`, data);
   } catch (error) {
     console.error("error message:", error.message);
   }
-});
-
-// get the list of all proposer sets
-app.get("/all-proposer-sets", async (req, res) => {
-  try {
-    const data = await client.readContract({
-      account,
-      address: hhContractAddress,
-      abi: hhContractAbi,
-      functionName: "getAllProposerSetIds",
-      args: [account.address],
-    });
-    res.status(200).json({
-      message: `got the list of all proposer sets`,
-      sequencerList: data,
-    });
-  } catch (error) {
-    console.error("error message:", error.message);
-  }
-});
+};
 
 // get the list of proposers for the given owner account
-app.get("/owner-proposer-sets", async (req, res) => {
+
+const getProposerSetsByOwner = async (account) => {
   try {
     const data = await client.readContract({
       account,
@@ -102,17 +84,17 @@ app.get("/owner-proposer-sets", async (req, res) => {
       functionName: "getProposerSetsByOwner",
       args: [account.address],
     });
-    res.status(200).json({
-      message: `got the list of proposer sets for owner ${account.address}`,
-      sequencerList: data,
-    });
+    console.log(
+      `got the list of proposer sets for owner ${account.address}`,
+      data
+    );
   } catch (error) {
     console.error("error message:", error.message);
   }
-});
+};
 
 // get the list of proposers for the given sequencer account
-app.get("/sequencer-proposer-sets", async (req, res) => {
+const getProposerSetsBySequencer = async (account) => {
   try {
     const data = await client.readContract({
       account,
@@ -121,17 +103,17 @@ app.get("/sequencer-proposer-sets", async (req, res) => {
       functionName: "getProposerSetsBySequencer",
       args: [account.address],
     });
-    res.status(200).json({
-      message: `got the list of proposer sets for sequencer ${account.address}`,
-      sequencerList: data,
-    });
+    console.log(
+      `got the list of proposer sets for sequencer ${account.address}`,
+      data
+    );
   } catch (error) {
     console.error("error message:", error.message);
   }
-});
+};
 
 // initialize a proposer set
-app.get("/init", async (req, res) => {
+const initializeProposerSet = async (account) => {
   try {
     const { request } = await client.simulateContract({
       account,
@@ -141,14 +123,14 @@ app.get("/init", async (req, res) => {
       args: [],
     });
     await client.writeContract(request);
-    res.status(200).json({ status: "initiated a proposer set" });
+    console.log("initiated a proposer set");
   } catch (error) {
     console.error("error message:", error.message);
   }
-});
+};
 
 // register the sequencer into the set
-app.get("/register", async (req, res) => {
+const registerSequencer = async (account, proposerSetId) => {
   try {
     const { request } = await client.simulateContract({
       account,
@@ -158,14 +140,14 @@ app.get("/register", async (req, res) => {
       args: [proposerSetId],
     });
     await client.writeContract(request);
-    res.status(200).json({ status: "registered into the proposer set" });
+    console.log("registered into the proposer set");
   } catch (error) {
     console.error("error message:", error.message);
   }
-});
+};
 
 // deregister the sequencer from the list
-app.get("/deregister", async (req, res) => {
+const deregisterSequencer = async (account, proposerSetId) => {
   try {
     const { request } = await client.simulateContract({
       account,
@@ -175,12 +157,51 @@ app.get("/deregister", async (req, res) => {
       args: [proposerSetId],
     });
     await client.writeContract(request);
-    res.status(200).json({ status: "deregistered from the proposer set" });
+    console.log("deregistered from the proposer set");
   } catch (error) {
     console.error("error message:", error.message);
   }
-});
+};
 
-app.listen(PORT, () => {
-  console.log("Server is running on port: ", PORT);
-});
+// test
+
+// initiate multiple proposer sets
+
+// accountsHH.forEach(async (account) => {
+//   try {
+//     const { request } = await client.simulateContract({
+//       account: account,
+//       address: hhContractAddress,
+//       abi: hhContractAbi,
+//       functionName: "initializeProposerSet",
+//       args: [],
+//     });
+//     await client.writeContract(request);
+//     console.log("initiated a proposer set");
+//   } catch (error) {
+//     console.error("error message:", error.message);
+//   }
+// });
+
+// register multiple accounts into the same proposer set, check sequencer list registration and deregistration
+
+// registerSequencer(accountsHH[1], proposerSets[0].id);
+// registerSequencer(accountsHH[2], proposerSets[0].id);
+// registerSequencer(accountsHH[3], proposerSets[0].id);
+// getSequencerList(accountsHH[0], proposerSets[0].id);
+
+// register the same account into multiple proposer sets, check proposer sets by sequencer after registration and deregistration
+
+// await initializeProposerSet(accountsHH[7]);
+
+// if (proposerSetId) {
+//   await registerSequencer(accountsHH[1], proposerSetId);
+// }
+// await registerSequencer(accountsHH[1], proposerSetId);
+// await deregisterSequencer(accountsHH[1], proposerSetId);
+
+// getProposerSetsBySequencer(accountsHH[1]);
+
+// app.listen(PORT, () => {
+//   console.log("Server is running on port: ", PORT);
+// });
