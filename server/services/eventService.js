@@ -1,30 +1,30 @@
+const {
+  initializeProposerSet,
+  registerSequencer,
+  deregisterSequencer,
+} = require("../services/proposerSetService");
+
 const handleInitializeProposerSet = async (logs) => {
   try {
-    // Process the logs as needed
-    console.log("InitializeProposerSet logs:", logs);
-    // Perform any required actions based on the event data
+    await initializeProposerSet(logs);
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Error in handleInitializeProposerSet:", error.message);
   }
 };
 
 const handleRegisterSequencer = async (logs) => {
   try {
-    // Process the logs as needed
-    console.log("RegisterSequencer logs:", logs);
-    // Perform any required actions based on the event data
+    await registerSequencer(logs);
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Error in handleRegisterSequencer:", error.message);
   }
 };
 
 const handleDeregisterSequencer = async (logs) => {
   try {
-    // Process the logs as needed
-    console.log("DeregisterSequencer logs:", logs);
-    // Perform any required actions based on the event data
+    await deregisterSequencer(logs);
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Error in handleDeregisterSequencer:", error.message);
   }
 };
 

@@ -24,8 +24,16 @@ contract Ssal {
     }
 
     event InitializeProposerSet(bytes32 proposerSetId, address owner);
-    event RegisterSequencer(bytes32 proposerSetId, address sequencerAddress);
-    event DeregisterSequencer(bytes32 proposerSetId, address sequencerAddress);
+    event RegisterSequencer(
+        bytes32 proposerSetId,
+        address sequencerAddress,
+        uint256 index
+    );
+    event DeregisterSequencer(
+        bytes32 proposerSetId,
+        address sequencerAddress,
+        uint256 index
+    );
 
     function initializeProposerSet() public {
         bytes32 proposerSetId = keccak256(
@@ -80,7 +88,7 @@ contract Ssal {
 
         proposerSetBySequencer[msg.sender].push(proposerSetId);
 
-        emit RegisterSequencer(proposerSetId, msg.sender);
+        emit RegisterSequencer(proposerSetId, msg.sender, slotIndex);
     }
 
     function deregisterSequencer(bytes32 proposerSetId) public {
@@ -114,7 +122,7 @@ contract Ssal {
             }
         }
 
-        emit DeregisterSequencer(proposerSetId, msg.sender);
+        emit DeregisterSequencer(proposerSetId, msg.sender, index);
     }
 
     function getSequencerList(

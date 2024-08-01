@@ -2,6 +2,11 @@ const eventService = require("../services/eventService");
 
 dotenv.config({ path: "./.env" });
 
+const [CONTRACT_ADDRESS, CONTRACT_ABI] = [
+  process.env.CONTRACT_ADDRESS,
+  process.env.CONTRACT_ABI,
+];
+
 // setting the public client
 const client = createPublicClient({
   chain: localhost,
@@ -10,8 +15,8 @@ const client = createPublicClient({
 
 const watchInitializeProposerSet = () => {
   client.watchContractEvent({
-    address: process.env.CONTRACT_ADDRESS,
-    abi: process.env.CONTRACT_ABI,
+    address: CONTRACT_ADDRESS,
+    abi: CONTRACT_ABI,
     eventName: "InitializeProposerSet",
     onLogs: async (logs) => {
       try {
@@ -25,8 +30,8 @@ const watchInitializeProposerSet = () => {
 
 const watchRegisterSequencer = () => {
   client.watchContractEvent({
-    address: process.env.CONTRACT_ADDRESS,
-    abi: process.env.CONTRACT_ABI,
+    address: CONTRACT_ADDRESS,
+    abi: CONTRACT_ABI,
     eventName: "RegisterSequencer",
     onLogs: async (logs) => {
       try {
@@ -40,8 +45,8 @@ const watchRegisterSequencer = () => {
 
 const watchDeregisterSequencer = () => {
   client.watchContractEvent({
-    address: process.env.CONTRACT_ADDRESS,
-    abi: process.env.CONTRACT_ABI,
+    address: CONTRACT_ADDRESS,
+    abi: CONTRACT_ABI,
     eventName: "DeregisterSequencer",
     onLogs: async (logs) => {
       try {

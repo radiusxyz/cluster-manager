@@ -1,22 +1,22 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const proposerSetSchema = new Schema(
+const ProposerSetSchema = new Schema(
   {
-    id: { type: String, required: true, unique: true }, // Use the blockchain ID
-    name: { type: String, required: true },
-    symbol: { type: String, required: true },
-    rpcUrl: { type: String, required: true },
-    webSocketUrl: { type: String, required: true },
-    chainId: { type: String, required: true },
-    rollupType: { type: String, required: true },
-    blockExplorerUrl: { type: String, required: true },
-    sequencerList: [{ type: Schema.Types.ObjectId, ref: "Sequencer" }],
+    proposerSetId: { type: String, required: true, unique: true }, // Use the blockchain ID
+    name: String,
+    symbol: String,
+    rpcUrl: String,
+    webSocketUrl: String,
+    chainId: String,
+    rollupType: String,
+    blockExplorerUrl: String,
+    sequencers: [String],
     createdAt: { type: Date, default: Date.now },
   },
   { _id: false }
 ); // Disable automatic creation of _id field
 
-const ProposerSet = mongoose.model("ProposerSet", proposerSetSchema);
+const ProposerSet = mongoose.model("ProposerSet", ProposerSetSchema);
 
 module.exports = ProposerSet;
