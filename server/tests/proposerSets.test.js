@@ -1,6 +1,7 @@
 import { createWalletClient, http, publicActions } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { localhost, hhContractAbi, hhContractAddress } from "../config.js";
+import { localhost, hhContractAbi } from "../config.js";
+import { hhContractAddress } from "./hhContractAddress.js";
 import { hhAccounts } from "../scripts/accounts.js";
 import request from "supertest";
 
@@ -163,28 +164,27 @@ const unwatchDeregisterSequencer = client.watchContractEvent({
 });
 
 describe("Proposer Sets API", () => {
-  // beforeAll(async () => {
-  //   // Initialize 3 proposer sets
-  //   await initializeProposerSet(accountsHH[0]);
-  //   await initializeProposerSet(accountsHH[0]);
-  //   await initializeProposerSet(accountsHH[0]);
+  beforeAll(async () => {
+    // Initialize 3 proposer sets
+    await initializeProposerSet(accountsHH[0]);
+    await initializeProposerSet(accountsHH[1]);
+    await initializeProposerSet(accountsHH[2]);
 
-  //   // Wait for the events to be emitted and processed
-  //   await new Promise((resolve) => setTimeout(resolve, 5000)); // Adjust the timeout as needed
-  // });
+    // Wait for the events to be emitted and processed
+    await new Promise((resolve) => setTimeout(resolve, 5000)); // Adjust the timeout as needed
+  });
 
-  // afterAll(() => {
-  //   unwatchInitializeProposerSet();
-  // });
+  afterAll(() => {
+    unwatchInitializeProposerSet();
+  });
 
   it("should have 3 proposer sets after initialization", async () => {
     const response = await request(app).get("/api/v1/proposer-sets");
-    console.log(response);
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(3);
 
     // Verify the proposer sets' IDs
-    const returnedIds = response.body.map((set) => set.id);
+    const returnedIds = response.body.map((set) => set.proposerSetId);
     proposerSetIds.forEach((id) => {
       expect(returnedIds).toContain(id);
     });
