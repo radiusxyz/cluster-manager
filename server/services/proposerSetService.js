@@ -1,7 +1,6 @@
 import ProposerSet from "../models/proposerSetModel.js";
 
 const getAllProposerSets = async () => {
-  console.log("NOW WE ARE HERE MAN", await ProposerSet.find());
   return await ProposerSet.find();
 };
 
