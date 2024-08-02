@@ -29,8 +29,8 @@ const initializeProposerSet = async (logs) => {
       const newProposerSet = new ProposerSet({
         proposerSetId,
         owner,
-        name: log.args.name || "", // Assuming these fields are provided in the event logs
-        symbol: log.args.symbol || "", // Adjust as needed
+        name: log.args.name || "",
+        symbol: log.args.symbol || "",
         rpcUrl: log.args.rpcUrl || "",
         webSocketUrl: log.args.webSocketUrl || "",
         chainId: log.args.chainId || "",
