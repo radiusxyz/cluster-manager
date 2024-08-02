@@ -1,60 +1,18 @@
-import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
-import axios from "axios";
-import {
-  createPublicClient,
-  createWalletClient,
-  custom,
-  defineChain,
-  http,
-  parseEther,
-  publicActions,
-} from "viem";
+import { createWalletClient, http, publicActions } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { localhost, hhContractAbi, hhContractAddress } from "../config.js";
-import { hhAccounts } from "./accounts.js";
-import { proposerSets } from "./proposerSets.js";
+import { hhAccounts } from "../scripts/accounts.js";
+import request from "supertest";
 
-const app = express();
+import app from "../app.js";
 
-const PORT = process.env.PORT || 3333;
-
-app.use(cors());
-app.use(express.json());
-
-const accountsHH = hhAccounts.map((account) =>
-  privateKeyToAccount(account.hhPrivateKey)
-);
+// Increase Jest timeout if necessary
+jest.setTimeout(30000);
 
 const client = createWalletClient({
   chain: localhost,
   transport: http(),
 }).extend(publicActions);
-
-// contract interactions
-
-let proposerSetId;
-
-// watching InitializeProposerSet events
-
-const unwatchInitializeProposerSet = client.watchContractEvent({
-  address: hhContractAddress,
-  abi: hhContractAbi,
-  eventName: "InitializeProposerSet",
-  onLogs: (logs) => {
-    console.log(logs);
-  },
-});
-
-const unwatchRegisterSequencer = client.watchContractEvent({
-  address: hhContractAddress,
-  abi: hhContractAbi,
-  eventName: "DeregisterSequencer",
-  onLogs: (logs) => {
-    console.log(logs);
-  },
-});
 
 // get the list of sequencers for the given proposer set
 
@@ -163,45 +121,74 @@ const deregisterSequencer = async (account, proposerSetId) => {
   }
 };
 
-// test
+const accountsHH = hhAccounts.map((account) =>
+  privateKeyToAccount(account.hhPrivateKey)
+);
 
-// initiate multiple proposer sets
+// listening to events
 
-// accountsHH.forEach(async (account) => {
-//   try {
-//     const { request } = await client.simulateContract({
-//       account: account,
-//       address: hhContractAddress,
-//       abi: hhContractAbi,
-//       functionName: "initializeProposerSet",
-//       args: [],
-//     });
-//     await client.writeContract(request);
-//     console.log("initiated a proposer set");
-//   } catch (error) {
-//     console.error("error message:", error.message);
-//   }
-// });
+let proposerSetIds = [];
 
-// register multiple accounts into the same proposer set, check sequencer list registration and deregistration
+// watching InitializeProposerSet events
 
-// registerSequencer(accountsHH[1], proposerSets[0].id);
-// registerSequencer(accountsHH[2], proposerSets[0].id);
-// registerSequencer(accountsHH[3], proposerSets[0].id);
-// getSequencerList(accountsHH[0], proposerSets[0].id);
+const unwatchInitializeProposerSet = client.watchContractEvent({
+  address: hhContractAddress,
+  abi: hhContractAbi,
+  eventName: "InitializeProposerSet",
+  onLogs: (logs) => {
+    proposerSetIds.push(...logs.map((log) => log.args.proposerSetId));
+  },
+});
 
-// register the same account into multiple proposer sets, check proposer sets by sequencer after registration and deregistration
+// watching RegisterSequencer events
 
-// await initializeProposerSet(accountsHH[7]);
+const unwatchRegisterSequencer = client.watchContractEvent({
+  address: hhContractAddress,
+  abi: hhContractAbi,
+  eventName: "RegisterSequencer",
+  onLogs: (logs) => {
+    console.log(logs);
+  },
+});
 
-// if (proposerSetId) {
-//   await registerSequencer(accountsHH[1], proposerSetId);
-// }
-// await registerSequencer(accountsHH[1], proposerSetId);
-// await deregisterSequencer(accountsHH[1], proposerSetId);
+// watching DeregisterSequencer events
 
-// getProposerSetsBySequencer(accountsHH[1]);
+const unwatchDeregisterSequencer = client.watchContractEvent({
+  address: hhContractAddress,
+  abi: hhContractAbi,
+  eventName: "DeregisterSequencer",
+  onLogs: (logs) => {
+    console.log(logs);
+  },
+});
 
-// app.listen(PORT, () => {
-//   console.log("Server is running on port: ", PORT);
-// });
+describe("Proposer Sets API", () => {
+  // beforeAll(async () => {
+  //   // Initialize 3 proposer sets
+  //   await initializeProposerSet(accountsHH[0]);
+  //   await initializeProposerSet(accountsHH[0]);
+  //   await initializeProposerSet(accountsHH[0]);
+
+  //   // Wait for the events to be emitted and processed
+  //   await new Promise((resolve) => setTimeout(resolve, 5000)); // Adjust the timeout as needed
+  // });
+
+  // afterAll(() => {
+  //   unwatchInitializeProposerSet();
+  // });
+
+  it("should have 3 proposer sets after initialization", async () => {
+    const response = await request(app).get("/api/v1/proposer-sets");
+    console.log(response);
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(3);
+
+    // Verify the proposer sets' IDs
+    const returnedIds = response.body.map((set) => set.id);
+    proposerSetIds.forEach((id) => {
+      expect(returnedIds).toContain(id);
+    });
+
+    // Further checks can be added to verify the proposer sets' content
+  });
+});

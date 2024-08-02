@@ -5,13 +5,18 @@
   "main": "sequencer.js",
   "type": "module",
   "scripts": {
-    "test": "nodemon test.js",
+    "test": "jest",
     "dev": "nodemon server.js"
   },
   "author": "gylman",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1",
+    "supertest": "^7.0.0",
+    "babel-jest": "^29.7.0",
+    "@babel/core": "^7.22.5",
+    "@babel/preset-env": "^7.22.5"
   },
   "dependencies": {
     "axios": "^1.6.1",
@@ -24,5 +29,10 @@
     "js-sha3": "^0.9.2",
     "mongoose": "^8.5.2",
     "viem": "^2.18.2"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    }
   }
 }

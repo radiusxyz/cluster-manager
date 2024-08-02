@@ -4,8 +4,8 @@ const getAllProposerSets = async () => {
   return await ProposerSet.find();
 };
 
-const getGeneratedProposerSets = async (walletAddress) => {
-  return await ProposerSet.find({ walletAddress });
+const getGeneratedProposerSets = async (owner) => {
+  return await ProposerSet.find({ owner });
 };
 
 const getJoinedProposerSets = async (walletAddress) => {
