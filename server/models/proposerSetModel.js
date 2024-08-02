@@ -4,6 +4,7 @@ const { Schema } = mongoose;
 const ProposerSetSchema = new Schema(
   {
     proposerSetId: { type: String, required: true, unique: true }, // Use the blockchain ID
+    owner: String,
     name: String,
     symbol: String,
     rpcUrl: String,
