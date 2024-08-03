@@ -168,6 +168,16 @@ describe("Proposer Sets API", () => {
 
     // Wait for the events to be emitted and processed
     await new Promise((resolve) => setTimeout(resolve, 5000)); // Adjust the timeout as needed
+
+    if (proposerSetIds.length < 3) {
+      console.error(
+        "Proposer set IDs not initialized correctly",
+        proposerSetIds
+      );
+      throw new Error("Failed to initialize proposer sets.");
+    }
+
+    console.log("Initialized proposer set IDs:", proposerSetIds);
   });
 
   afterAll(() => {
@@ -210,7 +220,7 @@ describe("Proposer Sets API", () => {
 
   it("should have no joined proposer sets for an address that never initiated nor joined any", async () => {
     const response = await request(app).get(
-      `/api/v1/addresses/${accountsHH[3]}/proposer-sets/joined`
+      `/api/v1/addresses/${accountsHH[3].address}/proposer-sets/joined`
     );
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(0);
@@ -251,14 +261,17 @@ describe("Proposer Sets API", () => {
 
     // Verify the proposer sets' IDs
     const returnedIds = response.body.map((set) => set.proposerSetId);
+
     expect(returnedIds).toContain(proposerSetIds[0]);
     expect(returnedIds).toContain(proposerSetIds[2]);
     expect(returnedIds).not.toContain(proposerSetIds[1]);
   });
 
-  const proposerSetId = proposerSetIds[0]; // Use the first proposer set ID for this test
+  // Use the first proposer set ID for this test
 
   it("should register three addresses into a proposer set and verify", async () => {
+    console.log("HERE IS THE PROPOSERSETID INSIDE", proposerSetIds);
+    const proposerSetId = proposerSetIds[0];
     await registerSequencer(accountsHH[1], proposerSetId);
     await registerSequencer(accountsHH[2], proposerSetId);
     await registerSequencer(accountsHH[3], proposerSetId);
@@ -269,6 +282,8 @@ describe("Proposer Sets API", () => {
     const response = await request(app).get(
       `/api/v1/proposer-sets/${proposerSetId}/sequencers`
     );
+
+    console.log("PRIVETOSIKI", response.body);
     expect(response.status).toBe(200);
 
     const registeredAddresses = response.body
@@ -281,6 +296,8 @@ describe("Proposer Sets API", () => {
   });
 
   it("should deregister one address from the proposer set and verify", async () => {
+    const proposerSetId = proposerSetIds[0];
+
     await deregisterSequencer(accountsHH[2], proposerSetId);
 
     // Wait for the events to be emitted and processed
@@ -301,6 +318,8 @@ describe("Proposer Sets API", () => {
   });
 
   it("should register another address into the proposer set and verify", async () => {
+    const proposerSetId = proposerSetIds[0];
+
     await registerSequencer(accountsHH[4], proposerSetId);
 
     // Wait for the events to be emitted and processed
