@@ -255,4 +255,68 @@ describe("Proposer Sets API", () => {
     expect(returnedIds).toContain(proposerSetIds[2]);
     expect(returnedIds).not.toContain(proposerSetIds[1]);
   });
+
+  const proposerSetId = proposerSetIds[0]; // Use the first proposer set ID for this test
+
+  it("should register three addresses into a proposer set and verify", async () => {
+    await registerSequencer(accountsHH[1], proposerSetId);
+    await registerSequencer(accountsHH[2], proposerSetId);
+    await registerSequencer(accountsHH[3], proposerSetId);
+
+    // Wait for the events to be emitted and processed
+    await new Promise((resolve) => setTimeout(resolve, 5000)); // Adjust the timeout as needed
+
+    const response = await request(app).get(
+      `/api/v1/proposer-sets/${proposerSetId}/sequencers`
+    );
+    expect(response.status).toBe(200);
+
+    const registeredAddresses = response.body
+      .filter((seq) => seq !== "0x0000000000000000000000000000000000000000")
+      .map((seq) => seq);
+
+    expect(registeredAddresses).toContain(accountsHH[1].address);
+    expect(registeredAddresses).toContain(accountsHH[2].address);
+    expect(registeredAddresses).toContain(accountsHH[3].address);
+  });
+
+  it("should deregister one address from the proposer set and verify", async () => {
+    await deregisterSequencer(accountsHH[2], proposerSetId);
+
+    // Wait for the events to be emitted and processed
+    await new Promise((resolve) => setTimeout(resolve, 5000)); // Adjust the timeout as needed
+
+    const response = await request(app).get(
+      `/api/v1/proposer-sets/${proposerSetId}/sequencers`
+    );
+    expect(response.status).toBe(200);
+
+    const registeredAddresses = response.body
+      .filter((seq) => seq !== "0x0000000000000000000000000000000000000000")
+      .map((seq) => seq);
+
+    expect(registeredAddresses).toContain(accountsHH[1].address);
+    expect(registeredAddresses).toContain(accountsHH[3].address);
+    expect(registeredAddresses).not.toContain(accountsHH[2].address);
+  });
+
+  it("should register another address into the proposer set and verify", async () => {
+    await registerSequencer(accountsHH[4], proposerSetId);
+
+    // Wait for the events to be emitted and processed
+    await new Promise((resolve) => setTimeout(resolve, 5000)); // Adjust the timeout as needed
+
+    const response = await request(app).get(
+      `/api/v1/proposer-sets/${proposerSetId}/sequencers`
+    );
+    expect(response.status).toBe(200);
+
+    const registeredAddresses = response.body
+      .filter((seq) => seq !== "0x0000000000000000000000000000000000000000")
+      .map((seq) => seq);
+
+    expect(registeredAddresses).toContain(accountsHH[1].address);
+    expect(registeredAddresses).toContain(accountsHH[3].address);
+    expect(registeredAddresses).toContain(accountsHH[4].address);
+  });
 });
