@@ -1,14 +1,13 @@
 import { createPublicClient, http } from "viem";
 import eventService from "../services/eventService.js";
+import { hhContractAbi } from "../config.js";
+import { hhContractAddress } from "../tests/hhContractAddress.js";
 import dotenv from "dotenv";
 import { localhost } from "../config.js";
 
 dotenv.config({ path: "./.env" });
 
-const [CONTRACT_ADDRESS, CONTRACT_ABI] = [
-  process.env.CONTRACT_ADDRESS,
-  process.env.CONTRACT_ABI,
-];
+const [CONTRACT_ADDRESS, CONTRACT_ABI] = [hhContractAddress, hhContractAbi];
 
 // setting the public client
 const client = createPublicClient({

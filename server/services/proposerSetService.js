@@ -4,8 +4,8 @@ const getAllProposerSets = async () => {
   return await ProposerSet.find();
 };
 
-const getGeneratedProposerSets = async (walletAddress) => {
-  return await ProposerSet.find({ walletAddress });
+const getGeneratedProposerSets = async (owner) => {
+  return await ProposerSet.find({ owner });
 };
 
 const getJoinedProposerSets = async (walletAddress) => {
@@ -28,8 +28,9 @@ const initializeProposerSet = async (logs) => {
 
       const newProposerSet = new ProposerSet({
         proposerSetId,
-        name: log.args.name || "", // Assuming these fields are provided in the event logs
-        symbol: log.args.symbol || "", // Adjust as needed
+        owner,
+        name: log.args.name || "",
+        symbol: log.args.symbol || "",
         rpcUrl: log.args.rpcUrl || "",
         webSocketUrl: log.args.webSocketUrl || "",
         chainId: log.args.chainId || "",

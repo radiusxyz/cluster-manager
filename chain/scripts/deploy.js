@@ -9,7 +9,8 @@ const hre = require("hardhat");
 async function main() {
   const myContract = await hre.ethers.deployContract("Ssal");
   await myContract.waitForDeployment();
-  console.log("MyContract deployed to:", myContract.target);
+  console.log(`export const hhContractAddress = "${myContract.target}";`);
+  // console.log(myContract.target);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

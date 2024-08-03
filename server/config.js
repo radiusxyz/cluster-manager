@@ -13,7 +13,7 @@ export const localhost = /*#__PURE__*/ defineChain({
   },
 });
 
-export const hhContractAddress = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707";
+export const hhContractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 export const hhContractAbi = [
   {
     anonymous: false,
@@ -29,6 +29,12 @@ export const hhContractAbi = [
         internalType: "address",
         name: "sequencerAddress",
         type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "index",
+        type: "uint256",
       },
     ],
     name: "DeregisterSequencer",
@@ -67,6 +73,12 @@ export const hhContractAbi = [
         internalType: "address",
         name: "sequencerAddress",
         type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "index",
+        type: "uint256",
       },
     ],
     name: "RegisterSequencer",
