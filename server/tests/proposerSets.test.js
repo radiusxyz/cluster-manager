@@ -191,4 +191,22 @@ describe("Proposer Sets API", () => {
 
     // Further checks can be added to verify the proposer sets' content
   });
+
+  it("should have one proposer set per address", async () => {
+    for (const account of accountsHH.slice(0, 3)) {
+      const response = await request(app).get(
+        `/api/v1/addresses/${account.address}/proposer-sets/generated`
+      );
+      expect(response.status).toBe(200);
+      expect(response.body.length).toBe(1);
+    }
+  });
+
+  it("should have no proposer sets for an address that did not create any", async () => {
+    const response = await request(app).get(
+      `/api/v1/addresses/${accountsHH[3].address}/proposer-sets/generated`
+    );
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(0);
+  });
 });
