@@ -147,9 +147,7 @@ const unwatchRegisterSequencer = client.watchContractEvent({
   address: hhContractAddress,
   abi: hhContractAbi,
   eventName: "RegisterSequencer",
-  onLogs: (logs) => {
-    console.log(logs);
-  },
+  onLogs: (logs) => {},
 });
 
 // watching DeregisterSequencer events
@@ -158,9 +156,7 @@ const unwatchDeregisterSequencer = client.watchContractEvent({
   address: hhContractAddress,
   abi: hhContractAbi,
   eventName: "DeregisterSequencer",
-  onLogs: (logs) => {
-    console.log(logs);
-  },
+  onLogs: (logs) => {},
 });
 
 describe("Proposer Sets API", () => {
@@ -176,6 +172,8 @@ describe("Proposer Sets API", () => {
 
   afterAll(() => {
     unwatchInitializeProposerSet();
+    unwatchRegisterSequencer();
+    unwatchDeregisterSequencer();
   });
 
   it("should have 3 proposer sets after initialization", async () => {
@@ -208,5 +206,53 @@ describe("Proposer Sets API", () => {
     );
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(0);
+  });
+
+  it("should have no joined proposer sets for an address that never initiated nor joined any", async () => {
+    const response = await request(app).get(
+      `/api/v1/addresses/${accountsHH[3]}/proposer-sets/joined`
+    );
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(0);
+  });
+
+  it("should register an address into three proposer sets and verify", async () => {
+    const testAccount = accountsHH[3];
+
+    // Register the address into three proposer sets
+    await registerSequencer(testAccount, proposerSetIds[0]);
+    await registerSequencer(testAccount, proposerSetIds[1]);
+    await registerSequencer(testAccount, proposerSetIds[2]);
+
+    // Wait for the events to be emitted and processed
+    await new Promise((resolve) => setTimeout(resolve, 5000)); // Adjust the timeout as needed
+
+    const response = await request(app).get(
+      `/api/v1/addresses/${testAccount.address}/proposer-sets/joined`
+    );
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(3);
+  });
+
+  it("should deregister the address from the second proposer set and verify", async () => {
+    const testAccount = accountsHH[3];
+
+    // Deregister the address from the second proposer set
+    await deregisterSequencer(testAccount, proposerSetIds[1]);
+
+    // Wait for the events to be emitted and processed
+    await new Promise((resolve) => setTimeout(resolve, 5000)); // Adjust the timeout as needed
+
+    const response = await request(app).get(
+      `/api/v1/addresses/${testAccount.address}/proposer-sets/joined`
+    );
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(2);
+
+    // Verify the proposer sets' IDs
+    const returnedIds = response.body.map((set) => set.proposerSetId);
+    expect(returnedIds).toContain(proposerSetIds[0]);
+    expect(returnedIds).toContain(proposerSetIds[2]);
+    expect(returnedIds).not.toContain(proposerSetIds[1]);
   });
 });
