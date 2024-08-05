@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useReadContract, useWriteContract, useAccount } from "wagmi";
+import { useWriteContract, useAccount } from "wagmi";
 import { hhContractAbi, hhContractAddress } from "../config.js";
 import classes from "./TestContractFunctions.module.css";
-import { useWatchContractEvent } from "wagmi";
-import { useQuery } from "@tanstack/react-query";
 import useGET from "../hooks/useGET.js";
 
 const Integration = () => {
@@ -45,6 +43,7 @@ const Integration = () => {
     error: errorProposerSets,
     data: dataProposerSets,
     refetch: refetchProposerSets,
+    isFetching: isFetchingProposerSets,
   } = useGET(
     ["proposerSets"],
     "http://localhost:3333/api/v1/proposer-sets",
@@ -123,6 +122,10 @@ const Integration = () => {
     errorProposerSetsGenerated,
     errorProposerSetsJoined,
     errorSequencers,
+    isPendingProposerSets,
+    isPendingProposerSetsGenerated,
+    isPendingProposerSetsJoined,
+    isPendingSequencers,
   ]);
 
   // initializing the proposer set
