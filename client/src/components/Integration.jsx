@@ -11,10 +11,10 @@ const Integration = () => {
   const { address } = useAccount();
   const { writeContract } = useWriteContract();
   const [queryAddress, setQueryAddress] = useState(address);
-  const [proposerSetId, setProposerSetId] = useState(undefined);
+  const [proposerSetId, setProposerSetId] = useState("");
   const [output, setOutput] = useState("");
 
-  const [shouldGetProposerSets, setShouldGetProposerSets] = useState(true);
+  const [shouldGetProposerSets, setShouldGetProposerSets] = useState(false);
   const [shouldGetProposerSetsGenerated, setShouldGetProposerSetsGenerated] =
     useState(false);
   const [shouldGetProposerSetsJoined, setShouldGetProposerSetsJoined] =
@@ -25,6 +25,21 @@ const Integration = () => {
   const [shouldRegisterSequencer, setShouldRegisterSequencer] = useState(false);
   const [shouldDeregisterSequencer, setShouldDeregisterSequencer] =
     useState(false);
+
+  const connectWallet = () => {
+    console.log("Called connectWallet");
+  };
+
+  const handleWriteToContract = (functionName, args = [], enabled = false) => {
+    writeContract({
+      abi: hhContractAbi,
+      address: hhContractAddress,
+      functionName,
+      args,
+      account: address,
+      query: { enabled },
+    });
+  };
   const {
     isPending: isPendingProposerSets,
     error: errorProposerSets,
@@ -73,20 +88,42 @@ const Integration = () => {
     pollingInterval
   );
 
-  const connectWallet = () => {
-    console.log("Called connectWallet");
-  };
-
-  const handleWriteToContract = (functionName, args = [], enabled = false) => {
-    writeContract({
-      abi: hhContractAbi,
-      address: hhContractAddress,
-      functionName,
-      args,
-      account: address,
-      query: { enabled },
-    });
-  };
+  useEffect(() => {
+    if (dataProposerSets) {
+      console.log("dataProposerSets: ", dataProposerSets);
+    }
+    if (dataProposerSetsGenerated) {
+      console.log("dataProposerSetsGenerated: ", dataProposerSetsGenerated);
+      setProposerSetId(dataProposerSetsGenerated[0].proposerSetId);
+    }
+    if (dataProposerSetsJoined) {
+      console.log("dataProposerSetsJoined: ", dataProposerSetsJoined);
+    }
+    if (dataSequencers) {
+      console.log("dataSequencers: ", dataSequencers);
+    }
+    if (errorProposerSets) {
+      console.log("errorProposerSets: ", errorProposerSets);
+    }
+    if (errorProposerSetsGenerated) {
+      console.log("errorProposerSetsGenerated: ", errorProposerSetsGenerated);
+    }
+    if (errorProposerSetsJoined) {
+      console.log("errorProposerSetsJoined: ", errorProposerSetsJoined);
+    }
+    if (errorSequencers) {
+      console.log("errorSequencers: ", errorSequencers);
+    }
+  }, [
+    dataProposerSets,
+    dataProposerSetsGenerated,
+    dataProposerSetsJoined,
+    dataSequencers,
+    errorProposerSets,
+    errorProposerSetsGenerated,
+    errorProposerSetsJoined,
+    errorSequencers,
+  ]);
 
   // initializing the proposer set
 
@@ -175,13 +212,13 @@ const Integration = () => {
         </button>
         <button
           className={`${classes.btn} ${classes.btnGET}`}
-          onClick={() => {}}
+          onClick={refetchProposerSets}
         >
           GET api/v1/proposer-sets
         </button>
         <button
           className={`${classes.btn} ${classes.btnGET}`}
-          onClick={() => {}}
+          onClick={refetchProposerSetsGenerated}
         >
           GET api/v1/addresses/:walletAddress/proposer-sets/generated
         </button>
@@ -190,7 +227,7 @@ const Integration = () => {
         </button>
         <button
           className={`${classes.btn} ${classes.btnGET}`}
-          onClick={() => {}}
+          onClick={refetchProposerSetsJoined}
         >
           GET api/v1/addresses/:walletAddress/proposer-sets/joined
         </button>
@@ -199,13 +236,7 @@ const Integration = () => {
         </button>
         <button
           className={`${classes.btn} ${classes.btnGET}`}
-          onClick={() => {}}
-        >
-          GET api/v1/addresses/:walletAddress/proposer-sets/joined
-        </button>
-        <button
-          className={`${classes.btn} ${classes.btnGET}`}
-          onClick={() => {}}
+          onClick={refetchSequencers}
         >
           GET api/v1/proposer-sets/:proposerSetId/sequencers
         </button>
