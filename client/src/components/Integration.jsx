@@ -3,138 +3,120 @@ import { useReadContract, useWriteContract, useAccount } from "wagmi";
 import { hhContractAbi, hhContractAddress } from "../config.js";
 import classes from "./TestContractFunctions.module.css";
 import { useWatchContractEvent } from "wagmi";
+import { useQuery } from "@tanstack/react-query";
+import useGET from "../hooks/useGET.js";
 
 const Integration = () => {
-  const [output, setOutput] = useState("");
-  const [proposerSetId, setProposerSetId] = useState(undefined);
+  const [pollingInterval, setPollingInterval] = useState(3000);
   const { address } = useAccount();
   const { writeContract } = useWriteContract();
+  const [queryAddress, setQueryAddress] = useState(address);
+  const [proposerSetId, setProposerSetId] = useState(undefined);
+  const [output, setOutput] = useState("");
 
-  // listening to the InitializeProposerSet event
-
-  useWatchContractEvent({
-    address: hhContractAddress,
-    abi: hhContractAbi,
-    eventName: "InitializeProposerSet",
-    onLogs(logs) {
-      console.log("New logs!", logs);
-      setProposerSetId(logs[0].args.proposerSetId);
-    },
-  });
-
-  // getting the sequencer list of a proposer set
-
-  const [shouldRunGetSequencerList, setShouldRunGetSequencerList] =
+  const [shouldGetProposerSets, setShouldGetProposerSets] = useState(true);
+  const [shouldGetProposerSetsGenerated, setShouldGetProposerSetsGenerated] =
     useState(false);
-  const { data, error, isLoading } = useReadContract({
-    abi: hhContractAbi,
-    address: hhContractAddress,
-    functionName: "getSequencerList",
-    args: [proposerSetId],
-    account: address,
-    query: { enabled: shouldRunGetSequencerList },
-  });
-
-  const getSequencerList = () => {
-    setShouldRunGetSequencerList(true);
-    console.log("called getSequencerList");
-    setOutput("called getSequencerList");
-  };
-
-  useEffect(() => {
-    if (shouldRunGetSequencerList) {
-      if (data) {
-        console.log("data: ", data);
-      }
-      if (error) {
-        console.log("error.message: ", error.message);
-      }
-
-      if (isLoading) {
-        console.log("isLoading: ", isLoading);
-      }
-      setShouldRunGetSequencerList(false);
-    }
-  }, [shouldRunGetSequencerList, data, error, isLoading]);
-
-  // initializing the proposer set
-  const [shouldRunInitializeProposerSet, setShouldRunInitializeProposerSet] =
+  const [shouldGetProposerSetsJoined, setShouldGetProposerSetsJoined] =
     useState(false);
+  const [shouldGetSequencers, setShouldGetSequencers] = useState(false);
+  const [shouldInitializeProposerSet, setShouldInitializeProposerSet] =
+    useState(false);
+  const [shouldRegisterSequencer, setShouldRegisterSequencer] = useState(false);
+  const [shouldDeregisterSequencer, setShouldDeregisterSequencer] =
+    useState(false);
+  const {
+    isPending: isPendingProposerSets,
+    error: errorProposerSets,
+    data: dataProposerSets,
+    refetch: refetchProposerSets,
+  } = useGET(
+    ["proposerSets"],
+    "http://localhost:3333/api/v1/proposer-sets",
+    shouldGetProposerSets,
+    pollingInterval
+  );
 
-  const initializeProposerSet = () => {
-    setShouldRunInitializeProposerSet(true);
-    console.log("called initializeProposerSet");
-    setOutput("called initializeProposerSet");
-  };
+  const {
+    isPending: isPendingProposerSetsGenerated,
+    error: errorProposerSetsGenerated,
+    data: dataProposerSetsGenerated,
+    refetch: refetchProposerSetsGenerated,
+  } = useGET(
+    ["proposerSetsGenerated", queryAddress],
+    `http://localhost:3333/api/v1/addresses/${queryAddress}/proposer-sets/generated`,
+    shouldGetProposerSetsGenerated,
+    pollingInterval
+  );
 
-  useEffect(() => {
-    if (shouldRunInitializeProposerSet) {
-      console.log("inside useEffect for initializeProposerSet");
-      writeContract({
-        abi: hhContractAbi,
-        address: hhContractAddress,
-        functionName: "initializeProposerSet",
-        args: [],
-        account: address,
-        query: { enabled: shouldRunInitializeProposerSet },
-      });
-      setShouldRunInitializeProposerSet(false);
-    }
-  }, [shouldRunInitializeProposerSet]);
+  const {
+    isPending: isPendingProposerSetsJoined,
+    error: errorProposerSetsJoined,
+    data: dataProposerSetsJoined,
+    refetch: refetchProposerSetsJoined,
+  } = useGET(
+    ["proposerSetsJoined", queryAddress],
+    `http://localhost:3333/api/v1/addresses/${queryAddress}/proposer-sets/joined`,
+    shouldGetProposerSetsJoined,
+    pollingInterval
+  );
+
+  const {
+    isPending: isPendingSequencers,
+    error: errorSequencers,
+    data: dataSequencers,
+    refetch: refetchSequencers,
+  } = useGET(
+    ["sequencers", proposerSetId],
+    `http://localhost:3333/api/v1/proposer-sets/${proposerSetId}/sequencers`,
+    shouldGetSequencers,
+    pollingInterval
+  );
 
   const connectWallet = () => {
-    console.log("called connectWallet");
-    setOutput(`called connectWallet: ${address}`);
+    console.log("Called connectWallet");
+  };
+
+  const handleWriteToContract = (functionName, args = [], enabled = false) => {
+    writeContract({
+      abi: hhContractAbi,
+      address: hhContractAddress,
+      functionName,
+      args,
+      account: address,
+      query: { enabled },
+    });
+  };
+
+  // initializing the proposer set
+
+  const initializeProposerSet = () => {
+    handleWriteToContract(
+      "initializeProposerSet",
+      [],
+      shouldInitializeProposerSet
+    );
   };
 
   // registering a sequencer to proposer set
-  const [shouldRunRegisterSequencer, setShouldRunRegisterSequencer] =
-    useState(false);
 
   const registerSequencer = () => {
-    setShouldRunRegisterSequencer(true);
-    console.log("called registerSequencer");
-    setOutput("called registerSequencer");
+    handleWriteToContract(
+      "registerSequencer",
+      [proposerSetId],
+      shouldRegisterSequencer
+    );
   };
-
-  useEffect(() => {
-    if (shouldRunRegisterSequencer) {
-      console.log("inside useEffect for shouldRunRegisterSequencer");
-      writeContract({
-        abi: hhContractAbi,
-        address: hhContractAddress,
-        functionName: "registerSequencer",
-        args: [proposerSetId],
-        account: address,
-        query: { enabled: shouldRunRegisterSequencer },
-      });
-      setShouldRunRegisterSequencer(false);
-    }
-  }, [shouldRunRegisterSequencer]);
 
   // deregistering a sequencer from proposer set
-  const [shouldRunDeregisterSequencer, setShouldRunDeregisterSequencer] =
-    useState(false);
 
   const deregisterSequencer = () => {
-    setShouldRunDeregisterSequencer(true);
-    console.log("called deregisterSequencer");
-    setOutput("called deregisterSequencer");
+    handleWriteToContract(
+      "deregisterSequencer",
+      [proposerSetId],
+      shouldDeregisterSequencer
+    );
   };
-
-  useEffect(() => {
-    if (shouldRunDeregisterSequencer) {
-      writeContract({
-        abi: hhContractAbi,
-        address: hhContractAddress,
-        functionName: "deregisterSequencer",
-        args: [proposerSetId],
-        account: address,
-        query: { enabled: shouldRunDeregisterSequencer },
-      });
-      setShouldRunDeregisterSequencer(false);
-    }
-  }, [shouldRunDeregisterSequencer]);
 
   return (
     <div
@@ -220,9 +202,6 @@ const Integration = () => {
           onClick={() => {}}
         >
           GET api/v1/addresses/:walletAddress/proposer-sets/joined
-        </button>
-        <button className={classes.btn} onClick={getSequencerList}>
-          getSequencerList
         </button>
         <button
           className={`${classes.btn} ${classes.btnGET}`}
