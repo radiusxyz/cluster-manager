@@ -6,6 +6,9 @@ set -e
 # Navigate to the chain directory
 cd ../../chain
 
+# Run nodes
+npx hardhat node
+
 # Run the Hardhat deploy script and redirect output to a JS file
 npx hardhat run scripts/deploy.js --network localhost > ../server/tests/hhContractAddress.js
 
