@@ -86,11 +86,19 @@ const deregisterSequencer = async (logs) => {
   try {
     for (const log of logs) {
       const proposerSetId = log.args.proposerSetId;
-      const index = log.args.index;
+      const address = log.args.sequencerAddress;
 
       const proposerSet = await ProposerSet.findOne({ proposerSetId });
       if (!proposerSet) {
         throw new Error(`Proposer Set with ID ${proposerSetId} not found`);
+      }
+
+      const index = proposerSet.sequencers.indexOf(address);
+      if (index === -1) {
+        console.log(
+          `Address ${address} not found in ProposerSet ${proposerSetId}.`
+        );
+        continue;
       }
 
       if (
@@ -101,11 +109,11 @@ const deregisterSequencer = async (logs) => {
           "0x0000000000000000000000000000000000000000";
         await proposerSet.save();
         console.log(
-          `Sequencer at index ${index} removed from ProposerSet ${proposerSetId}.`
+          `Sequencer at address ${address} removed from ProposerSet ${proposerSetId}.`
         );
       } else {
         console.log(
-          `Index ${index} in ProposerSet ${proposerSetId} is already empty.`
+          `Address ${address} in ProposerSet ${proposerSetId} is already empty.`
         );
       }
     }

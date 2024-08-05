@@ -30,12 +30,6 @@ export const hhContractAbi = [
         name: "sequencerAddress",
         type: "address",
       },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "index",
-        type: "uint256",
-      },
     ],
     name: "DeregisterSequencer",
     type: "event",
