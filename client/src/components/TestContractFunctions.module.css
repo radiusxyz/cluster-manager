@@ -27,3 +27,8 @@
     transform: scale(1.05) rotate(-1deg);
   }
 }
+
+.btnGET {
+  color: white;
+  background-color: green;
+}

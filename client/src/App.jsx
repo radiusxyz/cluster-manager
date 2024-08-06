@@ -4,6 +4,7 @@ import RootLayout from "./pages/RootLayout";
 import TotalView from "./pages/TotalView";
 import TestContractFunctions from "./components/TestContractFunctions";
 import TestNonContractFunctions from "./components/TestNonContractFunctions";
+import Integration from "./components/Integration";
 
 const router = createBrowserRouter([
   {
@@ -25,7 +26,7 @@ const router = createBrowserRouter([
 
 function App() {
   // return <RouterProvider router={router} />;
-  return <TestNonContractFunctions />;
+  return <Integration />;
 }
 
 export default App;

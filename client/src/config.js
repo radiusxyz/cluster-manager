@@ -1,5 +1,6 @@
 import { http, createConfig, injected } from "@wagmi/core";
 import { defineChain } from "viem";
+import { hhContractAddress as hhCA } from "../../server/config";
 
 export const localhost = /*#__PURE__*/ defineChain({
   id: 31337,
@@ -22,7 +23,7 @@ export const config = createConfig({
   connectors: [injected()],
 });
 
-export const hhContractAddress = "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6";
+export const hhContractAddress = hhCA;
 export const hhContractAbi = [
   {
     anonymous: false,
@@ -77,6 +78,12 @@ export const hhContractAbi = [
         name: "sequencerAddress",
         type: "address",
       },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "index",
+        type: "uint256",
+      },
     ],
     name: "RegisterSequencer",
     type: "event",
@@ -121,6 +128,57 @@ export const hhContractAbi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "getAllProposerSetIds",
+    outputs: [
+      {
+        internalType: "bytes32[]",
+        name: "",
+        type: "bytes32[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+    ],
+    name: "getProposerSetsByOwner",
+    outputs: [
+      {
+        internalType: "bytes32[]",
+        name: "",
+        type: "bytes32[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "sequencer",
+        type: "address",
+      },
+    ],
+    name: "getProposerSetsBySequencer",
+    outputs: [
+      {
+        internalType: "bytes32[]",
+        name: "",
+        type: "bytes32[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "bytes32",
@@ -132,7 +190,7 @@ export const hhContractAbi = [
     outputs: [
       {
         internalType: "address[30]",
-        name: "",
+        name: "validSequencers",
         type: "address[30]",
       },
     ],
@@ -144,6 +202,30 @@ export const hhContractAbi = [
     name: "initializeProposerSet",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "proposerSetId",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "sequencerAddress",
+        type: "address",
+      },
+    ],
+    name: "isRegistered",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
