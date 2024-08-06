@@ -1,8 +1,10 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { PSMContext } from "../contexts/PSMContext";
+import classes from "./TestContractFunctions.module.css";
+import useGET from "../hooks/useGET";
 
 const ProposerSetsGenerated = () => {
-  const { pollingInterval, shorten } = useContext(PSMContext);
+  const { pollingInterval, shorten, address } = useContext(PSMContext);
 
   const [proposerSetsGenerated, setProposerSetsGenerated] = useState([]);
   const [shouldGetProposerSetsGenerated, setShouldGetProposerSetsGenerated] =
@@ -28,7 +30,7 @@ const ProposerSetsGenerated = () => {
       setProposerSetId(dataProposerSetsGenerated[0].proposerSetId);
       setProposerSetsGenerated(dataProposerSetsGenerated);
     }
-  }, [dataProposerSets]);
+  }, [dataProposerSetsGenerated]);
   return (
     <div
       style={{

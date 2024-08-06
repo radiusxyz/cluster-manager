@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import useGET from "../hooks/useGET";
+import classes from "./TestContractFunctions.module.css";
+import { PSMContext } from "../contexts/PSMContext";
 
 const ProposerSetsJoined = () => {
-  const { pollingInterval, shorten } = useContext(PSMContext);
+  const { pollingInterval, shorten, address } = useContext(PSMContext);
   const [proposerSetsJoined, setProposerSetsJoined] = useState([]);
   const [shouldGetProposerSetsJoined, setShouldGetProposerSetsJoined] =
     useState(false);

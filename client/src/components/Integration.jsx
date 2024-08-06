@@ -58,19 +58,7 @@ const Integration = () => {
   };
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: "20px",
-        background: "lightblue",
-        flexDirection: "column",
-        padding: "40px",
-      }}
-    >
+    <div className={classes.main}>
       <div
         style={{
           width: "100%",

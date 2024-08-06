@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import useGET from "../hooks/useGET";
+import classes from "./TestContractFunctions.module.css";
+
 import { PSMContext } from "../contexts/PSMContext";
 
 const ProposerSets = () => {
