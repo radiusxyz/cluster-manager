@@ -4,13 +4,18 @@ import { hhContractAbi, hhContractAddress } from "../config.js";
 import classes from "./TestContractFunctions.module.css";
 import useGET from "../hooks/useGET.js";
 
+const shorten = (ethAddr) => ethAddr.slice(0, 15) + "..." + ethAddr.slice(-12);
+
 const Integration = () => {
   const [pollingInterval, setPollingInterval] = useState(3000);
   const { address } = useAccount();
   const { writeContract } = useWriteContract();
   const [queryAddress, setQueryAddress] = useState(address);
   const [proposerSetId, setProposerSetId] = useState("");
-  const [output, setOutput] = useState("");
+  const [proposerSets, setProposerSets] = useState([]);
+  const [proposerSetsGenerated, setProposerSetsGenerated] = useState([]);
+  const [proposerSetsJoined, setProposerSetsJoined] = useState([]);
+  const [sequencers, setSequencers] = useState([]);
 
   const [shouldGetProposerSets, setShouldGetProposerSets] = useState(false);
   const [shouldGetProposerSetsGenerated, setShouldGetProposerSetsGenerated] =
@@ -90,16 +95,20 @@ const Integration = () => {
   useEffect(() => {
     if (dataProposerSets) {
       console.log("dataProposerSets: ", dataProposerSets);
+      setProposerSets(dataProposerSets);
     }
     if (dataProposerSetsGenerated) {
       console.log("dataProposerSetsGenerated: ", dataProposerSetsGenerated);
       setProposerSetId(dataProposerSetsGenerated[0].proposerSetId);
+      setProposerSetsGenerated(dataProposerSetsGenerated);
     }
     if (dataProposerSetsJoined) {
       console.log("dataProposerSetsJoined: ", dataProposerSetsJoined);
+      setProposerSetsJoined(dataProposerSetsGenerated);
     }
     if (dataSequencers) {
       console.log("dataSequencers: ", dataSequencers);
+      setSequencers(dataSequencers);
     }
     if (errorProposerSets) {
       console.log("errorProposerSets: ", errorProposerSets);
@@ -190,13 +199,114 @@ const Integration = () => {
         style={{
           display: "flex",
           width: "100%",
-          height: "100%",
+          height: "60%",
           padding: "20px",
-          justifyContent: "center",
+          background: "paleturquoise",
+          gap: 100,
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
+        <p>{"Proposer Sets"}</p>
+        <div>
+          {proposerSets?.map((item) => (
+            <p
+              key={item?.proposerSetId}
+              style={{
+                padding: "5px 15px",
+                background: "lightgreen",
+                marginBottom: "5px",
+              }}
+            >
+              {shorten(item?.proposerSetId)}
+            </p>
+          ))}
+        </div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          width: "100%",
+          height: "60%",
+          padding: "20px",
+          background: "aquamarine",
+          gap: 100,
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
+        <p>{"Generated Proposer Sets"}</p>
+        <div>
+          {proposerSetsGenerated?.map((item) => (
+            <p
+              key={item?.proposerSetId}
+              style={{
+                padding: "5px 15px",
+                background: "paleturquoise",
+                marginBottom: "5px",
+              }}
+            >
+              {shorten(item?.proposerSetId)}
+            </p>
+          ))}
+        </div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          width: "100%",
+          height: "60%",
+          padding: "20px",
+          background: "darkturquoise",
+          gap: 100,
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
+        <p>{"Joined Proposer Sets"}</p>
+        <div>
+          {proposerSetsJoined?.map((item) => (
+            <p
+              key={item?.proposerSetId}
+              style={{
+                padding: "5px 15px",
+                background: "aquamarine",
+                marginBottom: "5px",
+              }}
+            >
+              {shorten(item?.proposerSetId)}
+            </p>
+          ))}
+        </div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          width: "100%",
+          height: "60%",
+          padding: "20px",
+          background: "lightgreen",
+          gap: 100,
+          flexDirection: "column",
           alignItems: "center",
         }}
       >
-        {output}
+        <p>{"Sequencers"}</p>
+
+        <div style={{ overflowX: "scroll" }}>
+          {sequencers?.map((item) => (
+            <p
+              key={item}
+              style={{
+                padding: "5px 15px",
+                background: "darkturquoise",
+                marginBottom: "5px",
+              }}
+            >
+              {shorten(item)}
+            </p>
+          ))}
+        </div>
       </div>
       <div
         style={{
