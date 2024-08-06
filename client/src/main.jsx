@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
-import { ClustersProvider } from "./contexts/ClustersContext.jsx";
+import { PSMProvider } from "./contexts/PSMContext.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { config } from "./config.js";
@@ -15,9 +15,9 @@ document.getElementById("root") &&
     <React.StrictMode>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          <ClustersProvider>
+          <PSMProvider>
             <App />
-          </ClustersProvider>
+          </PSMProvider>
         </QueryClientProvider>
       </WagmiProvider>
     </React.StrictMode>
