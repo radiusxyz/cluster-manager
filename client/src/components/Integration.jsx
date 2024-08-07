@@ -17,6 +17,7 @@ const Integration = () => {
   const [shouldRegisterSequencer, setShouldRegisterSequencer] = useState(false);
   const [shouldDeregisterSequencer, setShouldDeregisterSequencer] =
     useState(false);
+  console.log("this is proposerSetId", proposerSetId);
 
   const connectWallet = () => {
     console.log("Called connectWallet");

@@ -21,7 +21,6 @@ const ProposerSetsGenerated = () => {
   const [proposerSetsGenerated, setProposerSetsGenerated] = useState([]);
   const [shouldGetProposerSetsGenerated, setShouldGetProposerSetsGenerated] =
     useState(false);
-
   const [queryAddress, setQueryAddress] = useState(address);
 
   const {
