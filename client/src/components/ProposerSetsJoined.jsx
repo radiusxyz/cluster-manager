@@ -57,7 +57,15 @@ const ProposerSetsJoined = () => {
           </p>
         ))}
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+      <div
+        style={{
+          display: "flex",
+          bottom: "100px",
+          position: "absolute",
+          flexDirection: "column",
+          gap: "10px",
+        }}
+      >
         <button
           className={`${classes.btn} ${classes.btnGET}`}
           onClick={refetchProposerSetsJoined}

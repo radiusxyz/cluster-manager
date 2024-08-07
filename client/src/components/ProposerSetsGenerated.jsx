@@ -3,8 +3,20 @@ import { PSMContext } from "../contexts/PSMContext";
 import classes from "./TestContractFunctions.module.css";
 import useGET from "../hooks/useGET";
 
+const urls = {
+  rpcUrl: "gylman.eth",
+  webSocketUrl: "gylman.eth",
+  blockExplorerUrl: "gylman.eth",
+};
+
 const ProposerSetsGenerated = () => {
-  const { pollingInterval, shorten, address } = useContext(PSMContext);
+  const {
+    pollingInterval,
+    shorten,
+    address,
+    handleProposerSetId,
+    proposerSetId,
+  } = useContext(PSMContext);
 
   const [proposerSetsGenerated, setProposerSetsGenerated] = useState([]);
   const [shouldGetProposerSetsGenerated, setShouldGetProposerSetsGenerated] =
@@ -27,7 +39,7 @@ const ProposerSetsGenerated = () => {
   useEffect(() => {
     if (dataProposerSetsGenerated) {
       console.log("dataProposerSets: ", dataProposerSetsGenerated);
-      setProposerSetId(dataProposerSetsGenerated[0].proposerSetId);
+      handleProposerSetId(() => dataProposerSetsGenerated[0]?.proposerSetId);
       setProposerSetsGenerated(dataProposerSetsGenerated);
     }
   }, [dataProposerSetsGenerated]);
@@ -59,7 +71,15 @@ const ProposerSetsGenerated = () => {
           </p>
         ))}
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+      <div
+        style={{
+          display: "flex",
+          bottom: "100px",
+          position: "absolute",
+          flexDirection: "column",
+          gap: "10px",
+        }}
+      >
         <button
           className={`${classes.btn} ${classes.btnGET}`}
           onClick={refetchProposerSetsGenerated}

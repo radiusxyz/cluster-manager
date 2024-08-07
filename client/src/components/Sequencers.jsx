@@ -4,11 +4,9 @@ import useGET from "../hooks/useGET";
 import classes from "./TestContractFunctions.module.css";
 
 const Sequencers = () => {
-  const { pollingInterval, shorten } = useContext(PSMContext);
+  const { pollingInterval, shorten, proposerSetId } = useContext(PSMContext);
   const [sequencers, setSequencers] = useState([]);
   const [shouldGetSequencers, setShouldGetSequencers] = useState(false);
-
-  const [proposerSetId, setProposerSetId] = useState("");
 
   const {
     isPending: isPendingSequencers,
@@ -56,7 +54,15 @@ const Sequencers = () => {
           </p>
         ))}
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+      <div
+        style={{
+          display: "flex",
+          bottom: "100px",
+          position: "absolute",
+          flexDirection: "column",
+          gap: "10px",
+        }}
+      >
         <button
           className={`${classes.btn} ${classes.btnGET}`}
           onClick={refetchSequencers}

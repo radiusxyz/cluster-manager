@@ -16,5 +16,9 @@ router.get(
   "/proposer-sets/:proposerSetId/sequencers",
   proposerSetController.getSequencersInProposerSet
 );
+router.post(
+  "/proposer-sets/:proposerSetId",
+  proposerSetController.updateProposerSet
+);
 
 export default router;

@@ -57,7 +57,15 @@ const ProposerSets = () => {
         ))}
       </div>
 
-      <div style={{ display: "none", flexDirection: "column", gap: "10px" }}>
+      <div
+        style={{
+          bottom: "100px",
+          position: "absolute",
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+        }}
+      >
         <button
           className={`${classes.btn} ${classes.btnGET}`}
           onClick={refetchProposerSets}

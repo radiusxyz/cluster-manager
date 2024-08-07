@@ -9,14 +9,9 @@ import ProposerSetsGenerated from "./ProposerSetsGenerated.jsx";
 import ProposerSetsJoined from "./ProposerSetsJoined.jsx";
 import Sequencers from "./Sequencers.jsx";
 
-const urls = {
-  rpcUrl: "gylman.eth",
-  webSocketUrl: "gylman.eth",
-  blockExplorerUrl: "gylman.eth",
-};
-
 const Integration = () => {
-  const { shorten, address } = useContext(PSMContext);
+  const { shorten, address, proposerSetId, handleWriteToContract } =
+    useContext(PSMContext);
   const [shouldInitializeProposerSet, setShouldInitializeProposerSet] =
     useState(false);
   const [shouldRegisterSequencer, setShouldRegisterSequencer] = useState(false);
@@ -91,7 +86,7 @@ const Integration = () => {
           padding: "20px",
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        <div style={{ display: "flex", gap: "10px" }}>
           <button className={classes.btn} onClick={initializeProposerSet}>
             initializeProposerSet
           </button>
