@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 
 import cuid from "cuid";
-import { useClusters } from "../contexts/ClustersContext";
+import { useClusters } from "../contexts/PSMContext";
 import { Link } from "react-router-dom";
 import Copy from "./Copy";
 

@@ -1,6 +1,4 @@
-import { http, createConfig, injected } from "@wagmi/core";
 import { defineChain } from "viem";
-import { hhContractAddress as hhCA } from "../../server/config";
 
 export const localhost = /*#__PURE__*/ defineChain({
   id: 31337,
@@ -15,15 +13,7 @@ export const localhost = /*#__PURE__*/ defineChain({
   },
 });
 
-export const config = createConfig({
-  chains: [localhost],
-  transports: {
-    [localhost.id]: http(),
-  },
-  connectors: [injected()],
-});
-
-export const hhContractAddress = hhCA;
+export const hhContractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 export const hhContractAbi = [
   {
     anonymous: false,
