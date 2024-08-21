@@ -85,3 +85,13 @@ export const CellTxt = styled.span`
   font-weight: 400;
   line-height: 19.36px;
 `;
+
+export const tableStyles = {
+  Table,
+  Headers,
+  Header,
+  Rows,
+  Row,
+  Cell,
+  CellTxt,
+};
