@@ -1,75 +1,58 @@
 import React from "react";
-import {
-  ActionsContainer,
-  CellTxt,
-  Filter,
-  GenerateBtn,
-  Input,
-  PageContainer,
-  SearchInput,
-  SelectSearchWrapper,
-  Title,
-  TypeSelectBox,
-  Table,
-  Header,
-  Headers,
-  Rows,
-  Row,
-  Cell,
-} from "./ExplorerPageStyles";
+import * as s from "./ExplorerPageStyles";
 
 const ExplorerPage = () => {
   return (
-    <PageContainer>
-      <Title>All Proposer Sets</Title>
-      <ActionsContainer>
-        <SelectSearchWrapper>
-          <TypeSelectBox></TypeSelectBox>
-          <SearchInput>
-            <Input />
-          </SearchInput>
-        </SelectSearchWrapper>
-        <Filter>Active</Filter>
-        <Filter>Encrypted Mempool Enabled</Filter>
-        <GenerateBtn>Generate Proposer Set</GenerateBtn>
-      </ActionsContainer>
-      <Table>
-        <Headers>
-          <Header>P.S. Status</Header>
-          <Header>Rolup Name</Header>
-          <Header>P.S. ID</Header>
-          <Header>Rollup Type</Header>
-          <Header>Quota</Header>
-          <Header>Earn</Header>
-          <Header>Encrypted Mempool</Header>
-        </Headers>
-        <Rows>
-          <Row>
-            <Cell>
-              <CellTxt>Active/Inactive</CellTxt>
-            </Cell>
-            <Cell>
-              <CellTxt>Number</CellTxt>
-            </Cell>
-            <Cell>
-              <CellTxt>Address</CellTxt>
-            </Cell>
-            <Cell>
-              <CellTxt>Rollup Type</CellTxt>
-            </Cell>{" "}
-            <Cell>
-              <CellTxt>num/num</CellTxt>
-            </Cell>
-            <Cell>
-              <CellTxt>Amount ETH</CellTxt>
-            </Cell>
-            <Cell>
-              <CellTxt>Enabled/Disabled</CellTxt>
-            </Cell>
-          </Row>
-        </Rows>
-      </Table>
-    </PageContainer>
+    <s.PageContainer>
+      <s.Title>All Proposer Sets</s.Title>
+      <s.ActionsContainer>
+        <s.SelectSearchWrapper>
+          <s.TypeSelectBox></s.TypeSelectBox>
+          <s.SearchInput>
+            <s.Input />
+          </s.SearchInput>
+        </s.SelectSearchWrapper>
+        <s.Filter>Active</s.Filter>
+        <s.Filter>Encrypted Mempool Enabled</s.Filter>
+        <s.GenerateBtn>Generate Proposer Set</s.GenerateBtn>
+      </s.ActionsContainer>
+      <s.Table>
+        <s.Headers>
+          <s.Header>P.S. Status</s.Header>
+          <s.Header>Rolup Name</s.Header>
+          <s.Header>P.S. ID</s.Header>
+          <s.Header>Rollup Type</s.Header>
+          <s.Header>Quota</s.Header>
+          <s.Header>Earn</s.Header>
+          <s.Header>Encrypted Mempool</s.Header>
+        </s.Headers>
+        <s.Rows>
+          <s.Row>
+            <s.Cell>
+              <s.CellTxt>Active/Inactive</s.CellTxt>
+            </s.Cell>
+            <s.Cell>
+              <s.CellTxt>Number</s.CellTxt>
+            </s.Cell>
+            <s.Cell>
+              <s.CellTxt>Address</s.CellTxt>
+            </s.Cell>
+            <s.Cell>
+              <s.CellTxt>Rollup Type</s.CellTxt>
+            </s.Cell>{" "}
+            <s.Cell>
+              <s.CellTxt>num/num</s.CellTxt>
+            </s.Cell>
+            <s.Cell>
+              <s.CellTxt>Amount ETH</s.CellTxt>
+            </s.Cell>
+            <s.Cell>
+              <s.CellTxt>Enabled/Disabled</s.CellTxt>
+            </s.Cell>
+          </s.Row>
+        </s.Rows>
+      </s.Table>
+    </s.PageContainer>
   );
 };
 
