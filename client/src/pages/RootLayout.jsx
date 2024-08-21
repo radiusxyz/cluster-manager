@@ -1,40 +1,22 @@
 import React from "react";
 import { Outlet } from "react-router";
-import styled from "styled-components";
 import Footer from "../components/Footer";
 import { useAccount } from "wagmi";
-
-const NavBarContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const LinksContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 50px;
-`;
-
-const Link = styled.a`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Stat = styled.span`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const StatsContainer = styled(LinksContainer)``;
+import {
+  LayoutContainer,
+  Link,
+  LinksContainer,
+  NavBarContainer,
+  OutletContainer,
+  Stat,
+  StatsContainer,
+} from "./RootLayoutStyles";
 
 const RootLayout = () => {
   const { address } = useAccount();
 
   return (
-    <>
+    <LayoutContainer>
       <NavBarContainer>
         <LinksContainer>
           <Link>Dashboard</Link>
@@ -46,9 +28,11 @@ const RootLayout = () => {
           <Stat>{address ? address : "Not connected"}</Stat>
         </StatsContainer>
       </NavBarContainer>
-      <Outlet />
+      <OutletContainer>
+        <Outlet />
+      </OutletContainer>
       <Footer />
-    </>
+    </LayoutContainer>
   );
 };
 
