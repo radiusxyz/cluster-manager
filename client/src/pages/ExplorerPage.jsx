@@ -1,50 +1,22 @@
 import React from "react";
-import styled from "styled-components";
-
-const PageContainer = styled.div`
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 104px;
-  max-width: 1192px;
-  width: 100%;
-  max-height: 840px;
-`;
-
-const Title = styled.p`
-  font-family: var(--sds-typography-heading-font-family);
-  font-size: 36px;
-  font-weight: 600;
-  line-height: 43.2px;
-  letter-spacing: -0.02em;
-  text-align: left;
-  margin-bottom: 67px;
-`;
-
-const ActionsContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  gap: 30px;
-`;
-
-const SelectSearchWrapper = styled.div`
-  display: flex;
-  gap: 10px;
-`;
-const TypeSelectBox = styled.select`
-  width: 100px;
-`;
-const SearchInput = styled.div``;
-const Input = styled.input``;
-const Filter = styled.div``;
-const GenerateBtn = styled.button`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-left: auto;
-`;
+import {
+  ActionsContainer,
+  CellTxt,
+  Filter,
+  GenerateBtn,
+  Input,
+  PageContainer,
+  SearchInput,
+  SelectSearchWrapper,
+  Title,
+  TypeSelectBox,
+  Table,
+  Header,
+  Headers,
+  Rows,
+  Row,
+  Cell,
+} from "./ExplorerPageStyles";
 
 const ExplorerPage = () => {
   return (
@@ -61,6 +33,42 @@ const ExplorerPage = () => {
         <Filter>Encrypted Mempool Enabled</Filter>
         <GenerateBtn>Generate Proposer Set</GenerateBtn>
       </ActionsContainer>
+      <Table>
+        <Headers>
+          <Header>P.S. Status</Header>
+          <Header>Rolup Name</Header>
+          <Header>P.S. ID</Header>
+          <Header>Rollup Type</Header>
+          <Header>Quota</Header>
+          <Header>Earn</Header>
+          <Header>Encrypted Mempool</Header>
+        </Headers>
+        <Rows>
+          <Row>
+            <Cell>
+              <CellTxt>Active/Inactive</CellTxt>
+            </Cell>
+            <Cell>
+              <CellTxt>Number</CellTxt>
+            </Cell>
+            <Cell>
+              <CellTxt>Address</CellTxt>
+            </Cell>
+            <Cell>
+              <CellTxt>Rollup Type</CellTxt>
+            </Cell>{" "}
+            <Cell>
+              <CellTxt>num/num</CellTxt>
+            </Cell>
+            <Cell>
+              <CellTxt>Amount ETH</CellTxt>
+            </Cell>
+            <Cell>
+              <CellTxt>Enabled/Disabled</CellTxt>
+            </Cell>
+          </Row>
+        </Rows>
+      </Table>
     </PageContainer>
   );
 };
