@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet } from "react-router";
 import styled from "styled-components";
 import Footer from "../components/Footer";
+import { useAccount } from "wagmi";
 
 const NavBarContainer = styled.div`
   display: flex;
@@ -30,6 +31,8 @@ const Stat = styled.span`
 const StatsContainer = styled(LinksContainer)``;
 
 const RootLayout = () => {
+  const { address } = useAccount();
+
   return (
     <>
       <NavBarContainer>
@@ -40,7 +43,7 @@ const RootLayout = () => {
         <StatsContainer>
           <Stat>Total #</Stat>
           <Stat>Total $</Stat>
-          <Stat>Wallet Address</Stat>
+          <Stat>{address ? address : "Not connected"}</Stat>
         </StatsContainer>
       </NavBarContainer>
       <Outlet />
