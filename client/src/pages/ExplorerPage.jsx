@@ -8,9 +8,7 @@ const ExplorerPage = () => {
       <s.ActionsContainer>
         <s.SelectSearchWrapper>
           <s.TypeSelectBox>
-            <option value="All" selected>
-              All
-            </option>
+            <option defaultValue="All">All</option>
             <option value="zkStack">zk Stack</option>
             <option value="polygonCdk">Polygon CDK</option>
             <option value="madara">Madara</option>
