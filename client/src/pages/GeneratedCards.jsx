@@ -4,8 +4,8 @@ import * as s from "./GeneratedCardsStyles";
 const GeneratedCards = () => {
   return (
     <s.CardsContainer>
-      {[0, 1, 2, 3, 4, 5].map((card) => (
-        <s.Card>
+      {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 19, 11, 12, 13, 14].map((key) => (
+        <s.Card key={key}>
           <s.NameIdEditWrapper>
             <s.NameIdWrapper>
               <s.Name>Some Name</s.Name>

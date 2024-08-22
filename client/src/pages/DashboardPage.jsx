@@ -4,7 +4,7 @@ import { tableStyles as tS } from "./ExplorerPageStyles";
 import GeneratedCards from "./GeneratedCards";
 
 const DashboardPage = () => {
-  const [activeTab, setActiveTab] = useState("joined");
+  const [activeTab, setActiveTab] = useState("generated");
 
   return (
     <s.PageContainer>
@@ -48,7 +48,7 @@ const DashboardPage = () => {
           <tS.Rows></tS.Rows>
         </tS.Table>
       ) : (
-        <GeneratedCards></GeneratedCards>
+        <GeneratedCards />
       )}
     </s.PageContainer>
   );
