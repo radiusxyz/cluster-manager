@@ -7,7 +7,13 @@ const ExplorerPage = () => {
       <s.Title>All Proposer Sets</s.Title>
       <s.ActionsContainer>
         <s.SelectSearchWrapper>
-          <s.TypeSelectBox></s.TypeSelectBox>
+          <s.TypeSelectBox>
+            <option defaultValue="All">All</option>
+            <option value="zkStack">zk Stack</option>
+            <option value="polygonCdk">Polygon CDK</option>
+            <option value="madara">Madara</option>
+            <option value="arbitrumOrbit">Arbitrum Orbit</option>
+          </s.TypeSelectBox>
           <s.SearchInput>
             <s.Input />
           </s.SearchInput>
