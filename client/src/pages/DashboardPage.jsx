@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import * as s from "./DashboardPageStyles";
 import { tableStyles as tS } from "./ExplorerPageStyles";
+import GeneratedCards from "./GeneratedCards";
 
 const DashboardPage = () => {
-  const [activeTab, setActiveTab] = useState("joined");
+  const [activeTab, setActiveTab] = useState("generated");
 
   return (
     <s.PageContainer>
@@ -33,18 +34,22 @@ const DashboardPage = () => {
         </s.Tab>
         <s.ConnectWalletBtn>Connect Wallet</s.ConnectWalletBtn>
       </s.TabsWrapper>
-      <tS.Table>
-        <tS.Headers>
-          <tS.Header>Status</tS.Header>
-          <tS.Header>Rollup Name</tS.Header>
-          <tS.Header>Proposer Set Id</tS.Header>
-          <tS.Header># of blocks</tS.Header>
-          <tS.Header>Reward</tS.Header>
-          <tS.Header>Rollup Type</tS.Header>
-          <tS.Header>RPC Endpoint</tS.Header>
-        </tS.Headers>
-        <tS.Rows></tS.Rows>
-      </tS.Table>
+      {activeTab === "joined" ? (
+        <tS.Table>
+          <tS.Headers>
+            <tS.Header>Status</tS.Header>
+            <tS.Header>Rollup Name</tS.Header>
+            <tS.Header>Proposer Set Id</tS.Header>
+            <tS.Header># of blocks</tS.Header>
+            <tS.Header>Reward</tS.Header>
+            <tS.Header>Rollup Type</tS.Header>
+            <tS.Header>RPC Endpoint</tS.Header>
+          </tS.Headers>
+          <tS.Rows></tS.Rows>
+        </tS.Table>
+      ) : (
+        <GeneratedCards />
+      )}
     </s.PageContainer>
   );
 };
