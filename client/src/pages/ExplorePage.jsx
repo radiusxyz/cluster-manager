@@ -1,7 +1,35 @@
-import React from "react";
-import * as s from "./ExplorerPageStyles";
+import React, { useContext, useEffect, useState } from "react";
+import * as s from "./ExplorePageStyles";
 
-const ExplorerPage = () => {
+import useGET from "../hooks/useGET";
+
+import { PSMContext } from "../contexts/PSMContext";
+
+const ExplorePage = () => {
+  const { pollingInterval, shorten } = useContext(PSMContext);
+  const [proposerSets, setProposerSets] = useState([]);
+  const [shouldGetProposerSets, setShouldGetProposerSets] = useState(false);
+
+  const {
+    isPending: isPendingProposerSets,
+    error: errorProposerSets,
+    data: dataProposerSets,
+    refetch: refetchProposerSets,
+    isFetching: isFetchingProposerSets,
+  } = useGET(
+    ["proposerSets"],
+    "http://localhost:3333/api/v1/proposer-sets",
+    shouldGetProposerSets,
+    pollingInterval
+  );
+
+  useEffect(() => {
+    if (dataProposerSets) {
+      console.log("dataProposerSets: ", dataProposerSets);
+      setProposerSets(dataProposerSets);
+    }
+  }, [dataProposerSets]);
+
   return (
     <s.PageContainer>
       <s.Title>All Proposer Sets</s.Title>
@@ -62,4 +90,4 @@ const ExplorerPage = () => {
   );
 };
 
-export default ExplorerPage;
+export default ExplorePage;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import * as s from "./DashboardPageStyles";
-import { tableStyles as tS } from "./ExplorerPageStyles";
+import { tableStyles as tS } from "./ExplorePageStyles";
 import GeneratedCards from "./GeneratedCards";
 
 const DashboardPage = () => {

@@ -1,7 +1,7 @@
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RootPage from "./pages/RootPage";
-import ExplorerPage from "./pages/ExplorerPage";
+import ExplorePage from "./pages/ExplorePage";
 import DashboardPage from "./pages/DashboardPage";
 
 const router = createBrowserRouter([
@@ -11,7 +11,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <ExplorerPage />,
+        element: <ExplorePage />,
         loader: () => {
           window.scrollTo(0, 0);
           return null;
