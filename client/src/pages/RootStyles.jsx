@@ -12,6 +12,7 @@ export const NavBarContainer = styled.div`
   align-items: center;
   height: 53px;
   padding: 0 13px;
+  background: #f5f5f5;
 `;
 
 export const NavBarLinksContainer = styled.div`
@@ -44,6 +45,7 @@ export const FooterLinksContainer = styled.div`
   gap: 30px;
   align-items: center;
   padding: 0 13px;
+  background: #f5f5f5;
 `;
 
 export const FooterLink = styled.a`

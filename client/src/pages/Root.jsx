@@ -1,9 +1,9 @@
 import React from "react";
 import { Outlet } from "react-router";
 import { useAccount } from "wagmi";
-import * as s from "./RootPageStyles";
+import * as s from "./RootStyles";
 
-const RootPage = () => {
+const Root = () => {
   const { address } = useAccount();
 
   return (
@@ -35,4 +35,4 @@ const RootPage = () => {
   );
 };
 
-export default RootPage;
+export default Root;

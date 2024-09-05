@@ -1,14 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
-import * as s from "./ExplorePageStyles";
+import * as s from "./ExploreStyles";
 
 import useGET from "../hooks/useGET";
 
 import { PSMContext } from "../contexts/PSMContext";
+import Modal from "../components/Modal";
 
-const ExplorePage = () => {
+const Explore = () => {
   const { pollingInterval, shorten } = useContext(PSMContext);
   const [proposerSets, setProposerSets] = useState([]);
   const [shouldGetProposerSets, setShouldGetProposerSets] = useState(false);
+
+  const [showModal, setShowModal] = useState(false);
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
 
   const {
     isPending: isPendingProposerSets,
@@ -48,7 +54,9 @@ const ExplorePage = () => {
         </s.SelectSearchWrapper>
         <s.Filter>Active</s.Filter>
         <s.Filter>Encrypted Mempool Enabled</s.Filter>
-        <s.GenerateBtn>Generate Proposer Set</s.GenerateBtn>
+        <s.GenerateBtn onClick={toggleModal}>
+          Generate Proposer Set
+        </s.GenerateBtn>
       </s.ActionsContainer>
       <s.Table>
         <s.Headers>
@@ -86,8 +94,9 @@ const ExplorePage = () => {
           </s.Row>
         </s.Rows>
       </s.Table>
+      {showModal && <Modal toggle={toggleModal} />}
     </s.PageContainer>
   );
 };
 
-export default ExplorePage;
+export default Explore;
