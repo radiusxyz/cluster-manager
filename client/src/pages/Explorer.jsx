@@ -69,7 +69,7 @@ const Explorer = () => {
           <s.Header>Encrypted Mempool</s.Header>
         </s.Headers>
         <s.Rows>
-          <s.Row>
+          <s.Row to="/0/details">
             <s.Cell>
               <s.CellTxt>Active/Inactive</s.CellTxt>
             </s.Cell>
@@ -92,7 +92,7 @@ const Explorer = () => {
               <s.CellTxt>Enabled/Disabled</s.CellTxt>
             </s.Cell>
           </s.Row>
-          <s.Row>
+          <s.Row to="/1/details">
             <s.Cell>
               <s.CellTxt>Active/Inactive</s.CellTxt>
             </s.Cell>
@@ -115,7 +115,7 @@ const Explorer = () => {
               <s.CellTxt>Enabled/Disabled</s.CellTxt>
             </s.Cell>
           </s.Row>
-          <s.Row>
+          <s.Row to="/2/details">
             <s.Cell>
               <s.CellTxt>Active/Inactive</s.CellTxt>
             </s.Cell>

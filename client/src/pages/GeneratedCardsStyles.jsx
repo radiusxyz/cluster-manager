@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const CardsContainer = styled.div`
@@ -9,6 +10,12 @@ export const CardsContainer = styled.div`
   height: 450px;
   border-radius: 8px;
   border: 1px solid lightgrey;
+  cursor: pointer;
+`;
+
+export const CardWrapperLink = styled(Link)`
+  text-decoration: none;
+  color: black;
 `;
 
 export const Card = styled.div`
