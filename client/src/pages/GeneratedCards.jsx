@@ -9,7 +9,7 @@ const GeneratedCards = () => {
           <s.Card>
             <s.NameIdEditWrapper>
               <s.NameIdWrapper>
-                <s.Name>Some Name</s.Name>
+                <s.Name>Cluster ID</s.Name>
                 <s.Id>some id</s.Id>
               </s.NameIdWrapper>
               <s.EditBtn>Edit</s.EditBtn>
@@ -18,10 +18,6 @@ const GeneratedCards = () => {
               <s.PropWrapper>
                 <s.PropTitle>Quota</s.PropTitle>
                 <s.PropValue>a/b</s.PropValue>
-              </s.PropWrapper>
-              <s.PropWrapper>
-                <s.PropTitle>Rollup Type</s.PropTitle>
-                <s.PropValue>type name</s.PropValue>
               </s.PropWrapper>
             </s.PropsWrapper>
           </s.Card>

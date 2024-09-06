@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 export const LayoutContainer = styled.div`
   min-height: 100vh;
@@ -22,12 +22,21 @@ export const NavBarLinksContainer = styled.div`
   gap: 50px;
 `;
 
-export const NavBarLink = styled(Link)`
+export const NavBarLink = styled(NavLink)`
   text-decoration: none;
-  color: #000;
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+  color: #666;
+  font-weight: 400;
+  background-color: transparent;
+
+  &.active {
+    color: #000000;
+    background-color: #f5f5f5;
+    font-weight: 600;
+  }
 `;
 
 export const Stat = styled.span`
@@ -39,6 +48,7 @@ export const Stat = styled.span`
 export const StatsContainer = styled(NavBarLinksContainer)``;
 
 export const OutletContainer = styled.div`
+  display: flex;
   flex: 1;
 `;
 

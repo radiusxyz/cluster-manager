@@ -15,8 +15,9 @@ const Root = () => {
           <s.NavBarLink to="/">Explorer</s.NavBarLink>
         </s.NavBarLinksContainer>
         <s.StatsContainer>
-          <s.Stat>Total #</s.Stat>
-          <s.Stat>Total $</s.Stat>
+          {/* Seem redundant */}
+          {/* <s.Stat>Total #</s.Stat>
+          <s.Stat>Total $</s.Stat> */}
           <s.Stat>
             {address ? address : <StyledButton>Connect Wallet</StyledButton>}
           </s.Stat>
@@ -26,13 +27,15 @@ const Root = () => {
         <Outlet />
       </s.OutletContainer>
       <s.FooterLinksContainer>
-        <s.FooterLink>Docs</s.FooterLink>
+        <s.FooterLink>Made by Gylman</s.FooterLink>
+        {/* Seem redundant */}
+        {/* <s.FooterLink>Docs</s.FooterLink>
         <s.FooterLink>Blog</s.FooterLink>
         <s.FooterLink>Report bug</s.FooterLink>
         <s.FooterLink>X</s.FooterLink>
         <s.FooterLink>Instagram</s.FooterLink>
         <s.FooterLink>YouTube</s.FooterLink>
-        <s.FooterLink>LinkedIn</s.FooterLink>
+        <s.FooterLink>LinkedIn</s.FooterLink> */}
       </s.FooterLinksContainer>
     </s.LayoutContainer>
   );

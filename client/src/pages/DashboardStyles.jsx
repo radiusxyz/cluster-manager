@@ -8,6 +8,10 @@ export const PageContainer = styled.div`
   max-width: 1192px;
   width: 100%;
   max-height: 840px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20px;
 `;
 
 export const Title = styled.p`
@@ -73,7 +77,7 @@ export const CardBtn = styled(StyledButton)`
 
 export const TabsWrapper = styled.div`
   display: flex;
-  gap: 13px;
+  gap: 25px;
   align-items: center;
   margin-bottom: 67px;
 `;
