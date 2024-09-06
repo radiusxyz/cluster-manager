@@ -47,11 +47,7 @@ const Dashboard = () => {
         <tS.Table>
           <tS.Headers>
             <tS.Header>Status</tS.Header>
-            <tS.Header>Rollup Name</tS.Header>
-            <tS.Header>Cluster Id</tS.Header>
-            <tS.Header># of blocks</tS.Header>
-            <tS.Header>Reward</tS.Header>
-            <tS.Header>Rollup Type</tS.Header>
+            <tS.Header>Id</tS.Header>
             <tS.Header>RPC Endpoint</tS.Header>
           </tS.Headers>
           <tS.Rows></tS.Rows>

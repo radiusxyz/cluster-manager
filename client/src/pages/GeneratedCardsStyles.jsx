@@ -8,10 +8,10 @@ export const CardsContainer = styled.div`
   gap: 26px;
   padding: 21px;
   overflow-y: scroll;
-  height: 450px;
   border-radius: 8px;
   border: 1px solid lightgrey;
   cursor: pointer;
+  align-items: flex-start;
 `;
 
 export const CardWrapperLink = styled(Link)`
@@ -39,7 +39,10 @@ export const NameIdWrapper = styled.div`
   flex-direction: column;
 `;
 
-export const Name = styled.span``;
+export const Name = styled.span`
+  font-weight: 600;
+  font-size: 20px;
+`;
 export const Id = styled.span``;
 
 export const EditBtn = styled(Button)``;
@@ -54,5 +57,8 @@ export const PropWrapper = styled.div`
   flex-direction: column;
 `;
 
-export const PropTitle = styled.span``;
+export const PropTitle = styled.span`
+  font-weight: 600;
+  font-size: 20px;
+`;
 export const PropValue = styled.span``;

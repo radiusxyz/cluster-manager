@@ -6,7 +6,7 @@ const ClusterDetails = () => {
   return (
     <s.PageContainer>
       <s.TitleJoinBtnContainer>
-        <s.Title>Rollup name</s.Title>
+        <s.Title>Cluster details</s.Title>
         <s.JoinBtn>Join</s.JoinBtn>
       </s.TitleJoinBtnContainer>
       <s.Container>
@@ -18,23 +18,7 @@ const ClusterDetails = () => {
             <Copy />
           </s.InfoItem>
           <s.InfoItem>
-            <s.Property>Name</s.Property>
-            <s.Value>blabla</s.Value> <Copy />
-          </s.InfoItem>
-          <s.InfoItem>
-            <s.Property>Name</s.Property>
-            <s.Value>blabla</s.Value> <Copy />
-          </s.InfoItem>
-          <s.InfoItem>
             <s.Property>ID</s.Property>
-            <s.Value>blabla</s.Value> <Copy />
-          </s.InfoItem>
-          <s.InfoItem>
-            <s.Property>ChainID</s.Property>
-            <s.Value>blabla</s.Value> <Copy />
-          </s.InfoItem>
-          <s.InfoItem>
-            <s.Property>Type</s.Property>
             <s.Value>blabla</s.Value> <Copy />
           </s.InfoItem>
           <s.InfoItem>
@@ -56,13 +40,11 @@ const ClusterDetails = () => {
         </s.InfoItems>
       </s.Container>
       <s.Container>
-        <s.SubTitle>Cluster Info</s.SubTitle>
+        <s.SubTitle>Sequencers</s.SubTitle>
         <s.Table>
           <s.Headers>
             <s.Header>Status</s.Header>
             <s.Header>Address</s.Header>
-            <s.Header>Earnt</s.Header>
-            <s.Header># of generated block</s.Header>
           </s.Headers>
           <s.Rows>
             <s.Row to="/0/details">
@@ -72,12 +54,6 @@ const ClusterDetails = () => {
               <s.Cell>
                 <s.CellTxt>Number</s.CellTxt>
               </s.Cell>
-              <s.Cell>
-                <s.CellTxt>Address</s.CellTxt>
-              </s.Cell>
-              <s.Cell>
-                <s.CellTxt>Rollup Type</s.CellTxt>
-              </s.Cell>{" "}
             </s.Row>
             <s.Row to="/1/details">
               <s.Cell>
@@ -86,12 +62,6 @@ const ClusterDetails = () => {
               <s.Cell>
                 <s.CellTxt>Number</s.CellTxt>
               </s.Cell>
-              <s.Cell>
-                <s.CellTxt>Address</s.CellTxt>
-              </s.Cell>
-              <s.Cell>
-                <s.CellTxt>Rollup Type</s.CellTxt>
-              </s.Cell>{" "}
             </s.Row>
             <s.Row to="/2/details">
               <s.Cell>
@@ -100,12 +70,6 @@ const ClusterDetails = () => {
               <s.Cell>
                 <s.CellTxt>Number</s.CellTxt>
               </s.Cell>
-              <s.Cell>
-                <s.CellTxt>Address</s.CellTxt>
-              </s.Cell>
-              <s.Cell>
-                <s.CellTxt>Rollup Type</s.CellTxt>
-              </s.Cell>{" "}
             </s.Row>
           </s.Rows>
         </s.Table>
