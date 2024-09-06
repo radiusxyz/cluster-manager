@@ -1,11 +1,15 @@
 import React, { useState } from "react";
-import * as s from "./DashboardPageStyles";
-import { tableStyles as tS } from "./ExplorePageStyles";
+import * as s from "./DashboardStyles";
+import { tableStyles as tS } from "./ExploreStyles";
 import GeneratedCards from "./GeneratedCards";
+import Modal from "../components/Modal";
 
-const DashboardPage = () => {
+const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("generated");
-
+  const [showModal, setShowModal] = useState(false);
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
   return (
     <s.PageContainer>
       <s.Title>Overview</s.Title>
@@ -13,12 +17,12 @@ const DashboardPage = () => {
         <s.Card>
           <s.CardTitle># of generated proposer sets</s.CardTitle>
           <s.CardNumericValue>4</s.CardNumericValue>
-          <s.CardBtn>Generate</s.CardBtn>
+          <s.CardBtn onClick={toggleModal}>Generate</s.CardBtn>
         </s.Card>
         <s.Card>
           <s.CardTitle># of joined proposer sets</s.CardTitle>
           <s.CardNumericValue>4</s.CardNumericValue>
-          <s.CardBtn>Generate</s.CardBtn>
+          <s.CardBtn onClick={toggleModal}>Generate</s.CardBtn>
         </s.Card>
         <s.Card>
           <s.CardTitle># of amount earned</s.CardTitle>
@@ -50,8 +54,9 @@ const DashboardPage = () => {
       ) : (
         <GeneratedCards />
       )}
+      {showModal && <Modal toggle={toggleModal} />}
     </s.PageContainer>
   );
 };
 
-export default DashboardPage;
+export default Dashboard;
