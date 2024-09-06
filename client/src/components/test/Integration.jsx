@@ -3,7 +3,7 @@ import { useWriteContract, useAccount } from "wagmi";
 import { hhContractAbi, hhContractAddress } from "../config.js";
 import classes from "./TestContractFunctions.module.css";
 import useGET from "../hooks/useGET.js";
-import { PSMContext } from "../contexts/PSMContext.jsx";
+import { ClusterContext } from "../contexts/ClusterContext.jsx";
 import Clusters from "./Clusters.jsx";
 import ClustersGenerated from "./ClustersGenerated.jsx";
 import ClustersJoined from "./ClustersJoined.jsx";
@@ -11,7 +11,7 @@ import Sequencers from "./Sequencers.jsx";
 
 const Integration = () => {
   const { shorten, address, clusterId, handleWriteToContract } =
-    useContext(PSMContext);
+    useContext(ClusterContext);
   const [shouldInitializeCluster, setShouldInitializeCluster] = useState(false);
   const [shouldRegisterSequencer, setShouldRegisterSequencer] = useState(false);
   const [shouldDeregisterSequencer, setShouldDeregisterSequencer] =

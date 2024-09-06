@@ -4,7 +4,7 @@ import { hhContractAbi, hhContractAddress } from "../config";
 
 const shorten = (ethAddr) => ethAddr.slice(0, 15) + "..." + ethAddr.slice(-12);
 
-export const PSMContext = createContext({
+export const ClusterContext = createContext({
   handleWriteToContract: () => {},
   handleClusterId: () => {},
   shorten,
@@ -12,7 +12,7 @@ export const PSMContext = createContext({
   address: "",
   clusterId: "",
 });
-export const PSMProvider = ({ children }) => {
+export const ClusterProvider = ({ children }) => {
   const { writeContract } = useWriteContract();
 
   const [clusterId, setClusterId] = useState("");
@@ -35,7 +35,7 @@ export const PSMProvider = ({ children }) => {
   };
 
   return (
-    <PSMContext.Provider
+    <ClusterContext.Provider
       value={{
         handleWriteToContract,
         address,
@@ -45,6 +45,6 @@ export const PSMProvider = ({ children }) => {
       }}
     >
       {children}
-    </PSMContext.Provider>
+    </ClusterContext.Provider>
   );
 };

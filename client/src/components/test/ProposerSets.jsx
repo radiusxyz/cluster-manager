@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import useGET from "../hooks/useGET";
 import classes from "./TestContractFunctions.module.css";
 
-import { PSMContext } from "../contexts/PSMContext";
+import { ClusterContext } from "../contexts/ClusterContext";
 
 const Clusters = () => {
-  const { pollingInterval, shorten } = useContext(PSMContext);
+  const { pollingInterval, shorten } = useContext(ClusterContext);
   const [clusters, setClusters] = useState([]);
   const [shouldGetClusters, setShouldGetClusters] = useState(false);
 
