@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import Button from "./Button";
 
 const Overlay = styled.div`
   position: fixed;
@@ -36,7 +37,7 @@ const Step = styled.div`
   border-radius: 50%;
   width: 20px;
   aspect-ratio: 1;
-  background-color: ${(props) => (props.active ? "#000" : "#ccc")};
+  background-color: ${(props) => (props.$active ? "#000" : "#ccc")};
 `;
 
 const Title = styled.h2`
@@ -50,7 +51,13 @@ const InputContainer = styled.div`
   margin-bottom: 20px;
 `;
 
-const Label = styled.p``;
+const Label = styled.p`
+  font-weight: 600;
+`;
+
+const SubLabel = styled(Label)`
+  font-size: 14px;
+`;
 
 const Buttons = styled.div`
   display: flex;
@@ -71,6 +78,13 @@ const Input = styled.input`
   width: 100%;
 `;
 
+export const SelectBox = styled.select`
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+`;
+
 const Modal = ({ toggle }) => {
   const [name, setName] = useState("");
   const [symbol, setSymbol] = useState("");
@@ -78,11 +92,16 @@ const Modal = ({ toggle }) => {
   const [type, setType] = useState("");
   const [step, setStep] = useState(1);
 
-  const handleGenerate = () => {
+  const handleInitializeCluster = () => {
     console.log({ name, symbol, chainId, type });
     setStep(2);
   };
-  const handleSubmit = () => {
+  const handleAddRollup = () => {
+    console.log({ name, symbol, chainId, type });
+    setStep(3);
+  };
+
+  const handleAddServerData = () => {
     console.log({ name, symbol, chainId, type });
     toggle();
   };
@@ -94,92 +113,137 @@ const Modal = ({ toggle }) => {
           e.stopPropagation();
         }}
       >
-        <Title>Generate Interactive Canvas</Title>
+        <Title>
+          {(step === 1 && <span>Generate Cluster</span>) ||
+            (step === 2 && <span>Add Rollup</span>) ||
+            (step === 3 && <span>Add URLs</span>)}
+        </Title>
         <StepsContainer>
-          <Step active={step === 1}></Step>
-          <Step active={step === 2}></Step>
+          <Step $active={step === 1}></Step>
+          <Step $active={step === 2}></Step>
+          <Step $active={step === 3}></Step>
         </StepsContainer>
-        {step === 1 ? (
+        {(step === 1 && (
           <>
-            {" "}
             <InputContainer>
-              <Label>Name</Label>
+              <Label>Cluster ID</Label>
               <Input
                 type="text"
                 onChange={(e) => {
                   setName(e.target.value);
                 }}
               />
-            </InputContainer>
+            </InputContainer>{" "}
             <InputContainer>
-              <Label>Symbol</Label>
+              <Label>Max # of sequencers</Label>
               <Input
                 type="text"
                 onChange={(e) => {
-                  setSymbol(e.target.value);
-                }}
-              />
-            </InputContainer>
-            <InputContainer>
-              <Label>Chain Id</Label>
-              <Input
-                type="text"
-                onChange={(e) => {
-                  setChainId(e.target.value);
-                }}
-              />
-            </InputContainer>
-            <InputContainer>
-              <Label>Type</Label>
-              <Input
-                type="text"
-                onChange={(e) => {
-                  setType(e.target.value);
+                  setName(e.target.value);
                 }}
               />
             </InputContainer>{" "}
           </>
-        ) : (
-          <>
-            <InputContainer>
-              <Label>RPC URL</Label>
-              <Input
-                type="text"
-                onChange={(e) => {
-                  setName(e.target.value);
+        )) ||
+          (step === 2 && (
+            <>
+              <InputContainer>
+                <Label>Rollup Id</Label>
+                <Input
+                  type="text"
+                  onChange={(e) => {
+                    setChainId(e.target.value);
+                  }}
+                />
+              </InputContainer>
+              <InputContainer>
+                <Label>Chain Type</Label>
+                <SelectBox>
+                  <option defaultValue="Ethereum">Ethereum</option>
+                </SelectBox>
+              </InputContainer>{" "}
+              <InputContainer>
+                <Label>Order Commitment Type</Label>
+                <SelectBox>
+                  <option defaultValue="orderCommtiment">
+                    Order Commitment
+                  </option>
+                  <option>Transaction Hash</option>
+                </SelectBox>
+              </InputContainer>{" "}
+              <InputContainer>
+                <Label>Validation Info</Label>
+              </InputContainer>{" "}
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  flexDirection: "column",
+                  paddingLeft: "15px",
                 }}
-              />
-            </InputContainer>
-            <InputContainer>
-              <Label>Web-Socket URL</Label>
-              <Input
-                type="text"
-                onChange={(e) => {
-                  setSymbol(e.target.value);
-                }}
-              />
-            </InputContainer>
-            <InputContainer>
-              <Label>Block Explorer URL</Label>
-              <Input
-                type="text"
-                onChange={(e) => {
-                  setChainId(e.target.value);
-                }}
-              />
-            </InputContainer>
-          </>
-        )}
+              >
+                <InputContainer>
+                  <SubLabel>Platform</SubLabel>
+                  <SelectBox>
+                    <option>Ethereum</option>
+                  </SelectBox>
+                </InputContainer>{" "}
+                <InputContainer>
+                  <SubLabel>Service provider</SubLabel>
+                  <SelectBox>
+                    <option defaultValue="Eigenlayer">Eigenlayer</option>
+                    <option>Symbiotic</option>
+                  </SelectBox>
+                </InputContainer>
+              </div>
+            </>
+          )) ||
+          (step === 3 && (
+            <>
+              <InputContainer>
+                <Label>RPC URL</Label>
+                <Input
+                  type="text"
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                />
+              </InputContainer>
+              <InputContainer>
+                <Label>Web-Socket URL</Label>
+                <Input
+                  type="text"
+                  onChange={(e) => {
+                    setSymbol(e.target.value);
+                  }}
+                />
+              </InputContainer>
+              <InputContainer>
+                <Label>Block Explorer URL</Label>
+                <Input
+                  type="text"
+                  onChange={(e) => {
+                    setChainId(e.target.value);
+                  }}
+                />
+              </InputContainer>
+            </>
+          ))}
         <Buttons>
           <SubmitBtnContainer>
-            <button onClick={handleGenerate} disabled={step === 2}>
-              Generate on chain
-            </button>
+            <Button onClick={handleInitializeCluster} disabled={step !== 1}>
+              Initialize cluster
+            </Button>
           </SubmitBtnContainer>
           <SubmitBtnContainer>
-            <button onClick={handleSubmit} disabled={step === 1}>
-              Store URL data on the server
-            </button>
+            <Button onClick={handleAddRollup} disabled={step !== 2}>
+              Add Rollup
+            </Button>
+          </SubmitBtnContainer>
+          <SubmitBtnContainer>
+            <Button onClick={handleAddServerData} disabled={step !== 3}>
+              Store Server Data
+            </Button>
           </SubmitBtnContainer>
         </Buttons>
       </ModalContainer>
