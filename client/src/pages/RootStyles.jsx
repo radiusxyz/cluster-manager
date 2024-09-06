@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export const LayoutContainer = styled.div`
   min-height: 100vh;
@@ -21,7 +22,9 @@ export const NavBarLinksContainer = styled.div`
   gap: 50px;
 `;
 
-export const NavBarLink = styled.a`
+export const NavBarLink = styled(Link)`
+  text-decoration: none;
+  color: #000;
   display: flex;
   justify-content: center;
   align-items: center;

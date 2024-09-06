@@ -10,8 +10,8 @@ const Root = () => {
     <s.LayoutContainer>
       <s.NavBarContainer>
         <s.NavBarLinksContainer>
-          <s.NavBarLink>Dashboard</s.NavBarLink>
-          <s.NavBarLink>Explorer</s.NavBarLink>
+          <s.NavBarLink to="dashboard">Dashboard</s.NavBarLink>
+          <s.NavBarLink to="/">Explorer</s.NavBarLink>
         </s.NavBarLinksContainer>
         <s.StatsContainer>
           <s.Stat>Total #</s.Stat>
