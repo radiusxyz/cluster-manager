@@ -1,9 +1,10 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export const PageContainer = styled.div`
   margin-left: auto;
   margin-right: auto;
-  margin-top: 104px;
+  margin-top: 50px;
   max-width: 1192px;
   width: 100%;
   max-height: 840px;
@@ -51,6 +52,7 @@ export const Headers = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 10px;
 `;
 
 export const Header = styled.div`
@@ -64,13 +66,17 @@ export const Header = styled.div`
 export const Rows = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 10px;
 `;
 
-export const Row = styled.div`
+export const Row = styled(Link)`
+  text-decoration: none;
+  color: black;
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  cursor: pointer;
 `;
 
 export const Cell = styled.div`

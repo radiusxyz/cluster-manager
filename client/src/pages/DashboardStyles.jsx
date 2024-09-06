@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const PageContainer = styled.div`
   margin-left: auto;
   margin-right: auto;
-  margin-top: 104px;
+  margin-top: 50px;
   max-width: 1192px;
   width: 100%;
   max-height: 840px;
@@ -16,7 +16,7 @@ export const Title = styled.p`
   line-height: 43.2px;
   letter-spacing: -0.02em;
   text-align: left;
-  margin-bottom: 67px;
+  margin-bottom: 10px;
 `;
 
 export const CardsContainer = styled.div`
@@ -30,7 +30,7 @@ export const CardsContainer = styled.div`
   opacity: var(--sds-size-stroke-border);
   background: var(--sds-color-background-default-default);
 
-  margin-bottom: 63px;
+  margin-bottom: 10px;
 `;
 
 export const Card = styled.div`
@@ -81,12 +81,13 @@ export const TabsWrapper = styled.div`
   display: flex;
   gap: 13px;
   align-items: center;
-  margin-bottom: 67px;
+  margin-bottom: 20px;
 `;
 
 export const Tab = styled(Title)`
   color: ${(props) => (props.$active ? "#000000" : "#DDDDDD")};
   margin-bottom: 0;
+  cursor: pointer;
 `;
 
 export const ConnectWalletBtn = styled(CardBtn)`

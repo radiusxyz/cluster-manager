@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import * as s from "./ExploreStyles";
+import * as s from "./ExplorerStyles";
 
 import useGET from "../hooks/useGET";
 
 import { PSMContext } from "../contexts/PSMContext";
 import Modal from "../components/Modal";
 
-const Explore = () => {
+const Explorer = () => {
   const { pollingInterval, shorten } = useContext(PSMContext);
   const [proposerSets, setProposerSets] = useState([]);
   const [shouldGetProposerSets, setShouldGetProposerSets] = useState(false);
@@ -69,7 +69,53 @@ const Explore = () => {
           <s.Header>Encrypted Mempool</s.Header>
         </s.Headers>
         <s.Rows>
-          <s.Row>
+          <s.Row to="/0/details">
+            <s.Cell>
+              <s.CellTxt>Active/Inactive</s.CellTxt>
+            </s.Cell>
+            <s.Cell>
+              <s.CellTxt>Number</s.CellTxt>
+            </s.Cell>
+            <s.Cell>
+              <s.CellTxt>Address</s.CellTxt>
+            </s.Cell>
+            <s.Cell>
+              <s.CellTxt>Rollup Type</s.CellTxt>
+            </s.Cell>{" "}
+            <s.Cell>
+              <s.CellTxt>num/num</s.CellTxt>
+            </s.Cell>
+            <s.Cell>
+              <s.CellTxt>Amount ETH</s.CellTxt>
+            </s.Cell>
+            <s.Cell>
+              <s.CellTxt>Enabled/Disabled</s.CellTxt>
+            </s.Cell>
+          </s.Row>
+          <s.Row to="/1/details">
+            <s.Cell>
+              <s.CellTxt>Active/Inactive</s.CellTxt>
+            </s.Cell>
+            <s.Cell>
+              <s.CellTxt>Number</s.CellTxt>
+            </s.Cell>
+            <s.Cell>
+              <s.CellTxt>Address</s.CellTxt>
+            </s.Cell>
+            <s.Cell>
+              <s.CellTxt>Rollup Type</s.CellTxt>
+            </s.Cell>{" "}
+            <s.Cell>
+              <s.CellTxt>num/num</s.CellTxt>
+            </s.Cell>
+            <s.Cell>
+              <s.CellTxt>Amount ETH</s.CellTxt>
+            </s.Cell>
+            <s.Cell>
+              <s.CellTxt>Enabled/Disabled</s.CellTxt>
+            </s.Cell>
+          </s.Row>
+          <s.Row to="/2/details">
             <s.Cell>
               <s.CellTxt>Active/Inactive</s.CellTxt>
             </s.Cell>
@@ -99,4 +145,4 @@ const Explore = () => {
   );
 };
 
-export default Explore;
+export default Explorer;
