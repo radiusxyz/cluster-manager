@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import * as s from "./DashboardStyles";
-import { tableStyles as tS } from "./ExploreStyles";
+import { tableStyles as tS } from "./ExplorerStyles";
 import GeneratedCards from "./GeneratedCards";
 import Modal from "../components/Modal";
 
@@ -9,6 +9,9 @@ const Dashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {
     setShowModal(!showModal);
+  };
+  const toggleTab = (event) => {
+    setActiveTab(event.target.innerText.toLowerCase());
   };
   return (
     <s.PageContainer>
@@ -30,11 +33,11 @@ const Dashboard = () => {
         </s.Card>
       </s.CardsContainer>
       <s.TabsWrapper>
-        <s.Tab $active={activeTab === "generated" ? 1 : 0}>
-          Generated Proposer Sets
+        <s.Tab $active={activeTab === "generated" ? 1 : 0} onClick={toggleTab}>
+          Generated
         </s.Tab>
-        <s.Tab $active={activeTab === "joined" ? 1 : 0}>
-          Joined Proposer Sets
+        <s.Tab $active={activeTab === "joined" ? 1 : 0} onClick={toggleTab}>
+          Joined
         </s.Tab>
         <s.ConnectWalletBtn>Connect Wallet</s.ConnectWalletBtn>
       </s.TabsWrapper>
