@@ -4,7 +4,7 @@ import useGET from "../hooks/useGET";
 import classes from "./TestContractFunctions.module.css";
 
 const Sequencers = () => {
-  const { pollingInterval, shorten, proposerSetId } = useContext(PSMContext);
+  const { pollingInterval, shorten, clusterId } = useContext(PSMContext);
   const [sequencers, setSequencers] = useState([]);
   const [shouldGetSequencers, setShouldGetSequencers] = useState(false);
 
@@ -14,8 +14,8 @@ const Sequencers = () => {
     data: dataSequencers,
     refetch: refetchSequencers,
   } = useGET(
-    ["sequencers", proposerSetId],
-    `http://localhost:3333/api/v1/proposer-sets/${proposerSetId}/sequencers`,
+    ["sequencers", clusterId],
+    `http://localhost:3333/api/v1/clusters/${clusterId}/sequencers`,
     shouldGetSequencers,
     pollingInterval
   );
@@ -67,7 +67,7 @@ const Sequencers = () => {
           className={`${classes.btn} ${classes.btnGET}`}
           onClick={refetchSequencers}
         >
-          GET api/v1/proposer-sets/:proposerSetId/sequencers
+          GET api/v1/clusters/:clusterId/sequencers
         </button>
       </div>
     </div>

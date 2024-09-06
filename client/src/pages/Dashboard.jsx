@@ -15,15 +15,17 @@ const Dashboard = () => {
   };
   return (
     <s.PageContainer>
+      {/* These seem redundant */}
+      {/*
       <s.Title>Overview</s.Title>
-      <s.CardsContainer>
+       <s.CardsContainer>
         <s.Card>
-          <s.CardTitle># of generated proposer sets</s.CardTitle>
+          <s.CardTitle># of generated clusters</s.CardTitle>
           <s.CardNumericValue>4</s.CardNumericValue>
           <s.CardBtn onClick={toggleModal}>Generate</s.CardBtn>
         </s.Card>
         <s.Card>
-          <s.CardTitle># of joined proposer sets</s.CardTitle>
+          <s.CardTitle># of joined clusters</s.CardTitle>
           <s.CardNumericValue>4</s.CardNumericValue>
           <s.CardBtn onClick={toggleModal}>Generate</s.CardBtn>
         </s.Card>
@@ -31,7 +33,7 @@ const Dashboard = () => {
           <s.CardTitle># of amount earned</s.CardTitle>
           <s.CardNumericValue>4</s.CardNumericValue>
         </s.Card>
-      </s.CardsContainer>
+      </s.CardsContainer> */}
       <s.TabsWrapper>
         <s.Tab $active={activeTab === "generated" ? 1 : 0} onClick={toggleTab}>
           Generated
@@ -46,7 +48,7 @@ const Dashboard = () => {
           <tS.Headers>
             <tS.Header>Status</tS.Header>
             <tS.Header>Rollup Name</tS.Header>
-            <tS.Header>Proposer Set Id</tS.Header>
+            <tS.Header>Cluster Id</tS.Header>
             <tS.Header># of blocks</tS.Header>
             <tS.Header>Reward</tS.Header>
             <tS.Header>Rollup Type</tS.Header>

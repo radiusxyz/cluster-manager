@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Button, { StyledButton } from "../components/Button";
 
 export const PageContainer = styled.div`
   margin-left: auto;
@@ -10,7 +11,6 @@ export const PageContainer = styled.div`
 `;
 
 export const Title = styled.p`
-  font-family: var(--sds-typography-heading-font-family);
   font-size: 36px;
   font-weight: 600;
   line-height: 43.2px;
@@ -66,22 +66,16 @@ export const CardNumericValue = styled.p`
   letter-spacing: -0.48px;
   margin-bottom: 44px;
 `;
-export const CardBtn = styled.button`
-  display: flex;
-  padding: 10px;
-  justify-content: center;
-  align-items: center;
-  border-radius: 5px;
-  background: lightgrey;
-  margin-top: auto;
+export const CardBtn = styled(StyledButton)`
   align-self: flex-start;
+  margin-top: auto;
 `;
 
 export const TabsWrapper = styled.div`
   display: flex;
   gap: 13px;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 67px;
 `;
 
 export const Tab = styled(Title)`
@@ -90,6 +84,6 @@ export const Tab = styled(Title)`
   cursor: pointer;
 `;
 
-export const ConnectWalletBtn = styled(CardBtn)`
+export const ConnectWalletBtn = styled(StyledButton)`
   margin-left: auto;
 `;

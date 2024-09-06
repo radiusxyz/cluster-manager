@@ -1,33 +1,33 @@
-import ProposerSet from "../models/proposerSetModel.js";
+import Cluster from "../models/clusterModel.js";
 
-const getAllProposerSets = async () => {
-  return await ProposerSet.find();
+const getAllClusters = async () => {
+  return await Cluster.find();
 };
 
-const getGeneratedProposerSets = async (owner) => {
-  return await ProposerSet.find({ owner });
+const getGeneratedClusters = async (owner) => {
+  return await Cluster.find({ owner });
 };
 
-const getJoinedProposerSets = async (walletAddress) => {
-  return await ProposerSet.find({ sequencers: walletAddress });
+const getJoinedClusters = async (walletAddress) => {
+  return await Cluster.find({ sequencers: walletAddress });
 };
 
-const getSequencersInProposerSet = async (proposerSetId) => {
-  const proposerSet = await ProposerSet.findOne({ proposerSetId });
-  if (!proposerSet) {
-    throw new Error("Proposer Set not found");
+const getSequencersInCluster = async (clusterId) => {
+  const cluster = await Cluster.findOne({ clusterId });
+  if (!cluster) {
+    throw new Error("Cluster not found");
   }
-  return proposerSet.sequencers;
+  return cluster.sequencers;
 };
 
-const initializeProposerSet = async (logs) => {
+const initializeCluster = async (logs) => {
   try {
     for (const log of logs) {
-      const proposerSetId = log.args.proposerSetId;
+      const clusterId = log.args.clusterId;
       const owner = log.args.owner;
 
-      const newProposerSet = new ProposerSet({
-        proposerSetId,
+      const newCluster = new Cluster({
+        clusterId,
         owner,
         name: log.args.name || "",
         symbol: log.args.symbol || "",
@@ -42,38 +42,38 @@ const initializeProposerSet = async (logs) => {
         createdAt: new Date(),
       });
 
-      await newProposerSet.save();
-      console.log(`ProposerSet with ID ${proposerSetId} created successfully.`);
+      await newCluster.save();
+      console.log(`Cluster with ID ${clusterId} created successfully.`);
     }
   } catch (error) {
-    console.error("Error in initializeProposerSet:", error.message);
+    console.error("Error in initializeCluster:", error.message);
   }
 };
 
 const registerSequencer = async (logs) => {
   try {
     for (const log of logs) {
-      const proposerSetId = log.args.proposerSetId;
+      const clusterId = log.args.clusterId;
       const sequencerAddress = log.args.sequencerAddress;
       const index = log.args.index;
 
-      const proposerSet = await ProposerSet.findOne({ proposerSetId });
-      if (!proposerSet) {
-        throw new Error(`Proposer Set with ID ${proposerSetId} not found`);
+      const cluster = await Cluster.findOne({ clusterId });
+      if (!cluster) {
+        throw new Error(`Cluster with ID ${clusterId} not found`);
       }
 
       if (
-        proposerSet.sequencers[index] ===
+        cluster.sequencers[index] ===
         "0x0000000000000000000000000000000000000000"
       ) {
-        proposerSet.sequencers[index] = sequencerAddress;
-        await proposerSet.save();
+        cluster.sequencers[index] = sequencerAddress;
+        await cluster.save();
         console.log(
-          `Sequencer ${sequencerAddress} added to ProposerSet ${proposerSetId} at index ${index}.`
+          `Sequencer ${sequencerAddress} added to Cluster ${clusterId} at index ${index}.`
         );
       } else {
         console.log(
-          `Index ${index} in ProposerSet ${proposerSetId} is already occupied.`
+          `Index ${index} in Cluster ${clusterId} is already occupied.`
         );
       }
     }
@@ -85,35 +85,33 @@ const registerSequencer = async (logs) => {
 const deregisterSequencer = async (logs) => {
   try {
     for (const log of logs) {
-      const proposerSetId = log.args.proposerSetId;
+      const clusterId = log.args.clusterId;
       const address = log.args.sequencerAddress;
 
-      const proposerSet = await ProposerSet.findOne({ proposerSetId });
-      if (!proposerSet) {
-        throw new Error(`Proposer Set with ID ${proposerSetId} not found`);
+      const cluster = await Cluster.findOne({ clusterId });
+      if (!cluster) {
+        throw new Error(`Cluster with ID ${clusterId} not found`);
       }
 
-      const index = proposerSet.sequencers.indexOf(address);
+      const index = cluster.sequencers.indexOf(address);
       if (index === -1) {
-        console.log(
-          `Address ${address} not found in ProposerSet ${proposerSetId}.`
-        );
+        console.log(`Address ${address} not found in Cluster ${clusterId}.`);
         continue;
       }
 
       if (
-        proposerSet.sequencers[index] !==
+        cluster.sequencers[index] !==
         "0x0000000000000000000000000000000000000000"
       ) {
-        proposerSet.sequencers[index] =
+        cluster.sequencers[index] =
           "0x0000000000000000000000000000000000000000";
-        await proposerSet.save();
+        await cluster.save();
         console.log(
-          `Sequencer at address ${address} removed from ProposerSet ${proposerSetId}.`
+          `Sequencer at address ${address} removed from Cluster ${clusterId}.`
         );
       } else {
         console.log(
-          `Address ${address} in ProposerSet ${proposerSetId} is already empty.`
+          `Address ${address} in Cluster ${clusterId} is already empty.`
         );
       }
     }
@@ -122,14 +120,14 @@ const deregisterSequencer = async (logs) => {
   }
 };
 
-const proposerSetService = {
-  getAllProposerSets,
-  getGeneratedProposerSets,
-  getJoinedProposerSets,
-  getSequencersInProposerSet,
-  initializeProposerSet,
+const clusterService = {
+  getAllClusters,
+  getGeneratedClusters,
+  getJoinedClusters,
+  getSequencersInCluster,
+  initializeCluster,
   registerSequencer,
   deregisterSequencer,
 };
 
-export default proposerSetService;
+export default clusterService;

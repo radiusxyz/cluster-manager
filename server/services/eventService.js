@@ -1,16 +1,16 @@
-import proposerSetService from "../services/proposerSetService.js";
+import clusterService from "../services/clusterService.js";
 
-const handleInitializeProposerSet = async (logs) => {
+const handleInitializeCluster = async (logs) => {
   try {
-    await proposerSetService.initializeProposerSet(logs);
+    await clusterService.initializeCluster(logs);
   } catch (error) {
-    console.error("Error in handleInitializeProposerSet:", error.message);
+    console.error("Error in handleInitializeCluster:", error.message);
   }
 };
 
 const handleRegisterSequencer = async (logs) => {
   try {
-    await proposerSetService.registerSequencer(logs);
+    await clusterService.registerSequencer(logs);
   } catch (error) {
     console.error("Error in handleRegisterSequencer:", error.message);
   }
@@ -18,14 +18,14 @@ const handleRegisterSequencer = async (logs) => {
 
 const handleDeregisterSequencer = async (logs) => {
   try {
-    await proposerSetService.deregisterSequencer(logs);
+    await clusterService.deregisterSequencer(logs);
   } catch (error) {
     console.error("Error in handleDeregisterSequencer:", error.message);
   }
 };
 
 const eventService = {
-  handleInitializeProposerSet,
+  handleInitializeCluster,
   handleRegisterSequencer,
   handleDeregisterSequencer,
 };

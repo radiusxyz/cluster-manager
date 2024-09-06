@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import Button from "../components/Button";
 
 export const CardsContainer = styled.div`
   display: grid;
@@ -41,9 +42,7 @@ export const NameIdWrapper = styled.div`
 export const Name = styled.span``;
 export const Id = styled.span``;
 
-export const EditBtn = styled.button`
-  padding: 10px 20px;
-`;
+export const EditBtn = styled(Button)``;
 
 export const PropsWrapper = styled.div`
   display: flex;

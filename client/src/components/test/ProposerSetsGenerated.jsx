@@ -9,39 +9,34 @@ const urls = {
   blockExplorerUrl: "gylman.eth",
 };
 
-const ProposerSetsGenerated = () => {
-  const {
-    pollingInterval,
-    shorten,
-    address,
-    handleProposerSetId,
-    proposerSetId,
-  } = useContext(PSMContext);
+const ClustersGenerated = () => {
+  const { pollingInterval, shorten, address, handleClusterId, clusterId } =
+    useContext(PSMContext);
 
-  const [proposerSetsGenerated, setProposerSetsGenerated] = useState([]);
-  const [shouldGetProposerSetsGenerated, setShouldGetProposerSetsGenerated] =
+  const [clustersGenerated, setClustersGenerated] = useState([]);
+  const [shouldGetClustersGenerated, setShouldGetClustersGenerated] =
     useState(false);
   const [queryAddress, setQueryAddress] = useState(address);
 
   const {
-    isPending: isPendingProposerSetsGenerated,
-    error: errorProposerSetsGenerated,
-    data: dataProposerSetsGenerated,
-    refetch: refetchProposerSetsGenerated,
+    isPending: isPendingClustersGenerated,
+    error: errorClustersGenerated,
+    data: dataClustersGenerated,
+    refetch: refetchClustersGenerated,
   } = useGET(
-    ["proposerSetsGenerated", queryAddress],
-    `http://localhost:3333/api/v1/addresses/${queryAddress}/proposer-sets/generated`,
-    shouldGetProposerSetsGenerated,
+    ["clustersGenerated", queryAddress],
+    `http://localhost:3333/api/v1/addresses/${queryAddress}/clusters/generated`,
+    shouldGetClustersGenerated,
     pollingInterval
   );
 
   useEffect(() => {
-    if (dataProposerSetsGenerated) {
-      console.log("dataProposerSets: ", dataProposerSetsGenerated);
-      handleProposerSetId(() => dataProposerSetsGenerated[0]?.proposerSetId);
-      setProposerSetsGenerated(dataProposerSetsGenerated);
+    if (dataClustersGenerated) {
+      console.log("dataClusters: ", dataClustersGenerated);
+      handleClusterId(() => dataClustersGenerated[0]?.clusterId);
+      setClustersGenerated(dataClustersGenerated);
     }
-  }, [dataProposerSetsGenerated]);
+  }, [dataClustersGenerated]);
   return (
     <div
       style={{
@@ -55,18 +50,18 @@ const ProposerSetsGenerated = () => {
         flexDirection: "column",
       }}
     >
-      <p>{"Generated Proposer Sets"}</p>
+      <p>{"Generated Clusters"}</p>
       <div>
-        {proposerSetsGenerated?.map((item) => (
+        {clustersGenerated?.map((item) => (
           <p
-            key={item?.proposerSetId}
+            key={item?.clusterId}
             style={{
               padding: "5px 15px",
               background: "paleturquoise",
               marginBottom: "5px",
             }}
           >
-            {shorten(item?.proposerSetId)}
+            {shorten(item?.clusterId)}
           </p>
         ))}
       </div>
@@ -81,13 +76,13 @@ const ProposerSetsGenerated = () => {
       >
         <button
           className={`${classes.btn} ${classes.btnGET}`}
-          onClick={refetchProposerSetsGenerated}
+          onClick={refetchClustersGenerated}
         >
-          GET api/v1/addresses/:walletAddress/proposer-sets/generated
+          GET api/v1/addresses/:walletAddress/clusters/generated
         </button>
       </div>
     </div>
   );
 };
 
-export default ProposerSetsGenerated;
+export default ClustersGenerated;

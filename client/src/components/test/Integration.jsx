@@ -4,51 +4,46 @@ import { hhContractAbi, hhContractAddress } from "../config.js";
 import classes from "./TestContractFunctions.module.css";
 import useGET from "../hooks/useGET.js";
 import { PSMContext } from "../contexts/PSMContext.jsx";
-import ProposerSets from "./ProposerSets.jsx";
-import ProposerSetsGenerated from "./ProposerSetsGenerated.jsx";
-import ProposerSetsJoined from "./ProposerSetsJoined.jsx";
+import Clusters from "./Clusters.jsx";
+import ClustersGenerated from "./ClustersGenerated.jsx";
+import ClustersJoined from "./ClustersJoined.jsx";
 import Sequencers from "./Sequencers.jsx";
 
 const Integration = () => {
-  const { shorten, address, proposerSetId, handleWriteToContract } =
+  const { shorten, address, clusterId, handleWriteToContract } =
     useContext(PSMContext);
-  const [shouldInitializeProposerSet, setShouldInitializeProposerSet] =
-    useState(false);
+  const [shouldInitializeCluster, setShouldInitializeCluster] = useState(false);
   const [shouldRegisterSequencer, setShouldRegisterSequencer] = useState(false);
   const [shouldDeregisterSequencer, setShouldDeregisterSequencer] =
     useState(false);
-  console.log("this is proposerSetId", proposerSetId);
+  console.log("this is clusterId", clusterId);
 
   const connectWallet = () => {
     console.log("Called connectWallet");
   };
 
-  // initializing the proposer set
+  // initializing the cluster
 
-  const initializeProposerSet = () => {
-    handleWriteToContract(
-      "initializeProposerSet",
-      [],
-      shouldInitializeProposerSet
-    );
+  const initializeCluster = () => {
+    handleWriteToContract("initializeCluster", [], shouldInitializeCluster);
   };
 
-  // registering a sequencer to proposer set
+  // registering a sequencer to cluster
 
   const registerSequencer = () => {
     handleWriteToContract(
       "registerSequencer",
-      [proposerSetId],
+      [clusterId],
       shouldRegisterSequencer
     );
   };
 
-  // deregistering a sequencer from proposer set
+  // deregistering a sequencer from cluster
 
   const deregisterSequencer = () => {
     handleWriteToContract(
       "deregisterSequencer",
-      [proposerSetId],
+      [clusterId],
       shouldDeregisterSequencer
     );
   };
@@ -72,9 +67,9 @@ const Integration = () => {
       </div>
 
       <div className={classes.data}>
-        <ProposerSets />
-        <ProposerSetsGenerated />
-        <ProposerSetsJoined />
+        <Clusters />
+        <ClustersGenerated />
+        <ClustersJoined />
         <Sequencers />
       </div>
       <div
@@ -88,8 +83,8 @@ const Integration = () => {
         }}
       >
         <div style={{ display: "flex", gap: "10px" }}>
-          <button className={classes.btn} onClick={initializeProposerSet}>
-            initializeProposerSet
+          <button className={classes.btn} onClick={initializeCluster}>
+            initializeCluster
           </button>
           <button className={classes.btn} onClick={registerSequencer}>
             registerSequencer

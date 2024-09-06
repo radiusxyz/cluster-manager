@@ -8,8 +8,10 @@ import Modal from "../components/Modal";
 
 const Explorer = () => {
   const { pollingInterval, shorten } = useContext(PSMContext);
-  const [proposerSets, setProposerSets] = useState([]);
-  const [shouldGetProposerSets, setShouldGetProposerSets] = useState(false);
+  const [clusters, setClusters] = useState([]);
+  const [shouldGetClusters, setShouldGetClusters] = useState(false);
+  const [all, setAll] = useState(false);
+  const [encrypted, setEncrypted] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {
@@ -17,28 +19,34 @@ const Explorer = () => {
   };
 
   const {
-    isPending: isPendingProposerSets,
-    error: errorProposerSets,
-    data: dataProposerSets,
-    refetch: refetchProposerSets,
-    isFetching: isFetchingProposerSets,
+    isPending: isPendingClusters,
+    error: errorClusters,
+    data: dataClusters,
+    refetch: refetchClusters,
+    isFetching: isFetchingClusters,
   } = useGET(
-    ["proposerSets"],
-    "http://localhost:3333/api/v1/proposer-sets",
-    shouldGetProposerSets,
+    ["clusters"],
+    "http://localhost:3333/api/v1/clusters",
+    shouldGetClusters,
     pollingInterval
   );
 
   useEffect(() => {
-    if (dataProposerSets) {
-      console.log("dataProposerSets: ", dataProposerSets);
-      setProposerSets(dataProposerSets);
+    if (dataClusters) {
+      console.log("dataClusters: ", dataClusters);
+      setClusters(dataClusters);
     }
-  }, [dataProposerSets]);
+  }, [dataClusters]);
 
+  const toggleAll = () => {
+    setAll((prevState) => !prevState);
+  };
+  const toggleEncrypted = () => {
+    setEncrypted((prevState) => !prevState);
+  };
   return (
     <s.PageContainer>
-      <s.Title>All Proposer Sets</s.Title>
+      <s.Title>All Clusters</s.Title>
       <s.ActionsContainer>
         <s.SelectSearchWrapper>
           <s.TypeSelectBox>
@@ -52,11 +60,13 @@ const Explorer = () => {
             <s.Input />
           </s.SearchInput>
         </s.SelectSearchWrapper>
-        <s.Filter>Active</s.Filter>
-        <s.Filter>Encrypted Mempool Enabled</s.Filter>
-        <s.GenerateBtn onClick={toggleModal}>
-          Generate Proposer Set
-        </s.GenerateBtn>
+        <s.Filter $active={all} onClick={toggleAll}>
+          Active
+        </s.Filter>
+        <s.Filter $active={encrypted} onClick={toggleEncrypted}>
+          Encrypted Mempool
+        </s.Filter>
+        <s.GenerateBtn onClick={toggleModal}>Generate Cluster</s.GenerateBtn>
       </s.ActionsContainer>
       <s.Table>
         <s.Headers>

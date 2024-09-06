@@ -2,7 +2,7 @@
   {
     eventName: "DeregisterSequencer",
     args: {
-      proposerSetId:
+      clusterId:
         "0x0796f76a7e7c352be28055bff5e59c4d216a1d5f3fb8cdf726517a7019f069aa",
       sequencerAddress: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
     },
