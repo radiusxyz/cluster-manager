@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet } from "react-router";
 import { useAccount } from "wagmi";
 import * as s from "./RootStyles";
+import { StyledButton } from "../components/Button";
 
 const Root = () => {
   const { address } = useAccount();
@@ -16,7 +17,9 @@ const Root = () => {
         <s.StatsContainer>
           <s.Stat>Total #</s.Stat>
           <s.Stat>Total $</s.Stat>
-          <s.Stat>{address ? address : "Not connected"}</s.Stat>
+          <s.Stat>
+            {address ? address : <StyledButton>Connect Wallet</StyledButton>}
+          </s.Stat>
         </s.StatsContainer>
       </s.NavBarContainer>
       <s.OutletContainer>

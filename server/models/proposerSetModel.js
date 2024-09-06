@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-const ProposerSetSchema = new Schema({
-  proposerSetId: String,
+const ClusterSchema = new Schema({
+  clusterId: String,
   owner: String,
   name: String,
   symbol: String,
@@ -15,6 +15,6 @@ const ProposerSetSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-const ProposerSet = mongoose.model("ProposerSet", ProposerSetSchema);
+const Cluster = mongoose.model("Cluster", ClusterSchema);
 
-export default ProposerSet;
+export default Cluster;

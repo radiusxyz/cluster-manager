@@ -1,24 +1,21 @@
 import express from "express";
-import proposerSetController from "../controllers/proposerSetController.js";
+import clusterController from "../controllers/clusterController.js";
 
 const router = express.Router();
 
-router.get("/proposer-sets", proposerSetController.getAllProposerSets);
+router.get("/clusters", clusterController.getAllClusters);
 router.get(
-  "/addresses/:walletAddress/proposer-sets/generated",
-  proposerSetController.getGeneratedProposerSets
-);
-router.get(
-  "/addresses/:walletAddress/proposer-sets/joined",
-  proposerSetController.getJoinedProposerSets
+  "/addresses/:walletAddress/clusters/generated",
+  clusterController.getGeneratedClusters
 );
 router.get(
-  "/proposer-sets/:proposerSetId/sequencers",
-  proposerSetController.getSequencersInProposerSet
+  "/addresses/:walletAddress/clusters/joined",
+  clusterController.getJoinedClusters
 );
-router.post(
-  "/proposer-sets/:proposerSetId",
-  proposerSetController.updateProposerSet
+router.get(
+  "/clusters/:clusterId/sequencers",
+  clusterController.getSequencersInCluster
 );
+router.post("/clusters/:clusterId", clusterController.updateCluster);
 
 export default router;

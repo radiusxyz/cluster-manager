@@ -1,8 +1,8 @@
-export const proposerSets = [
+export const clusters = [
   {
     eventName: "RegisterSequencer",
     args: {
-      proposerSetId:
+      clusterId:
         "0x16696bcdb900ebb0b2edcecb11f4a90462c3846790acb8af25ad1e65fd01c8f8",
       sequencerAddress: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
     },
@@ -21,9 +21,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0xdde1ee82730ec4886099cc6f7110b001c00907a90bbfe68bd760aff6144dd739",
       owner: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
     },
@@ -42,9 +42,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0x81a4ebe5d8ac6c614b03e2dd87b917362debe71dd326fcc879cb92a21e0f49a3",
       owner: "0x2546BcD3c84621e976D8185a91A922aE77ECEc30",
     },
@@ -63,9 +63,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0x15952e9eff2e9a0a6685bf3b121d071377cd1b365edadaaaec1b21b854afc2ba",
       owner: "0xBcd4042DE499D14e55001CcbB24a551F3b954096",
     },
@@ -84,9 +84,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0xef2ee252a5f3a56ba1894853e7955c4c4490e4a82b6169f4fcd192de5ef41fc8",
       owner: "0x1CBd3b2770909D4e10f157cABC84C7264073C9Ec",
     },
@@ -105,9 +105,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0x871720bc241ada7eaee5c888951494daacdca098ea05d1110f14fbd85ec87914",
       owner: "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
     },
@@ -126,9 +126,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0x461a3f52b0821c0cdbee81b0623f134e10cad56f19ac30547261b20043fe24b8",
       owner: "0x976EA74026E726554dB657fA54763abd0C3a0aa9",
     },
@@ -147,9 +147,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0x3a8434d32e959a0fb64206cacf27e247eee95b7a9effc8f9133d8353f7046b1e",
       owner: "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc",
     },
@@ -168,9 +168,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0x39ee67dad60c41721afa22fb5b8c6cdf5122ad90451ca0a3f783d4bbd4fc1d91",
       owner: "0x71bE63f3384f5fb98995898A86B02Fb2426c5788",
     },
@@ -189,9 +189,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0xb0e201a65cd35a1386aba206873e68804a2d20023f4247632571bfdf3da44dba",
       owner: "0x14dC79964da2C08b23698B3D3cc7Ca32193d9955",
     },
@@ -210,9 +210,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0xe5b16d93f37511623008d561ef05dbcab0a72608174d7c3fd640a863eaa1f549",
       owner: "0xbDA5747bFD65F08deb54cb465eB87D40e51B197E",
     },
@@ -231,9 +231,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0xd6e0adb824a1f401b7b2ed9b9ef95cea45f3c12f399e5728f685d6683b4f6d55",
       owner: "0xdD2FD4581271e230360230F9337D5c0430Bf44C0",
     },
@@ -252,9 +252,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0x4739317aaa3ff4e461643e65e354495004486cc9543e884c9a80272912e8d98f",
       owner: "0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199",
     },
@@ -273,9 +273,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0x8b721b784c442466eaa06789acbaceb56c624bdbcc8066763651761d31e75bb9",
       owner: "0xFABB0ac9d68B0B445fB7357272Ff202C5651694a",
     },
@@ -294,9 +294,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0x8ea57d842e406bcb357a542813129f2ded9bb0d7988603e0d3a174c420a5d1ff",
       owner: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
     },
@@ -315,9 +315,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0x6e2143fabe6921c2ddbd55239ca8b22e62ca9a8a5838f033e98d62b1c7ad2683",
       owner: "0xdF3e18d64BC6A983f673Ab319CCaE4f1a57C7097",
     },
@@ -336,9 +336,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0x4d7ce457d8b3c6eddd41fd684a057dd27c2c281f02dce6969e93158e6b257f59",
       owner: "0xcd3B766CCDd6AE721141F452C550Ca635964ce71",
     },
@@ -357,9 +357,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0x738e0df09d7e8ae14267f1067b0dfe0aa07c169ee09c790b252816197096194a",
       owner: "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
     },
@@ -378,9 +378,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0x9285790c7883be532db455b008aae354fb0106a65861238c3e4e49f2d150fb3d",
       owner: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720",
     },
@@ -399,9 +399,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0xef10f2f4f840c48fd880c63856cd9fdf85bd43a0e0124486ba4147359a74008a",
       owner: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f",
     },
@@ -420,9 +420,9 @@ export const proposerSets = [
     transactionIndex: 0,
   },
   {
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     args: {
-      proposerSetId:
+      clusterId:
         "0x57946c9d516884ee9f9254e9a937d46cf84e11adfcaf53a1ac680df31749359f",
       owner: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
     },
@@ -440,4 +440,4 @@ export const proposerSets = [
       "0x6249b83402c63a334be554e9828faa26c0879d2ee444dfccbabc67a37345bd1b",
     transactionIndex: 0,
   },
-].map((log) => ({ id: log.args.proposerSetId, owner: log.args.owner }));
+].map((log) => ({ id: log.args.clusterId, owner: log.args.owner }));

@@ -49,10 +49,10 @@ const watchContractEventFromBlock = async (eventName, handleEvent) => {
 };
 
 // Define specific event handlers
-const watchInitializeProposerSet = () =>
+const watchInitializeCluster = () =>
   watchContractEventFromBlock(
-    "InitializeProposerSet",
-    eventService.handleInitializeProposerSet
+    "InitializeCluster",
+    eventService.handleInitializeCluster
   );
 const watchRegisterSequencer = () =>
   watchContractEventFromBlock(
@@ -67,7 +67,7 @@ const watchDeregisterSequencer = () =>
 
 // Start event listeners
 const startEventListeners = () => {
-  watchInitializeProposerSet();
+  watchInitializeCluster();
   watchRegisterSequencer();
   watchDeregisterSequencer();
 };

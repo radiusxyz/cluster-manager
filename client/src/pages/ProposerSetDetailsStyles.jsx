@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { StyledButton } from "../components/Button";
 
 export const PageContainer = styled.div`
   margin-left: auto;
@@ -28,20 +29,10 @@ export const Title = styled.p`
   text-align: left;
 `;
 
-export const JoinBtn = styled.button`
-  cursor: pointer;
-  display: flex;
-  padding: 10px;
-  justify-content: center;
-  align-items: center;
-  border-radius: 5px;
-  background: lightgrey;
+export const JoinBtn = styled(StyledButton)`
   margin-top: auto;
   align-self: flex-start;
   margin-left: auto;
-  &:hover {
-    background: #e1e1e1;
-  }
 `;
 
 export const Container = styled.div`

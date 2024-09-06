@@ -4,30 +4,30 @@ import classes from "./TestContractFunctions.module.css";
 
 import { PSMContext } from "../contexts/PSMContext";
 
-const ProposerSets = () => {
+const Clusters = () => {
   const { pollingInterval, shorten } = useContext(PSMContext);
-  const [proposerSets, setProposerSets] = useState([]);
-  const [shouldGetProposerSets, setShouldGetProposerSets] = useState(false);
+  const [clusters, setClusters] = useState([]);
+  const [shouldGetClusters, setShouldGetClusters] = useState(false);
 
   const {
-    isPending: isPendingProposerSets,
-    error: errorProposerSets,
-    data: dataProposerSets,
-    refetch: refetchProposerSets,
-    isFetching: isFetchingProposerSets,
+    isPending: isPendingClusters,
+    error: errorClusters,
+    data: dataClusters,
+    refetch: refetchClusters,
+    isFetching: isFetchingClusters,
   } = useGET(
-    ["proposerSets"],
-    "http://localhost:3333/api/v1/proposer-sets",
-    shouldGetProposerSets,
+    ["clusters"],
+    "http://localhost:3333/api/v1/clusters",
+    shouldGetClusters,
     pollingInterval
   );
 
   useEffect(() => {
-    if (dataProposerSets) {
-      console.log("dataProposerSets: ", dataProposerSets);
-      setProposerSets(dataProposerSets);
+    if (dataClusters) {
+      console.log("dataClusters: ", dataClusters);
+      setClusters(dataClusters);
     }
-  }, [dataProposerSets]);
+  }, [dataClusters]);
   return (
     <div
       style={{
@@ -41,18 +41,18 @@ const ProposerSets = () => {
         flexDirection: "column",
       }}
     >
-      <p>{"Proposer Sets"}</p>
+      <p>{"Clusters"}</p>
       <div>
-        {proposerSets?.map((item) => (
+        {clusters?.map((item) => (
           <p
-            key={item?.proposerSetId}
+            key={item?.clusterId}
             style={{
               padding: "5px 15px",
               background: "lightgreen",
               marginBottom: "5px",
             }}
           >
-            {shorten(item?.proposerSetId)}
+            {shorten(item?.clusterId)}
           </p>
         ))}
       </div>
@@ -68,19 +68,19 @@ const ProposerSets = () => {
       >
         <button
           className={`${classes.btn} ${classes.btnGET}`}
-          onClick={refetchProposerSets}
+          onClick={refetchClusters}
         >
-          GET api/v1/proposer-sets
+          GET api/v1/clusters
         </button>{" "}
         <button
           className={`${classes.btn} ${classes.btnPOST}`}
-          onClick={refetchProposerSets}
+          onClick={refetchClusters}
         >
-          POST api/v1/proposer-sets/:proposerSetId
+          POST api/v1/clusters/:clusterId
         </button>
       </div>
     </div>
   );
 };
 
-export default ProposerSets;
+export default Clusters;

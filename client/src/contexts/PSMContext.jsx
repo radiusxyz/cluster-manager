@@ -6,19 +6,19 @@ const shorten = (ethAddr) => ethAddr.slice(0, 15) + "..." + ethAddr.slice(-12);
 
 export const PSMContext = createContext({
   handleWriteToContract: () => {},
-  handleProposerSetId: () => {},
+  handleClusterId: () => {},
   shorten,
   pollingInterval: 3000,
   address: "",
-  proposerSetId: "",
+  clusterId: "",
 });
 export const PSMProvider = ({ children }) => {
   const { writeContract } = useWriteContract();
 
-  const [proposerSetId, setProposerSetId] = useState("");
+  const [clusterId, setClusterId] = useState("");
 
-  const handleProposerSetId = (handler) => {
-    setProposerSetId(handler);
+  const handleClusterId = (handler) => {
+    setClusterId(handler);
   };
 
   const { address } = useAccount();
@@ -40,8 +40,8 @@ export const PSMProvider = ({ children }) => {
         handleWriteToContract,
         address,
         shorten,
-        handleProposerSetId,
-        proposerSetId,
+        handleClusterId,
+        clusterId,
       }}
     >
       {children}

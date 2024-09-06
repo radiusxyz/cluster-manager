@@ -1,8 +1,8 @@
 import React from "react";
-import * as s from "./ProposerSetDetailsStyles";
+import * as s from "./ClusterDetailsStyles";
 import Copy from "../components/Copy";
 
-const ProposerSetDetails = () => {
+const ClusterDetails = () => {
   return (
     <s.PageContainer>
       <s.TitleJoinBtnContainer>
@@ -10,7 +10,7 @@ const ProposerSetDetails = () => {
         <s.JoinBtn>Join</s.JoinBtn>
       </s.TitleJoinBtnContainer>
       <s.Container>
-        <s.SubTitle>Proposer Set Info</s.SubTitle>
+        <s.SubTitle>Cluster Info</s.SubTitle>
         <s.InfoItems>
           <s.InfoItem>
             <s.Property>Status</s.Property>
@@ -56,7 +56,7 @@ const ProposerSetDetails = () => {
         </s.InfoItems>
       </s.Container>
       <s.Container>
-        <s.SubTitle>Proposer Set Info</s.SubTitle>
+        <s.SubTitle>Cluster Info</s.SubTitle>
         <s.Table>
           <s.Headers>
             <s.Header>Status</s.Header>
@@ -114,4 +114,4 @@ const ProposerSetDetails = () => {
   );
 };
 
-export default ProposerSetDetails;
+export default ClusterDetails;

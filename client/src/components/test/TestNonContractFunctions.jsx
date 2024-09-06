@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import cuid from "cuid";
 import classes from "./TestContractFunctions.module.css";
 
-const generateProposerSet = () => ({
+const generateCluster = () => ({
   id: cuid(),
   rpcUrl: "rpcUrl" + cuid().slice(-5),
   chainId: "chainId" + cuid().slice(-5),
@@ -15,24 +15,22 @@ const generateProposerSet = () => ({
   status: ["active", "inactive"][Math.floor(Math.random() * 2)],
 });
 
-const proposerSetsDefault = Array(20)
+const clustersDefault = Array(20)
   .fill(0)
-  .map(() => generateProposerSet());
+  .map(() => generateCluster());
 
 const TestNonContractFunctions = () => {
-  const [proposerSets, setProposerSets] = useState(proposerSetsDefault);
+  const [clusters, setClusters] = useState(clustersDefault);
 
   useEffect(() => {
-    console.log(proposerSets);
-  }, [proposerSets]);
+    console.log(clusters);
+  }, [clusters]);
   const filter = (by, what) => {
-    setProposerSets(
-      proposerSetsDefault.filter((proposerSet) => proposerSet[by] === what)
-    );
+    setClusters(clustersDefault.filter((cluster) => cluster[by] === what));
   };
 
   const sortByQuota = (order) => {
-    const sortedProposerSets = [...proposerSetsDefault].sort((a, b) => {
+    const sortedClusters = [...clustersDefault].sort((a, b) => {
       if (order === "ascending") {
         return a.quota - b.quota;
       } else if (order === "descending") {
@@ -40,7 +38,7 @@ const TestNonContractFunctions = () => {
       }
       return 0;
     });
-    setProposerSets(sortedProposerSets);
+    setClusters(sortedClusters);
   };
   return (
     <ul
@@ -52,7 +50,7 @@ const TestNonContractFunctions = () => {
         width: "80%",
       }}
     >
-      {proposerSets.map((item) => (
+      {clusters.map((item) => (
         <ul
           key={item.id}
           style={{

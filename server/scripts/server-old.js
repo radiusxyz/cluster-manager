@@ -41,20 +41,20 @@ const client = createWalletClient({
 
 // contract interactions
 
-let proposerSetId;
+let clusterId;
 
-// watching the InitializeProposerSet events
+// watching the InitializeCluster events
 
 const unwatch = client.watchContractEvent({
   address: hhContractAddress,
   abi: hhContractAbi,
   onLogs: (logs) => {
-    proposerSetId = logs[logs.length - 1].args.proposerSetId;
-    console.log(proposerSetId);
+    clusterId = logs[logs.length - 1].args.clusterId;
+    console.log(clusterId);
   },
 });
 
-// get the list of sequencers for the given proposer set
+// get the list of sequencers for the given cluster
 app.get("/get-sequencer-list", async (req, res) => {
   try {
     const data = await client.readContract({
@@ -62,10 +62,10 @@ app.get("/get-sequencer-list", async (req, res) => {
       address: hhContractAddress,
       abi: hhContractAbi,
       functionName: "getSequencerList",
-      args: [proposerSetId],
+      args: [clusterId],
     });
     res.status(200).json({
-      message: `got the list of sequencers for ${proposerSetId}`,
+      message: `got the list of sequencers for ${clusterId}`,
       sequencerList: data,
     });
   } catch (error) {
@@ -73,18 +73,18 @@ app.get("/get-sequencer-list", async (req, res) => {
   }
 });
 
-// get the list of all proposer sets
-app.get("/all-proposer-sets", async (req, res) => {
+// get the list of all clusters
+app.get("/all-clusters", async (req, res) => {
   try {
     const data = await client.readContract({
       account,
       address: hhContractAddress,
       abi: hhContractAbi,
-      functionName: "getAllProposerSetIds",
+      functionName: "getAllClusterIds",
       args: [account.address],
     });
     res.status(200).json({
-      message: `got the list of all proposer sets`,
+      message: `got the list of all clusters`,
       sequencerList: data,
     });
   } catch (error) {
@@ -92,18 +92,18 @@ app.get("/all-proposer-sets", async (req, res) => {
   }
 });
 
-// get the list of proposers for the given owner account
-app.get("/owner-proposer-sets", async (req, res) => {
+// get the list of clusters for the given owner account
+app.get("/owner-clusters", async (req, res) => {
   try {
     const data = await client.readContract({
       account,
       address: hhContractAddress,
       abi: hhContractAbi,
-      functionName: "getProposerSetsByOwner",
+      functionName: "getClustersByOwner",
       args: [account.address],
     });
     res.status(200).json({
-      message: `got the list of proposer sets for owner ${account.address}`,
+      message: `got the list of clusters for owner ${account.address}`,
       sequencerList: data,
     });
   } catch (error) {
@@ -111,18 +111,18 @@ app.get("/owner-proposer-sets", async (req, res) => {
   }
 });
 
-// get the list of proposers for the given sequencer account
-app.get("/sequencer-proposer-sets", async (req, res) => {
+// get the list of clusters for the given sequencer account
+app.get("/sequencer-clusters", async (req, res) => {
   try {
     const data = await client.readContract({
       account,
       address: hhContractAddress,
       abi: hhContractAbi,
-      functionName: "getProposerSetsBySequencer",
+      functionName: "getClustersBySequencer",
       args: [account.address],
     });
     res.status(200).json({
-      message: `got the list of proposer sets for sequencer ${account.address}`,
+      message: `got the list of clusters for sequencer ${account.address}`,
       sequencerList: data,
     });
   } catch (error) {
@@ -130,18 +130,18 @@ app.get("/sequencer-proposer-sets", async (req, res) => {
   }
 });
 
-// initialize a proposer set
+// initialize a cluster
 app.get("/init", async (req, res) => {
   try {
     const { request } = await client.simulateContract({
       account,
       address: hhContractAddress,
       abi: hhContractAbi,
-      functionName: "initializeProposerSet",
+      functionName: "initializeCluster",
       args: [],
     });
     await client.writeContract(request);
-    res.status(200).json({ status: "initiated a proposer set" });
+    res.status(200).json({ status: "initiated a cluster" });
   } catch (error) {
     console.error("error message:", error.message);
   }
@@ -155,10 +155,10 @@ app.get("/register", async (req, res) => {
       address: hhContractAddress,
       abi: hhContractAbi,
       functionName: "registerSequencer",
-      args: [proposerSetId],
+      args: [clusterId],
     });
     await client.writeContract(request);
-    res.status(200).json({ status: "registered into the proposer set" });
+    res.status(200).json({ status: "registered into the cluster" });
   } catch (error) {
     console.error("error message:", error.message);
   }
@@ -172,10 +172,10 @@ app.get("/deregister", async (req, res) => {
       address: hhContractAddress,
       abi: hhContractAbi,
       functionName: "deregisterSequencer",
-      args: [proposerSetId],
+      args: [clusterId],
     });
     await client.writeContract(request);
-    res.status(200).json({ status: "deregistered from the proposer set" });
+    res.status(200).json({ status: "deregistered from the cluster" });
   } catch (error) {
     console.error("error message:", error.message);
   }

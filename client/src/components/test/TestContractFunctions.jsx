@@ -6,23 +6,23 @@ import { useWatchContractEvent } from "wagmi";
 
 const TestContractFunctions = () => {
   const [output, setOutput] = useState("");
-  const [proposerSetId, setProposerSetId] = useState(undefined);
+  const [clusterId, setClusterId] = useState(undefined);
   const { address } = useAccount();
   const { writeContract } = useWriteContract();
 
-  // listening to the InitializeProposerSet event
+  // listening to the InitializeCluster event
 
   useWatchContractEvent({
     address: hhContractAddress,
     abi: hhContractAbi,
-    eventName: "InitializeProposerSet",
+    eventName: "InitializeCluster",
     onLogs(logs) {
       console.log("New logs!", logs);
-      setProposerSetId(logs[0].args.proposerSetId);
+      setClusterId(logs[0].args.clusterId);
     },
   });
 
-  // getting the sequencer list of a proposer set
+  // getting the sequencer list of a cluster
 
   const [shouldRunGetSequencerList, setShouldRunGetSequencerList] =
     useState(false);
@@ -30,7 +30,7 @@ const TestContractFunctions = () => {
     abi: hhContractAbi,
     address: hhContractAddress,
     functionName: "getSequencerList",
-    args: [proposerSetId],
+    args: [clusterId],
     account: address,
     query: { enabled: shouldRunGetSequencerList },
   });
@@ -57,37 +57,37 @@ const TestContractFunctions = () => {
     }
   }, [shouldRunGetSequencerList, data, error, isLoading]);
 
-  // initializing the proposer set
-  const [shouldRunInitializeProposerSet, setShouldRunInitializeProposerSet] =
+  // initializing the cluster
+  const [shouldRunInitializeCluster, setShouldRunInitializeCluster] =
     useState(false);
 
-  const initializeProposerSet = () => {
-    setShouldRunInitializeProposerSet(true);
-    console.log("called initializeProposerSet");
-    setOutput("called initializeProposerSet");
+  const initializeCluster = () => {
+    setShouldRunInitializeCluster(true);
+    console.log("called initializeCluster");
+    setOutput("called initializeCluster");
   };
 
   useEffect(() => {
-    if (shouldRunInitializeProposerSet) {
-      console.log("inside useEffect for initializeProposerSet");
+    if (shouldRunInitializeCluster) {
+      console.log("inside useEffect for initializeCluster");
       writeContract({
         abi: hhContractAbi,
         address: hhContractAddress,
-        functionName: "initializeProposerSet",
+        functionName: "initializeCluster",
         args: [],
         account: address,
-        query: { enabled: shouldRunInitializeProposerSet },
+        query: { enabled: shouldRunInitializeCluster },
       });
-      setShouldRunInitializeProposerSet(false);
+      setShouldRunInitializeCluster(false);
     }
-  }, [shouldRunInitializeProposerSet]);
+  }, [shouldRunInitializeCluster]);
 
   const connectWallet = () => {
     console.log("called connectWallet");
     setOutput(`called connectWallet: ${address}`);
   };
 
-  // registering a sequencer to proposer set
+  // registering a sequencer to cluster
   const [shouldRunRegisterSequencer, setShouldRunRegisterSequencer] =
     useState(false);
 
@@ -104,7 +104,7 @@ const TestContractFunctions = () => {
         abi: hhContractAbi,
         address: hhContractAddress,
         functionName: "registerSequencer",
-        args: [proposerSetId],
+        args: [clusterId],
         account: address,
         query: { enabled: shouldRunRegisterSequencer },
       });
@@ -112,7 +112,7 @@ const TestContractFunctions = () => {
     }
   }, [shouldRunRegisterSequencer]);
 
-  // deregistering a sequencer from proposer set
+  // deregistering a sequencer from cluster
   const [shouldRunDeregisterSequencer, setShouldRunDeregisterSequencer] =
     useState(false);
 
@@ -129,7 +129,7 @@ const TestContractFunctions = () => {
         abi: hhContractAbi,
         address: hhContractAddress,
         functionName: "deregisterSequencer",
-        args: [proposerSetId],
+        args: [clusterId],
         account: address,
         query: { enabled: shouldRunDeregisterSequencer },
       });
@@ -189,8 +189,8 @@ const TestContractFunctions = () => {
           padding: "20px",
         }}
       >
-        <button className={classes.btn} onClick={initializeProposerSet}>
-          initializeProposerSet
+        <button className={classes.btn} onClick={initializeCluster}>
+          initializeCluster
         </button>
         <button className={classes.btn} onClick={registerSequencer}>
           registerSequencer

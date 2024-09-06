@@ -1,75 +1,69 @@
-import proposerSetService from "../services/proposerSetService.js";
+import clusterService from "../services/clusterService.js";
 
-const getAllProposerSets = async (req, res) => {
+const getAllClusters = async (req, res) => {
   try {
-    const proposerSets = await proposerSetService.getAllProposerSets();
-    res.status(200).json(proposerSets);
+    const clusters = await clusterService.getAllClusters();
+    res.status(200).json(clusters);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const getGeneratedProposerSets = async (req, res) => {
+const getGeneratedClusters = async (req, res) => {
   try {
     const { walletAddress } = req.params;
-    const proposerSets = await proposerSetService.getGeneratedProposerSets(
-      walletAddress
-    );
-    res.status(200).json(proposerSets);
+    const clusters = await clusterService.getGeneratedClusters(walletAddress);
+    res.status(200).json(clusters);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const getJoinedProposerSets = async (req, res) => {
+const getJoinedClusters = async (req, res) => {
   try {
     const { walletAddress } = req.params;
-    const proposerSets = await proposerSetService.getJoinedProposerSets(
-      walletAddress
-    );
-    res.status(200).json(proposerSets);
+    const clusters = await clusterService.getJoinedClusters(walletAddress);
+    res.status(200).json(clusters);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const getSequencersInProposerSet = async (req, res) => {
+const getSequencersInCluster = async (req, res) => {
   try {
-    const { proposerSetId } = req.params;
-    const sequencers = await proposerSetService.getSequencersInProposerSet(
-      proposerSetId
-    );
+    const { clusterId } = req.params;
+    const sequencers = await clusterService.getSequencersInCluster(clusterId);
     res.status(200).json(sequencers);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const updateProposerSet = async (req, res) => {
+const updateCluster = async (req, res) => {
   try {
-    const { proposerSetId } = req.params;
+    const { clusterId } = req.params;
     const updateData = req.body;
-    const updatedProposerSet = await proposerSetService.updateProposerSet(
-      proposerSetId,
+    const updatedCluster = await clusterService.updateCluster(
+      clusterId,
       updateData
     );
 
-    if (!updatedProposerSet) {
-      return res.status(404).json({ message: "ProposerSet not found" });
+    if (!updatedCluster) {
+      return res.status(404).json({ message: "Cluster not found" });
     }
 
-    res.status(200).json(updatedProposerSet);
+    res.status(200).json(updatedCluster);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const proposerSetController = {
-  getAllProposerSets,
-  getGeneratedProposerSets,
-  getJoinedProposerSets,
-  getSequencersInProposerSet,
-  updateProposerSet,
+const clusterController = {
+  getAllClusters,
+  getGeneratedClusters,
+  getJoinedClusters,
+  getSequencersInCluster,
+  updateCluster,
 };
 
-export default proposerSetController;
+export default clusterController;

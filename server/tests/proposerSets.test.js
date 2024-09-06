@@ -15,36 +15,52 @@ const client = createWalletClient({
   transport: http(),
 }).extend(publicActions);
 
-// get the list of sequencers for the given proposer set
+// get the list of sequencers for the given cluster
 
-const getSequencerList = async (account, proposerSetId) => {
+const getSequencerList = async (account, clusterId) => {
   try {
     const data = await client.readContract({
       account,
       address: hhContractAddress,
       abi: hhContractAbi,
       functionName: "getSequencerList",
-      args: [proposerSetId],
+      args: [clusterId],
     });
-    console.log(`got the list of sequencers for ${proposerSetId}`, data);
+    console.log(`got the list of sequencers for ${clusterId}`, data);
   } catch (error) {
     console.error("error message:", error.message);
   }
 };
 
-// get the list of proposers for the given owner account
+// get the list of clusters for the given owner account
 
-const getProposerSetsByOwner = async (account) => {
+const getClustersByOwner = async (account) => {
   try {
     const data = await client.readContract({
       account,
       address: hhContractAddress,
       abi: hhContractAbi,
-      functionName: "getProposerSetsByOwner",
+      functionName: "getClustersByOwner",
+      args: [account.address],
+    });
+    console.log(`got the list of clusters for owner ${account.address}`, data);
+  } catch (error) {
+    console.error("error message:", error.message);
+  }
+};
+
+// get the list of clusters for the given sequencer account
+const getClustersBySequencer = async (account) => {
+  try {
+    const data = await client.readContract({
+      account,
+      address: hhContractAddress,
+      abi: hhContractAbi,
+      functionName: "getClustersBySequencer",
       args: [account.address],
     });
     console.log(
-      `got the list of proposer sets for owner ${account.address}`,
+      `got the list of clusters for sequencer ${account.address}`,
       data
     );
   } catch (error) {
@@ -52,71 +68,52 @@ const getProposerSetsByOwner = async (account) => {
   }
 };
 
-// get the list of proposers for the given sequencer account
-const getProposerSetsBySequencer = async (account) => {
-  try {
-    const data = await client.readContract({
-      account,
-      address: hhContractAddress,
-      abi: hhContractAbi,
-      functionName: "getProposerSetsBySequencer",
-      args: [account.address],
-    });
-    console.log(
-      `got the list of proposer sets for sequencer ${account.address}`,
-      data
-    );
-  } catch (error) {
-    console.error("error message:", error.message);
-  }
-};
-
-// initialize a proposer set
-const initializeProposerSet = async (account) => {
+// initialize a cluster
+const initializeCluster = async (account) => {
   try {
     const { request } = await client.simulateContract({
       account,
       address: hhContractAddress,
       abi: hhContractAbi,
-      functionName: "initializeProposerSet",
+      functionName: "initializeCluster",
       args: [],
     });
     await client.writeContract(request);
-    console.log("initiated a proposer set");
+    console.log("initiated a cluster");
   } catch (error) {
     console.error("error message:", error.message);
   }
 };
 
 // register the sequencer into the set
-const registerSequencer = async (account, proposerSetId) => {
+const registerSequencer = async (account, clusterId) => {
   try {
     const { request } = await client.simulateContract({
       account,
       address: hhContractAddress,
       abi: hhContractAbi,
       functionName: "registerSequencer",
-      args: [proposerSetId],
+      args: [clusterId],
     });
     await client.writeContract(request);
-    console.log("registered into the proposer set");
+    console.log("registered into the cluster");
   } catch (error) {
     console.error("error message:", error.message);
   }
 };
 
 // deregister the sequencer from the list
-const deregisterSequencer = async (account, proposerSetId) => {
+const deregisterSequencer = async (account, clusterId) => {
   try {
     const { request } = await client.simulateContract({
       account,
       address: hhContractAddress,
       abi: hhContractAbi,
       functionName: "deregisterSequencer",
-      args: [proposerSetId],
+      args: [clusterId],
     });
     await client.writeContract(request);
-    console.log("deregistered from the proposer set");
+    console.log("deregistered from the cluster");
   } catch (error) {
     console.error("error message:", error.message);
   }
@@ -128,16 +125,16 @@ const accountsHH = hhAccounts.map((account) =>
 
 // listening to events
 
-let proposerSetIds = [];
+let clusterIds = [];
 
-// watching InitializeProposerSet events
+// watching InitializeCluster events
 
-const unwatchInitializeProposerSet = client.watchContractEvent({
+const unwatchInitializeCluster = client.watchContractEvent({
   address: hhContractAddress,
   abi: hhContractAbi,
-  eventName: "InitializeProposerSet",
+  eventName: "InitializeCluster",
   onLogs: (logs) => {
-    proposerSetIds.push(...logs.map((log) => log.args.proposerSetId));
+    clusterIds.push(...logs.map((log) => log.args.clusterId));
   },
 });
 
@@ -159,138 +156,135 @@ const unwatchDeregisterSequencer = client.watchContractEvent({
   onLogs: (logs) => {},
 });
 
-describe("Proposer Sets API", () => {
+describe("Clusters API", () => {
   beforeAll(async () => {
-    // Initialize 3 proposer sets
-    await initializeProposerSet(accountsHH[0]);
-    await initializeProposerSet(accountsHH[1]);
-    await initializeProposerSet(accountsHH[2]);
+    // Initialize 3 clusters
+    await initializeCluster(accountsHH[0]);
+    await initializeCluster(accountsHH[1]);
+    await initializeCluster(accountsHH[2]);
 
     // Wait for the events to be emitted and processed
     await new Promise((resolve) => setTimeout(resolve, 5000));
 
-    if (proposerSetIds.length < 3) {
-      console.error(
-        "Proposer set IDs not initialized correctly",
-        proposerSetIds
-      );
-      throw new Error("Failed to initialize proposer sets.");
+    if (clusterIds.length < 3) {
+      console.error("Cluster IDs not initialized correctly", clusterIds);
+      throw new Error("Failed to initialize clusters.");
     }
 
-    console.log("Initialized proposer set IDs:", proposerSetIds);
+    console.log("Initialized cluster IDs:", clusterIds);
   });
 
   afterAll(() => {
-    unwatchInitializeProposerSet();
+    unwatchInitializeCluster();
     unwatchRegisterSequencer();
     unwatchDeregisterSequencer();
   });
 
-  it("should have 3 proposer sets after initialization", async () => {
-    const response = await request(app).get("/api/v1/proposer-sets");
+  it("should have 3 clusters after initialization", async () => {
+    const response = await request(app).get("/api/v1/clusters");
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(3);
 
-    // Verify the proposer sets' IDs
-    const returnedIds = response.body.map((set) => set.proposerSetId);
-    proposerSetIds.forEach((id) => {
+    // Verify the clusters' IDs
+    const returnedIds = response.body.map((set) => set.clusterId);
+    clusterIds.forEach((id) => {
       expect(returnedIds).toContain(id);
     });
 
-    // Further checks can be added to verify the proposer sets' content
+    // Further checks can be added to verify the clusters' content
   });
 
-  it("should have one proposer set per address", async () => {
+  it("should have one cluster per address", async () => {
     for (const account of accountsHH.slice(0, 3)) {
       const response = await request(app).get(
-        `/api/v1/addresses/${account.address}/proposer-sets/generated`
+        `/api/v1/addresses/${account.address}/clusters/generated`
       );
       expect(response.status).toBe(200);
       expect(response.body.length).toBe(1);
     }
   });
 
-  it("should have no proposer sets for an address that did not create any", async () => {
+  it("should have no clusters for an address that did not create any", async () => {
     const response = await request(app).get(
-      `/api/v1/addresses/${accountsHH[3].address}/proposer-sets/generated`
+      `/api/v1/addresses/${accountsHH[3].address}/clusters/generated`
     );
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(0);
   });
 
-  it("should have no joined proposer sets for an address that never initiated nor joined any", async () => {
+  it("should have no joined clusters for an address that never initiated nor joined any", async () => {
     const response = await request(app).get(
-      `/api/v1/addresses/${accountsHH[3].address}/proposer-sets/joined`
+      `/api/v1/addresses/${accountsHH[3].address}/clusters/joined`
     );
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(0);
   });
 
-  it("should register an address into three proposer sets and verify", async () => {
+  it("should register an address into three clusters and verify", async () => {
     const testAccount = accountsHH[3];
 
-    // Register the address into three proposer sets
-    await registerSequencer(testAccount, proposerSetIds[0]);
-    await registerSequencer(testAccount, proposerSetIds[1]);
-    await registerSequencer(testAccount, proposerSetIds[2]);
+    // Register the address into three clusters
+    await registerSequencer(testAccount, clusterIds[0]);
+    await registerSequencer(testAccount, clusterIds[1]);
+    await registerSequencer(testAccount, clusterIds[2]);
 
     // Wait for the events to be emitted and processed
     await new Promise((resolve) => setTimeout(resolve, 5000));
 
     const response = await request(app).get(
-      `/api/v1/addresses/${testAccount.address}/proposer-sets/joined`
+      `/api/v1/addresses/${testAccount.address}/clusters/joined`
     );
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(3);
   });
 
-  it("should deregister the address from the second proposer set and verify", async () => {
+  it("should deregister the address from the second cluster and verify", async () => {
     const testAccount = accountsHH[3];
 
-    // Deregister the address from the second proposer set
-    await deregisterSequencer(testAccount, proposerSetIds[1]);
+    // Deregister the address from the second cluster
+    await deregisterSequencer(testAccount, clusterIds[1]);
 
     // Wait for the events to be emitted and processed
     await new Promise((resolve) => setTimeout(resolve, 5000));
 
     const response = await request(app).get(
-      `/api/v1/addresses/${testAccount.address}/proposer-sets/joined`
+      `/api/v1/addresses/${testAccount.address}/clusters/joined`
     );
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(2);
 
-    // Verify the proposer sets' IDs
-    const returnedIds = response.body.map((set) => set.proposerSetId);
+    // Verify the clusters' IDs
+    const returnedIds = response.body.map((set) => set.clusterId);
 
-    expect(returnedIds).toContain(proposerSetIds[0]);
-    expect(returnedIds).toContain(proposerSetIds[2]);
-    expect(returnedIds).not.toContain(proposerSetIds[1]);
+    expect(returnedIds).toContain(clusterIds[0]);
+    expect(returnedIds).toContain(clusterIds[2]);
+    expect(returnedIds).not.toContain(clusterIds[1]);
   });
 
-  describe("Proposer Sets Sequencers API", () => {
-    let proposerSetId;
+  describe("Clusters Sequencers API", () => {
+    let clusterId;
 
     beforeAll(async () => {
-      proposerSetId = proposerSetIds[0];
+      clusterId = clusterIds[0];
       const response = await request(app).get(
-        `/api/v1/proposer-sets/${proposerSetId}/sequencers`
+        `/api/v1/clusters/${clusterId}/sequencers`
       );
 
-      await deregisterSequencer(accountsHH[3], proposerSetId);
+      await deregisterSequencer(accountsHH[3], clusterId);
 
       await new Promise((resolve) => setTimeout(resolve, 5000));
     });
 
-    it("should register three addresses into a proposer set and verify", async () => {
-      await registerSequencer(accountsHH[1], proposerSetId);
-      await registerSequencer(accountsHH[2], proposerSetId);
-      await registerSequencer(accountsHH[3], proposerSetId);
+    it("should register three addresses into a cluster and verify", async () => {
+      await registerSequencer(accountsHH[1], clusterId);
+      await registerSequencer(accountsHH[2], clusterId);
+      await registerSequencer(accountsHH[3], clusterId);
 
       // Wait for the events to be emitted and processed
       await new Promise((resolve) => setTimeout(resolve, 5000));
 
       const response = await request(app).get(
-        `/api/v1/proposer-sets/${proposerSetId}/sequencers`
+        `/api/v1/clusters/${clusterId}/sequencers`
       );
 
       expect(response.status).toBe(200);
@@ -304,14 +298,14 @@ describe("Proposer Sets API", () => {
       expect(registeredAddresses).toContain(accountsHH[3].address);
     });
 
-    it("should deregister one address from the proposer set and verify", async () => {
-      await deregisterSequencer(accountsHH[2], proposerSetId);
+    it("should deregister one address from the cluster and verify", async () => {
+      await deregisterSequencer(accountsHH[2], clusterId);
 
       // Wait for the events to be emitted and processed
       await new Promise((resolve) => setTimeout(resolve, 5000));
 
       const response = await request(app).get(
-        `/api/v1/proposer-sets/${proposerSetId}/sequencers`
+        `/api/v1/clusters/${clusterId}/sequencers`
       );
       expect(response.status).toBe(200);
 
@@ -324,14 +318,14 @@ describe("Proposer Sets API", () => {
       expect(registeredAddresses).not.toContain(accountsHH[2].address);
     });
 
-    it("should register another address into the proposer set and verify", async () => {
-      await registerSequencer(accountsHH[4], proposerSetId);
+    it("should register another address into the cluster and verify", async () => {
+      await registerSequencer(accountsHH[4], clusterId);
 
       // Wait for the events to be emitted and processed
       await new Promise((resolve) => setTimeout(resolve, 5000));
 
       const response = await request(app).get(
-        `/api/v1/proposer-sets/${proposerSetId}/sequencers`
+        `/api/v1/clusters/${clusterId}/sequencers`
       );
       expect(response.status).toBe(200);
 

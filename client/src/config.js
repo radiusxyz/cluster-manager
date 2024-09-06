@@ -31,7 +31,7 @@ export const hhContractAbi = [
       {
         indexed: false,
         internalType: "bytes32",
-        name: "proposerSetId",
+        name: "clusterId",
         type: "bytes32",
       },
       {
@@ -50,7 +50,7 @@ export const hhContractAbi = [
       {
         indexed: false,
         internalType: "bytes32",
-        name: "proposerSetId",
+        name: "clusterId",
         type: "bytes32",
       },
       {
@@ -60,7 +60,7 @@ export const hhContractAbi = [
         type: "address",
       },
     ],
-    name: "InitializeProposerSet",
+    name: "InitializeCluster",
     type: "event",
   },
   {
@@ -69,7 +69,7 @@ export const hhContractAbi = [
       {
         indexed: false,
         internalType: "bytes32",
-        name: "proposerSetId",
+        name: "clusterId",
         type: "bytes32",
       },
       {
@@ -118,7 +118,7 @@ export const hhContractAbi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "proposerSetId",
+        name: "clusterId",
         type: "bytes32",
       },
     ],
@@ -129,7 +129,7 @@ export const hhContractAbi = [
   },
   {
     inputs: [],
-    name: "getAllProposerSetIds",
+    name: "getAllClusterIds",
     outputs: [
       {
         internalType: "bytes32[]",
@@ -148,7 +148,7 @@ export const hhContractAbi = [
         type: "address",
       },
     ],
-    name: "getProposerSetsByOwner",
+    name: "getClustersByOwner",
     outputs: [
       {
         internalType: "bytes32[]",
@@ -167,7 +167,7 @@ export const hhContractAbi = [
         type: "address",
       },
     ],
-    name: "getProposerSetsBySequencer",
+    name: "getClustersBySequencer",
     outputs: [
       {
         internalType: "bytes32[]",
@@ -182,7 +182,7 @@ export const hhContractAbi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "proposerSetId",
+        name: "clusterId",
         type: "bytes32",
       },
     ],
@@ -199,7 +199,7 @@ export const hhContractAbi = [
   },
   {
     inputs: [],
-    name: "initializeProposerSet",
+    name: "initializeCluster",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -208,7 +208,7 @@ export const hhContractAbi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "proposerSetId",
+        name: "clusterId",
         type: "bytes32",
       },
       {
@@ -232,7 +232,7 @@ export const hhContractAbi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "proposerSetId",
+        name: "clusterId",
         type: "bytes32",
       },
     ],
@@ -251,7 +251,7 @@ export const contractAbi = [
       {
         indexed: false,
         internalType: "bytes32",
-        name: "proposerSetId",
+        name: "clusterId",
         type: "bytes32",
       },
       {
@@ -270,7 +270,7 @@ export const contractAbi = [
       {
         indexed: false,
         internalType: "bytes32",
-        name: "proposerSetId",
+        name: "clusterId",
         type: "bytes32",
       },
       {
@@ -280,7 +280,7 @@ export const contractAbi = [
         type: "address",
       },
     ],
-    name: "InitializeProposerSet",
+    name: "InitializeCluster",
     type: "event",
   },
   {
@@ -289,7 +289,7 @@ export const contractAbi = [
       {
         indexed: false,
         internalType: "bytes32",
-        name: "proposerSetId",
+        name: "clusterId",
         type: "bytes32",
       },
       {
@@ -332,7 +332,7 @@ export const contractAbi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "proposerSetId",
+        name: "clusterId",
         type: "bytes32",
       },
     ],
@@ -345,7 +345,7 @@ export const contractAbi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "proposerSetId",
+        name: "clusterId",
         type: "bytes32",
       },
     ],
@@ -362,7 +362,7 @@ export const contractAbi = [
   },
   {
     inputs: [],
-    name: "initializeProposerSet",
+    name: "initializeCluster",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -371,7 +371,7 @@ export const contractAbi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "proposerSetId",
+        name: "clusterId",
         type: "bytes32",
       },
     ],

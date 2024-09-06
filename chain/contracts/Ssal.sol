@@ -5,16 +5,16 @@ pragma solidity ^0.8.24;
 // import "hardhat/console.sol";
 
 contract Ssal {
-    mapping(bytes32 => ProposerSet) private proposerSets;
-    mapping(address => bytes32[]) private proposerSetByOwner;
-    mapping(address => bytes32[]) private proposerSetBySequencer;
+    mapping(bytes32 => Cluster) private clusters;
+    mapping(address => bytes32[]) private clusterByOwner;
+    mapping(address => bytes32[]) private clusterBySequencer;
 
-    bytes32[] private allProposerSetIds;
+    bytes32[] private allClusterIds;
 
     uint256 public constant MAX_SEQUENCER_COUNT = 30;
     uint256 public constant BLOCK_MARGIN = 7;
 
-    struct ProposerSet {
+    struct Cluster {
         address owner; // Owner is rollup contract address
         mapping(address => bool) isRegisteredSequencer;
         mapping(address => uint256) sequencerIndex; // Maps address to index in the array
@@ -23,117 +23,106 @@ contract Ssal {
         uint256[] emptySlots; // Keeps track of empty slots
     }
 
-    event InitializeProposerSet(bytes32 proposerSetId, address owner);
+    event InitializeCluster(bytes32 clusterId, address owner);
     event RegisterSequencer(
-        bytes32 proposerSetId,
+        bytes32 clusterId,
         address sequencerAddress,
         uint256 index
     );
-    event DeregisterSequencer(bytes32 proposerSetId, address sequencerAddress);
+    event DeregisterSequencer(bytes32 clusterId, address sequencerAddress);
 
-    function initializeProposerSet() public {
-        bytes32 proposerSetId = keccak256(
+    function initializeCluster() public {
+        bytes32 clusterId = keccak256(
             abi.encodePacked(msg.sender, blockhash(block.number - 1))
         );
 
-        ProposerSet storage proposerSet = proposerSets[proposerSetId];
+        Cluster storage cluster = clusters[clusterId];
 
-        require(
-            proposerSet.owner == address(0),
-            "Already initialized proposer set"
-        );
+        require(cluster.owner == address(0), "Already initialized cluster");
 
-        proposerSet.owner = msg.sender;
-        proposerSet.currentSequencerCount = 0;
+        cluster.owner = msg.sender;
+        cluster.currentSequencerCount = 0;
 
         for (uint256 i = 0; i < MAX_SEQUENCER_COUNT; i++) {
-            proposerSet.emptySlots.push(i);
+            cluster.emptySlots.push(i);
         }
 
-        proposerSetByOwner[msg.sender].push(proposerSetId);
-        allProposerSetIds.push(proposerSetId);
+        clusterByOwner[msg.sender].push(clusterId);
+        allClusterIds.push(clusterId);
 
-        emit InitializeProposerSet(proposerSetId, msg.sender);
+        emit InitializeCluster(clusterId, msg.sender);
     }
 
-    function registerSequencer(bytes32 proposerSetId) public {
-        ProposerSet storage proposerSet = proposerSets[proposerSetId];
+    function registerSequencer(bytes32 clusterId) public {
+        Cluster storage cluster = clusters[clusterId];
 
+        require(cluster.owner != address(0), "Cluster not initialized");
         require(
-            proposerSet.owner != address(0),
-            "Proposer set not initialized"
-        );
-        require(
-            !proposerSet.isRegisteredSequencer[msg.sender],
+            !cluster.isRegisteredSequencer[msg.sender],
             "Already registered sequencer"
         );
         require(
-            proposerSet.currentSequencerCount < MAX_SEQUENCER_COUNT,
+            cluster.currentSequencerCount < MAX_SEQUENCER_COUNT,
             "Max sequencer count exceeded"
         );
 
-        proposerSet.isRegisteredSequencer[msg.sender] = true;
-        uint256 slotIndex = proposerSet.emptySlots[
-            proposerSet.emptySlots.length - 1
-        ];
-        proposerSet.emptySlots.pop();
+        cluster.isRegisteredSequencer[msg.sender] = true;
+        uint256 slotIndex = cluster.emptySlots[cluster.emptySlots.length - 1];
+        cluster.emptySlots.pop();
 
-        proposerSet.sequencerAddresses[slotIndex] = msg.sender;
-        proposerSet.sequencerIndex[msg.sender] = slotIndex;
-        proposerSet.currentSequencerCount++;
+        cluster.sequencerAddresses[slotIndex] = msg.sender;
+        cluster.sequencerIndex[msg.sender] = slotIndex;
+        cluster.currentSequencerCount++;
 
-        proposerSetBySequencer[msg.sender].push(proposerSetId);
+        clusterBySequencer[msg.sender].push(clusterId);
 
-        emit RegisterSequencer(proposerSetId, msg.sender, slotIndex);
+        emit RegisterSequencer(clusterId, msg.sender, slotIndex);
     }
 
-    function deregisterSequencer(bytes32 proposerSetId) public {
-        ProposerSet storage proposerSet = proposerSets[proposerSetId];
+    function deregisterSequencer(bytes32 clusterId) public {
+        Cluster storage cluster = clusters[clusterId];
 
+        require(cluster.owner != address(0), "Cluster not initialized");
         require(
-            proposerSet.owner != address(0),
-            "Proposer set not initialized"
-        );
-        require(
-            proposerSet.isRegisteredSequencer[msg.sender],
+            cluster.isRegisteredSequencer[msg.sender],
             "Not registered sequencer"
         );
 
-        proposerSet.isRegisteredSequencer[msg.sender] = false;
+        cluster.isRegisteredSequencer[msg.sender] = false;
 
-        uint256 index = proposerSet.sequencerIndex[msg.sender];
-        proposerSet.sequencerAddresses[index] = address(0);
+        uint256 index = cluster.sequencerIndex[msg.sender];
+        cluster.sequencerAddresses[index] = address(0);
 
-        delete proposerSet.sequencerIndex[msg.sender];
-        proposerSet.currentSequencerCount--;
-        proposerSet.emptySlots.push(index);
+        delete cluster.sequencerIndex[msg.sender];
+        cluster.currentSequencerCount--;
+        cluster.emptySlots.push(index);
 
-        // Remove from proposerSetBySequencer array
-        bytes32[] storage sequencerSets = proposerSetBySequencer[msg.sender];
+        // Remove from clusterBySequencer array
+        bytes32[] storage sequencerSets = clusterBySequencer[msg.sender];
         for (uint i = 0; i < sequencerSets.length; i++) {
-            if (sequencerSets[i] == proposerSetId) {
+            if (sequencerSets[i] == clusterId) {
                 sequencerSets[i] = sequencerSets[sequencerSets.length - 1];
                 sequencerSets.pop();
                 break;
             }
         }
 
-        emit DeregisterSequencer(proposerSetId, msg.sender);
+        emit DeregisterSequencer(clusterId, msg.sender);
     }
 
     function getSequencerList(
-        bytes32 proposerSetId
+        bytes32 clusterId
     )
         public
         view
         returns (address[MAX_SEQUENCER_COUNT] memory validSequencers)
     {
-        ProposerSet storage proposerSet = proposerSets[proposerSetId];
+        Cluster storage cluster = clusters[clusterId];
         uint256 count = 0;
 
         for (uint256 i = 0; i < MAX_SEQUENCER_COUNT; i++) {
-            if (proposerSet.sequencerAddresses[i] != address(0)) {
-                validSequencers[count] = proposerSet.sequencerAddresses[i];
+            if (cluster.sequencerAddresses[i] != address(0)) {
+                validSequencers[count] = cluster.sequencerAddresses[i];
                 count++;
             }
         }
@@ -141,26 +130,25 @@ contract Ssal {
     }
 
     function isRegistered(
-        bytes32 proposerSetId,
+        bytes32 clusterId,
         address sequencerAddress
     ) public view returns (bool) {
-        return
-            proposerSets[proposerSetId].isRegisteredSequencer[sequencerAddress];
+        return clusters[clusterId].isRegisteredSequencer[sequencerAddress];
     }
 
-    function getProposerSetsByOwner(
+    function getClustersByOwner(
         address owner
     ) public view returns (bytes32[] memory) {
-        return proposerSetByOwner[owner];
+        return clusterByOwner[owner];
     }
 
-    function getProposerSetsBySequencer(
+    function getClustersBySequencer(
         address sequencer
     ) public view returns (bytes32[] memory) {
-        return proposerSetBySequencer[sequencer];
+        return clusterBySequencer[sequencer];
     }
 
-    function getAllProposerSetIds() public view returns (bytes32[] memory) {
-        return allProposerSetIds;
+    function getAllClusterIds() public view returns (bytes32[] memory) {
+        return allClusterIds;
     }
 }

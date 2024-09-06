@@ -3,31 +3,30 @@ import useGET from "../hooks/useGET";
 import classes from "./TestContractFunctions.module.css";
 import { PSMContext } from "../contexts/PSMContext";
 
-const ProposerSetsJoined = () => {
+const ClustersJoined = () => {
   const { pollingInterval, shorten, address } = useContext(PSMContext);
-  const [proposerSetsJoined, setProposerSetsJoined] = useState([]);
-  const [shouldGetProposerSetsJoined, setShouldGetProposerSetsJoined] =
-    useState(false);
+  const [clustersJoined, setClustersJoined] = useState([]);
+  const [shouldGetClustersJoined, setShouldGetClustersJoined] = useState(false);
   const [queryAddress, setQueryAddress] = useState(address);
 
   const {
-    isPending: isPendingProposerSetsJoined,
-    error: errorProposerSetsJoined,
-    data: dataProposerSetsJoined,
-    refetch: refetchProposerSetsJoined,
+    isPending: isPendingClustersJoined,
+    error: errorClustersJoined,
+    data: dataClustersJoined,
+    refetch: refetchClustersJoined,
   } = useGET(
-    ["proposerSetsJoined", queryAddress],
-    `http://localhost:3333/api/v1/addresses/${queryAddress}/proposer-sets/joined`,
-    shouldGetProposerSetsJoined,
+    ["clustersJoined", queryAddress],
+    `http://localhost:3333/api/v1/addresses/${queryAddress}/clusters/joined`,
+    shouldGetClustersJoined,
     pollingInterval
   );
 
   useEffect(() => {
-    if (dataProposerSetsJoined) {
-      console.log("dataProposerSetsJoined: ", dataProposerSetsJoined);
-      setProposerSetsJoined(dataProposerSetsJoined);
+    if (dataClustersJoined) {
+      console.log("dataClustersJoined: ", dataClustersJoined);
+      setClustersJoined(dataClustersJoined);
     }
-  }, [dataProposerSetsJoined]);
+  }, [dataClustersJoined]);
 
   return (
     <div
@@ -42,18 +41,18 @@ const ProposerSetsJoined = () => {
         flexDirection: "column",
       }}
     >
-      <p>{"Joined Proposer Sets"}</p>
+      <p>{"Joined Clusters"}</p>
       <div>
-        {proposerSetsJoined?.map((item) => (
+        {clustersJoined?.map((item) => (
           <p
-            key={item?.proposerSetId}
+            key={item?.clusterId}
             style={{
               padding: "5px 15px",
               background: "aquamarine",
               marginBottom: "5px",
             }}
           >
-            {shorten(item?.proposerSetId)}
+            {shorten(item?.clusterId)}
           </p>
         ))}
       </div>
@@ -68,13 +67,13 @@ const ProposerSetsJoined = () => {
       >
         <button
           className={`${classes.btn} ${classes.btnGET}`}
-          onClick={refetchProposerSetsJoined}
+          onClick={refetchClustersJoined}
         >
-          GET api/v1/addresses/:walletAddress/proposer-sets/joined
+          GET api/v1/addresses/:walletAddress/clusters/joined
         </button>
       </div>
     </div>
   );
 };
 
-export default ProposerSetsJoined;
+export default ClustersJoined;
