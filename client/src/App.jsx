@@ -3,6 +3,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Root from "./pages/Root";
 import Explorer from "./pages/Explorer";
 import Dashboard from "./pages/Dashboard";
+import ProposerSetDetails from "./pages/ProposerSetDetails";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,14 @@ const router = createBrowserRouter([
       {
         path: "dashboard", // No index: true here
         element: <Dashboard />,
+        loader: () => {
+          window.scrollTo(0, 0);
+          return null;
+        },
+      },
+      {
+        path: "/:proposerSetId/details", // No index: true here
+        element: <ProposerSetDetails />,
         loader: () => {
           window.scrollTo(0, 0);
           return null;
