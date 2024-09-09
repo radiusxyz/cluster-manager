@@ -1,0 +1,70 @@
+# Sprint Summary
+
+## Closed Issues
+- [refactor: remove redundant properties, fix styles](https://github.com/radiusxyz/cluster-manager/pull/100) - Closed by @gylman
+- [feat: replace ~proposer set~ with ~cluster~, style appropriately filt…](https://github.com/radiusxyz/cluster-manager/pull/99) - Closed by @gylman
+- [Rename `Proposer Set` in all the codebase](https://github.com/radiusxyz/cluster-manager/issues/98) - Closed by @gylman
+- [Feat/implement configs page](https://github.com/radiusxyz/cluster-manager/pull/97) - Closed by @gylman
+- [Modal needs additional step: Add Rollup](https://github.com/radiusxyz/cluster-manager/issues/93) - Closed by @gylman
+- [implement dynamic 2-step  modal interactive ui](https://github.com/radiusxyz/cluster-manager/pull/92) - Closed by @gylman
+- [Modal needed for joining the proposer set and submitting the URLs to the server](https://github.com/radiusxyz/cluster-manager/issues/91) - Closed by @gylman
+- [Feat/implement wireframe](https://github.com/radiusxyz/cluster-manager/pull/90) - Closed by @gylman
+- [Feat/selectbox and dashboard page](https://github.com/radiusxyz/cluster-manager/pull/89) - Closed by @gylman
+- [Feat/generated proposer sets](https://github.com/radiusxyz/cluster-manager/pull/88) - Closed by @gylman
+- [table](https://github.com/radiusxyz/cluster-manager/issues/87) - Closed by @gylman
+- [proposer set card](https://github.com/radiusxyz/cluster-manager/issues/86) - Closed by @gylman
+- [generated proposer sets 2D container](https://github.com/radiusxyz/cluster-manager/issues/85) - Closed by @gylman
+- [card component](https://github.com/radiusxyz/cluster-manager/issues/84) - Closed by @gylman
+- [connect wallet](https://github.com/radiusxyz/cluster-manager/issues/83) - Closed by @gylman
+- [Feat/implement routing root page and explorer page](https://github.com/radiusxyz/cluster-manager/pull/82) - Closed by @gylman
+- [footer](https://github.com/radiusxyz/cluster-manager/issues/81) - Closed by @gylman
+- [navbar](https://github.com/radiusxyz/cluster-manager/issues/80) - Closed by @gylman
+- [root](https://github.com/radiusxyz/cluster-manager/issues/79) - Closed by @gylman
+- [routing](https://github.com/radiusxyz/cluster-manager/issues/78) - Closed by @gylman
+- [generate btn](https://github.com/radiusxyz/cluster-manager/issues/77) - Closed by @gylman
+- [design and conceptualize UI](https://github.com/radiusxyz/cluster-manager/issues/76) - Closed by @gylman
+- [Integrate/client server](https://github.com/radiusxyz/cluster-manager/pull/75) - Closed by @gylman
+- [table](https://github.com/radiusxyz/cluster-manager/issues/74) - Closed by @gylman
+- [select box](https://github.com/radiusxyz/cluster-manager/issues/73) - Closed by @gylman
+- [filter](https://github.com/radiusxyz/cluster-manager/issues/72) - Closed by @gylman
+- [search](https://github.com/radiusxyz/cluster-manager/issues/71) - Closed by @gylman
+- [explorer](https://github.com/radiusxyz/cluster-manager/issues/70) - Closed by @gylman
+- [joined lists](https://github.com/radiusxyz/cluster-manager/issues/69) - Closed by @gylman
+- [generated lists](https://github.com/radiusxyz/cluster-manager/issues/68) - Closed by @gylman
+- [overview](https://github.com/radiusxyz/cluster-manager/issues/67) - Closed by @gylman
+- [dashboard](https://github.com/radiusxyz/cluster-manager/issues/66) - Closed by @gylman
+- [implement wireframe](https://github.com/radiusxyz/cluster-manager/issues/65) - Closed by @gylman
+- [Feat/syncing](https://github.com/radiusxyz/cluster-manager/pull/60) - Closed by @gylman
+- [Feat/implement UI for displaying all processes](https://github.com/radiusxyz/cluster-manager/pull/59) - Closed by @gylman
+- [Integrate/implement reading the server data](https://github.com/radiusxyz/cluster-manager/pull/55) - Closed by @gylman
+- [store block number for syncing](https://github.com/radiusxyz/cluster-manager/issues/53) - Closed by @gylman
+- [implement listening based on synced block number to prevent missing events](https://github.com/radiusxyz/cluster-manager/issues/52) - Closed by @gylman
+- [remove input from DeregisterSequencer and update implementation based on the sequencerAddress, not index](https://github.com/radiusxyz/cluster-manager/issues/51) - Closed by @gylman
+- [GET /proposer-sets/:proposerSetId/sequencers](https://github.com/radiusxyz/cluster-manager/issues/50) - Closed by @gylman
+- [GET /addresses/:walletAddress/proposer-sets/joined](https://github.com/radiusxyz/cluster-manager/issues/49) - Closed by @gylman
+- [GET /addresses/:walletAddress/proposer-sets/generated](https://github.com/radiusxyz/cluster-manager/issues/48) - Closed by @gylman
+- [GET /api/v1/proposer-sets](https://github.com/radiusxyz/cluster-manager/issues/47) - Closed by @gylman
+- [Debug/test debug reiterate](https://github.com/radiusxyz/cluster-manager/pull/46) - Closed by @gylman
+- [add shell scripts to automate the deployment and testing process](https://github.com/radiusxyz/cluster-manager/issues/45) - Closed by @gylman
+- [test getting all proposer sets](https://github.com/radiusxyz/cluster-manager/issues/44) - Closed by @gylman
+- [test getting proposer sets generated by an address](https://github.com/radiusxyz/cluster-manager/issues/43) - Closed by @gylman
+- [test getting proposer sets joined by an address](https://github.com/radiusxyz/cluster-manager/issues/42) - Closed by @gylman
+- [test getting list of sequencers by proposerSetId](https://github.com/radiusxyz/cluster-manager/issues/41) - Closed by @gylman
+- [add index into events](https://github.com/radiusxyz/cluster-manager/issues/40) - Closed by @gylman
+- [add jest tests](https://github.com/radiusxyz/cluster-manager/issues/39) - Closed by @gylman
+- [design test scenarios](https://github.com/radiusxyz/cluster-manager/issues/38) - Closed by @gylman
+- [test & debug](https://github.com/radiusxyz/cluster-manager/issues/37) - Closed by @gylman
+- [Feat/implement routes, controllers, services, schemas, db related, event listeners, test scripts](https://github.com/radiusxyz/cluster-manager/pull/36) - Closed by @gylman
+- [load data](https://github.com/radiusxyz/cluster-manager/issues/35) - Closed by @gylman
+- [rest api endpoints](https://github.com/radiusxyz/cluster-manager/issues/34) - Closed by @gylman
+- [getting list of sequencers in a proposer set](https://github.com/radiusxyz/cluster-manager/issues/33) - Closed by @gylman
+- [getting list of proposer sets](https://github.com/radiusxyz/cluster-manager/issues/32) - Closed by @gylman
+- [define schema](https://github.com/radiusxyz/cluster-manager/issues/31) - Closed by @gylman
+- [store data](https://github.com/radiusxyz/cluster-manager/issues/30) - Closed by @gylman
+- [organize according to common express.js structure for scalability](https://github.com/radiusxyz/cluster-manager/issues/29) - Closed by @gylman
+- [implement the routes](https://github.com/radiusxyz/cluster-manager/issues/28) - Closed by @gylman
+- [investigate The Graph](https://github.com/radiusxyz/cluster-manager/issues/27) - Closed by @gylman
+- [learn GraphQL](https://github.com/radiusxyz/cluster-manager/issues/26) - Closed by @gylman
+- [Feat/learn viem and listen to events](https://github.com/radiusxyz/cluster-manager/pull/25) - Closed by @gylman
+- [implement functions to filter and to sort, filter by type, status, na…](https://github.com/radiusxyz/cluster-manager/pull/22) - Closed by @gylman
+- [Call contract functions for testing client smart contract interactions and frontend library wagmi](https://github.com/radiusxyz/cluster-manager/pull/17) - Closed by @gylman
