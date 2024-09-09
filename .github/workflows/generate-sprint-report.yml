@@ -15,7 +15,7 @@ jobs:
         uses: actions/github-script@v6  # Updated to v6
         with:
           script: |
-            const { data: issues } = await github.issues.listForRepo({
+            const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'closed',
@@ -24,11 +24,11 @@ jobs:
             });
             
             let report = `# Sprint Summary\n\n## Closed Issues\n`;
-            issues.forEach(issue => {
+            issues.data.forEach(issue => {
               report += `- [${issue.title}](${issue.html_url}) - Closed by @${issue.user.login}\n`;
             });
 
-            return { report };
+            core.setOutput('report', report);
 
       - name: Save report as environment variable
         run: |
