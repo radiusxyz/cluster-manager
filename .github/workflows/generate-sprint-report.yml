@@ -32,7 +32,9 @@ jobs:
 
       - name: Save report as environment variable
         run: |
-          echo "REPORT=${{ steps.generate_report.outputs.report }}" >> $GITHUB_ENV
+          echo "REPORT<<EOF" >> $GITHUB_ENV
+          echo "${{ steps.generate_report.outputs.report }}" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Send report to OpenAI for summarization
         id: summarize_report
