@@ -19,7 +19,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'closed',
-              since: '2024-09-01T00:00:00Z',  # Modify sprint period here
+              since: '2024-09-01T00:00:00Z',  // Modify sprint period here
               per_page: 100
             });
             
@@ -30,18 +30,17 @@ jobs:
 
             return { report };
 
+      - name: Save report as environment variable
+        run: |
+          echo "REPORT=${{ steps.generate_report.outputs.report }}" >> $GITHUB_ENV
+
       - name: Send report to OpenAI for summarization
         id: summarize_report
         run: |
           curl https://api.openai.com/v1/chat/completions \
           -H "Content-Type: application/json" \
           -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
-          -d '{
-            "model": "gpt-4", 
-            "messages": [{"role": "user", "content": "${{ steps.generate_report.outputs.report }}"}],
-            "max_tokens": 300,
-            "temperature": 0.7
-          }' > response.json
+          -d "$(jq -n --arg content "$REPORT" '{model: "gpt-4", messages: [{role: "user", content: $content}], max_tokens: 300, temperature: 0.7}')"
 
       - name: Output the summary
         run: |
