@@ -53,15 +53,22 @@ jobs:
             exit 1
           fi
 
-      - name: Output the summary
+      - name: Output the summary and save to a file
         run: |
           if [ -f response.json ]; then
             SUMMARY=$(jq -r '.choices[0].message.content' < response.json)
             echo "Summary: $SUMMARY"
+            echo "$SUMMARY" > sprint_summary.md  # Save the summary to markdown file
           else
             echo "No response file found"
             exit 1
-          fi  # Closing the 'if' block correctly
-        shell: bash  # Proper use of shell key here
+          fi
+        shell: bash
         env:
           REPORT: "${{ steps.generate_report.outputs.report }}"
+
+      - name: Upload the markdown summary as an artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sprint-summary
+          path: sprint_summary.md  # Path to the markdown file
