@@ -15,7 +15,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const projectColumnId = 12345678; // Replace with your actual project column ID
+            const projectColumnId = 1; // Replace with your actual project column ID
 
             const cards = await github.rest.projects.listCards({
               column_id: projectColumnId,
