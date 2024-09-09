@@ -62,6 +62,6 @@ jobs:
             echo "No response file found"
             exit 1
           fi  # Closing the 'if' block correctly
-        shell: /usr/bin/bash --noprofile --norc -e -o pipefail
+        shell: bash  # Proper use of shell key here
         env:
           REPORT: "${{ steps.generate_report.outputs.report }}"
