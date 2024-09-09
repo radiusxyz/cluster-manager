@@ -1,18 +1,17 @@
-name: Generate Sprint Report
+name: Generate and Summarize Sprint Report
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 0'  # Runs weekly, modify according to your sprint schedule
 
 jobs:
-  generate_report:
+  generate_sprint_report:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Generate Sprint Report
+        id: generate_report
         uses: actions/github-script@v4
         with:
           script: |
@@ -20,7 +19,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'closed',
-              since: '2024-08-01T00:00:00Z', // Modify the start date to match the sprint duration
+              since: '2024-09-01T00:00:00Z',  # Modify sprint period here
               per_page: 100
             });
             
@@ -29,18 +28,23 @@ jobs:
               report += `- [${issue.title}](${issue.html_url}) - Closed by @${issue.user.login}\n`;
             });
 
-            await github.repos.createOrUpdateFileContents({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              path: 'sprint-reports/sprint-summary.md',
-              message: 'Sprint report generated',
-              content: Buffer.from(report).toString('base64'),
-              committer: {
-                name: 'GitHub Actions',
-                email: 'actions@github.com'
-              },
-              author: {
-                name: 'GitHub Actions',
-                email: 'actions@github.com'
-              }
-            });
+            return { report };
+
+      - name: Send report to OpenAI for summarization
+        id: summarize_report
+        run: |
+          curl https://api.openai.com/v1/chat/completions \
+          -H "Content-Type: application/json" \
+          -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
+          -d '{
+            "model": "gpt-4", 
+            "messages": [{"role": "user", "content": "${{ steps.generate_report.outputs.report }}"}],
+            "max_tokens": 300,
+            "temperature": 0.7
+          }' > response.json
+
+      - name: Output the summary
+        run: |
+          cat response.json
+          SUMMARY=$(jq -r '.choices[0].message.content' < response.json)
+          echo "Summary: $SUMMARY"
