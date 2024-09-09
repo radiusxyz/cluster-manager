@@ -46,8 +46,8 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
           -d "$(jq -n --arg content "$REPORT" '{model: "gpt-4", messages: [{role: "user", content: $content}], max_tokens: 300, temperature: 0.7}')")
 
-          HTTP_STATUS=$(echo "$RESPONSE")
-          if [ "$HTTP_STATUS" -ne 200 ]; then
+          HTTP_STATUS=$(cat response.json | jq -r '.status_code')
+          if [ "$HTTP_STATUS" != "200" ]; then
             echo "Request failed with status code: $HTTP_STATUS"
             cat response.json
             exit 1
@@ -61,4 +61,7 @@ jobs:
           else
             echo "No response file found"
             exit 1
-        shell: bash
+          fi  # Closing the 'if' block correctly
+        shell: /usr/bin/bash --noprofile --norc -e -o pipefail
+        env:
+          REPORT: "${{ steps.generate_report.outputs.report }}"
