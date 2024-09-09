@@ -8,11 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # Updated to v3
 
       - name: Generate Sprint Report
         id: generate_report
-        uses: actions/github-script@v4
+        uses: actions/github-script@v6  # Updated to v6
         with:
           script: |
             const { data: issues } = await github.issues.listForRepo({
@@ -37,13 +37,23 @@ jobs:
       - name: Send report to OpenAI for summarization
         id: summarize_report
         run: |
-          curl https://api.openai.com/v1/chat/completions \
+          RESPONSE=$(curl -s -o response.json -w "%{http_code}" \
+          https://api.openai.com/v1/chat/completions \
           -H "Content-Type: application/json" \
           -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
-          -d "$(jq -n --arg content "$REPORT" '{model: "gpt-4o", messages: [{role: "user", content: $content}], max_tokens: 300, temperature: 0.7}')"
+          -d "$(jq -n --arg content "$REPORT" '{model: "gpt-4o", messages: [{role: "user", content: $content}], max_tokens: 300, temperature: 0.7}')")
+          
+          if [ "$RESPONSE" -ne 200 ]; then
+            echo "Request failed with status code: $RESPONSE"
+            cat response.json
+            exit 1
+          fi
 
       - name: Output the summary
         run: |
-          cat response.json
-          SUMMARY=$(jq -r '.choices[0].message.content' < response.json)
-          echo "Summary: $SUMMARY"
+          if [ -f response.json ]; then
+            SUMMARY=$(jq -r '.choices[0].message.content' < response.json)
+            echo "Summary: $SUMMARY"
+          else
+            echo "No response file found"
+            exit 1
