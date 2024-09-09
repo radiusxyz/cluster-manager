@@ -40,7 +40,7 @@ jobs:
           curl https://api.openai.com/v1/chat/completions \
           -H "Content-Type: application/json" \
           -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
-          -d "$(jq -n --arg content "$REPORT" '{model: "gpt-4o-mini", messages: [{role: "user", content: $content}], max_tokens: 300, temperature: 0.7}')"
+          -d "$(jq -n --arg content "$REPORT" '{model: "gpt-4o", messages: [{role: "user", content: $content}], max_tokens: 300, temperature: 0.7}')"
 
       - name: Output the summary
         run: |
