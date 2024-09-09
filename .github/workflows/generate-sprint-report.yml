@@ -40,13 +40,13 @@ jobs:
         id: summarize_report
         run: |
           REPORT="${{ env.REPORT }}"
-          RESPONSE=$(curl -s -o response.json -w "%{http_code}" \
+          RESPONSE=$(curl -s -w "%{http_code}" -o response.json \
           https://api.openai.com/v1/chat/completions \
           -H "Content-Type: application/json" \
           -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
           -d "$(jq -n --arg content "$REPORT" '{model: "gpt-4", messages: [{role: "user", content: $content}], max_tokens: 300, temperature: 0.7}')")
 
-          HTTP_STATUS=$(cat response.json | jq -r '.status_code')
+          HTTP_STATUS=$(echo "$RESPONSE" | tail -n1)
           if [ "$HTTP_STATUS" != "200" ]; then
             echo "Request failed with status code: $HTTP_STATUS"
             cat response.json
