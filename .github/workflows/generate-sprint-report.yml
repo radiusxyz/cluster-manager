@@ -1,50 +1,53 @@
-name: Generate and Summarize Sprint Report
+name: Generate and Summarize Project Issues
 
 on:
   workflow_dispatch:
 
 jobs:
-  generate_sprint_report:
+  summarize_project_issues:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3  # Checkout the repository to make changes
+        uses: actions/checkout@v3
 
-      - name: Generate Sprint Report
-        id: generate_report
-        uses: actions/github-script@v6  # Updated to v6
+      - name: Fetch Issues from Project
+        id: fetch_issues
+        uses: actions/github-script@v6
         with:
           script: |
-            const issues = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'closed',
-              since: '2024-09-01T00:00:00Z',  // Modify sprint period here
+            const projectColumnId = 12345678; // Replace with your actual project column ID
+
+            const cards = await github.rest.projects.listCards({
+              column_id: projectColumnId,
               per_page: 100
             });
-            
-            let report = `# Sprint Summary\n\n## Closed Issues\n`;
-            issues.data.forEach(issue => {
-              report += `- [${issue.title}](${issue.html_url}) - Closed by @${issue.user.login}\n`;
-            });
 
-            core.setOutput('report', report);
+            let issueList = '';
 
-      - name: Save report as environment variable
+            for (const card of cards.data) {
+              if (card.content_url) {
+                const issue = await github.request(card.content_url);
+                issueList += `- [${issue.data.title}](${issue.data.html_url}) - Opened by @${issue.data.user.login}\n`;
+              }
+            }
+
+            core.setOutput('issueList', issueList);
+
+      - name: Save issue list as environment variable
         run: |
-          echo "REPORT<<EOF" >> $GITHUB_ENV
-          echo "${{ steps.generate_report.outputs.report }}" >> $GITHUB_ENV
+          echo "ISSUE_LIST<<EOF" >> $GITHUB_ENV
+          echo "${{ steps.fetch_issues.outputs.issueList }}" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - name: Send report to OpenAI for summarization
-        id: summarize_report
+      - name: Send issues to OpenAI for summarization
+        id: summarize_issues
         run: |
-          REPORT="${{ env.REPORT }}"
-          RESPONSE=$(curl -s -w "%{http_code}" -o response.json \
+          ISSUE_LIST="${{ env.ISSUE_LIST }}"
+          RESPONSE=$(curl -s -o response.json -w "%{http_code}" \
           https://api.openai.com/v1/chat/completions \
           -H "Content-Type: application/json" \
           -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
-          -d "$(jq -n --arg content "$REPORT" '{model: "gpt-4", messages: [{role: "user", content: $content}], max_tokens: 300, temperature: 0.7}')")
+          -d "$(jq -n --arg content "$ISSUE_LIST" '{model: "gpt-4", messages: [{role: "user", content: $content}], max_tokens: 300, temperature: 0.7}')")
 
           HTTP_STATUS=$(echo "$RESPONSE" | tail -n1)
           if [ "$HTTP_STATUS" != "200" ]; then
@@ -53,25 +56,13 @@ jobs:
             exit 1
           fi
 
-      - name: Output the summary and save to a markdown file
+      - name: Output the summary
         run: |
           if [ -f response.json ]; then
             SUMMARY=$(jq -r '.choices[0].message.content' < response.json)
-            echo "$SUMMARY" > sprint_summary.md  # Save the summary to markdown file
+            echo "Summary: $SUMMARY"
           else
             echo "No response file found"
             exit 1
           fi
         shell: bash
-        env:
-          REPORT: "${{ steps.generate_report.outputs.report }}"
-
-      - name: Commit the markdown file to the repository
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add sprint_summary.md
-          git commit -m "Add Sprint Summary Report"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token to authenticate the push
