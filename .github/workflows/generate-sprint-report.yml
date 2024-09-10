@@ -1,0 +1,68 @@
+name: Generate and Summarize Project Issues
+
+on:
+  workflow_dispatch:
+
+jobs:
+  summarize_project_issues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Fetch Issues from Project
+        id: fetch_issues
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const projectColumnId = 1; // Replace with your actual project column ID
+
+            const cards = await github.rest.projects.listCards({
+              column_id: projectColumnId,
+              per_page: 100
+            });
+
+            let issueList = '';
+
+            for (const card of cards.data) {
+              if (card.content_url) {
+                const issue = await github.request(card.content_url);
+                issueList += `- [${issue.data.title}](${issue.data.html_url}) - Opened by @${issue.data.user.login}\n`;
+              }
+            }
+
+            core.setOutput('issueList', issueList);
+
+      - name: Save issue list as environment variable
+        run: |
+          echo "ISSUE_LIST<<EOF" >> $GITHUB_ENV
+          echo "${{ steps.fetch_issues.outputs.issueList }}" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Send issues to OpenAI for summarization
+        id: summarize_issues
+        run: |
+          ISSUE_LIST="${{ env.ISSUE_LIST }}"
+          RESPONSE=$(curl -s -o response.json -w "%{http_code}" \
+          https://api.openai.com/v1/chat/completions \
+          -H "Content-Type: application/json" \
+          -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
+          -d "$(jq -n --arg content "$ISSUE_LIST" '{model: "gpt-4", messages: [{role: "user", content: $content}], max_tokens: 300, temperature: 0.7}')")
+
+          HTTP_STATUS=$(echo "$RESPONSE" | tail -n1)
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "Request failed with status code: $HTTP_STATUS"
+            cat response.json
+            exit 1
+          fi
+
+      - name: Output the summary
+        run: |
+          if [ -f response.json ]; then
+            SUMMARY=$(jq -r '.choices[0].message.content' < response.json)
+            echo "Summary: $SUMMARY"
+          else
+            echo "No response file found"
+            exit 1
+          fi
+        shell: bash
