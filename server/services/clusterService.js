@@ -21,6 +21,7 @@ const getSequencersInCluster = async (clusterId) => {
 };
 
 const initializeCluster = async (logs) => {
+  console.log("initializeCluster logs: ", logs);
   try {
     for (const log of logs) {
       const clusterId = log.args.clusterId;
@@ -47,6 +48,29 @@ const initializeCluster = async (logs) => {
     }
   } catch (error) {
     console.error("Error in initializeCluster:", error.message);
+  }
+};
+
+const addRollup = async (logs) => {
+  try {
+    for (const log of logs) {
+      const clusterId = log.args.clusterId;
+      const rollupId = log.args.rollupId;
+      const rollupOwnerAddress = log.args.rollupOwnerAddress;
+      const cluster = await Cluster.findOne({ clusterId });
+
+      if (!cluster) {
+        throw new Error(`Cluster with ID ${clusterId} not found`);
+      }
+
+      cluster.rollupAddress = rollupAddress;
+      await cluster.save();
+      console.log(
+        `Rollup ${rollupAddress} added to Cluster ${clusterId} successfully.`
+      );
+    }
+  } catch (error) {
+    console.error("Error in addRollup:", error.message);
   }
 };
 
@@ -126,6 +150,7 @@ const clusterService = {
   getJoinedClusters,
   getSequencersInCluster,
   initializeCluster,
+  addRollup,
   registerSequencer,
   deregisterSequencer,
 };

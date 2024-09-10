@@ -8,6 +8,14 @@ const handleInitializeCluster = async (logs) => {
   }
 };
 
+const handleAddRollup = async (logs) => {
+  try {
+    await clusterService.addRollup(logs);
+  } catch (error) {
+    console.error("Error in handleAddRollup:", error.message);
+  }
+};
+
 const handleRegisterSequencer = async (logs) => {
   try {
     await clusterService.registerSequencer(logs);
@@ -26,6 +34,7 @@ const handleDeregisterSequencer = async (logs) => {
 
 const eventService = {
   handleInitializeCluster,
+  handleAddRollup,
   handleRegisterSequencer,
   handleDeregisterSequencer,
 };

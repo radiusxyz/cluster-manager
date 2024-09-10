@@ -1,14 +1,15 @@
 import { createPublicClient, http } from "viem";
 import eventService from "../services/eventService.js";
 import blockSyncService from "../services/blockSyncService.js";
-import { hhContractAbi } from "../config.js";
-import { hhContractAddress } from "../tests/hhContractAddress.js";
+
+import common from "../../common.js";
 import dotenv from "dotenv";
+dotenv.config({ path: "./.env" });
 import { localhost } from "../config.js";
 
-dotenv.config({ path: "./.env" });
+const { contractAbi, contractAddress } = common;
 
-const [CONTRACT_ADDRESS, CONTRACT_ABI] = [hhContractAddress, hhContractAbi];
+const [CONTRACT_ADDRESS, CONTRACT_ABI] = [contractAddress, contractAbi];
 
 // setting the public client
 const client = createPublicClient({
@@ -30,6 +31,8 @@ const watchContractEventFromBlock = async (eventName, handleEvent) => {
       eventName,
       fromBlock: lastProcessedBlock ? BigInt(lastProcessedBlock) : 1n, // Default to block 1 if no record found
       onLogs: async (logs) => {
+        console.log(`Received ${eventName} event logs:`, logs);
+
         try {
           await handleEvent(logs);
           // Update the last processed block number in the database
@@ -54,6 +57,10 @@ const watchInitializeCluster = () =>
     "InitializeCluster",
     eventService.handleInitializeCluster
   );
+
+const watchAddRollup = () =>
+  watchContractEventFromBlock("AddRollup", eventService.handleAddRollup);
+
 const watchRegisterSequencer = () =>
   watchContractEventFromBlock(
     "RegisterSequencer",
@@ -68,6 +75,7 @@ const watchDeregisterSequencer = () =>
 // Start event listeners
 const startEventListeners = () => {
   watchInitializeCluster();
+  watchAddRollup();
   watchRegisterSequencer();
   watchDeregisterSequencer();
 };

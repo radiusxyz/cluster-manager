@@ -12,7 +12,7 @@ import {
   publicActions,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { localhost, hhContractAbi, hhContractAddress } from "../config.js";
+import { localhost, contractAbi, contractAddress } from "../config.js";
 import { hhAccounts } from "./accounts.js";
 
 const app = express();
@@ -46,8 +46,8 @@ let clusterId;
 // watching the InitializeCluster events
 
 const unwatch = client.watchContractEvent({
-  address: hhContractAddress,
-  abi: hhContractAbi,
+  address: contractAddress,
+  abi: contractAbi,
   onLogs: (logs) => {
     clusterId = logs[logs.length - 1].args.clusterId;
     console.log(clusterId);
@@ -59,8 +59,8 @@ app.get("/get-sequencer-list", async (req, res) => {
   try {
     const data = await client.readContract({
       account,
-      address: hhContractAddress,
-      abi: hhContractAbi,
+      address: contractAddress,
+      abi: contractAbi,
       functionName: "getSequencerList",
       args: [clusterId],
     });
@@ -78,8 +78,8 @@ app.get("/all-clusters", async (req, res) => {
   try {
     const data = await client.readContract({
       account,
-      address: hhContractAddress,
-      abi: hhContractAbi,
+      address: contractAddress,
+      abi: contractAbi,
       functionName: "getAllClusterIds",
       args: [account.address],
     });
@@ -97,8 +97,8 @@ app.get("/owner-clusters", async (req, res) => {
   try {
     const data = await client.readContract({
       account,
-      address: hhContractAddress,
-      abi: hhContractAbi,
+      address: contractAddress,
+      abi: contractAbi,
       functionName: "getClustersByOwner",
       args: [account.address],
     });
@@ -116,8 +116,8 @@ app.get("/sequencer-clusters", async (req, res) => {
   try {
     const data = await client.readContract({
       account,
-      address: hhContractAddress,
-      abi: hhContractAbi,
+      address: contractAddress,
+      abi: contractAbi,
       functionName: "getClustersBySequencer",
       args: [account.address],
     });
@@ -135,8 +135,8 @@ app.get("/init", async (req, res) => {
   try {
     const { request } = await client.simulateContract({
       account,
-      address: hhContractAddress,
-      abi: hhContractAbi,
+      address: contractAddress,
+      abi: contractAbi,
       functionName: "initializeCluster",
       args: [],
     });
@@ -152,8 +152,8 @@ app.get("/register", async (req, res) => {
   try {
     const { request } = await client.simulateContract({
       account,
-      address: hhContractAddress,
-      abi: hhContractAbi,
+      address: contractAddress,
+      abi: contractAbi,
       functionName: "registerSequencer",
       args: [clusterId],
     });
@@ -169,8 +169,8 @@ app.get("/deregister", async (req, res) => {
   try {
     const { request } = await client.simulateContract({
       account,
-      address: hhContractAddress,
-      abi: hhContractAbi,
+      address: contractAddress,
+      abi: contractAbi,
       functionName: "deregisterSequencer",
       args: [clusterId],
     });

@@ -12,6 +12,7 @@ const ClusterSchema = new Schema({
   rollupType: String,
   blockExplorerUrl: String,
   sequencers: [String],
+  active: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now },
 });
 

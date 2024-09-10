@@ -14,7 +14,7 @@ npx hardhat node &
 sleep 5
 
 # Run the Hardhat deploy script and redirect output to a JS file
-npx hardhat run scripts/deploy.js --network localhost > ../server/tests/hhContractAddress.js
+npx hardhat run scripts/deploy.js --network localhost > ../server/tests/contractAddress.js
 
 # Navigate to the server directory
 cd ../server
