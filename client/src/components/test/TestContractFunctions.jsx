@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useReadContract, useWriteContract, useAccount } from "wagmi";
-import { hhContractAbi, hhContractAddress } from "../config.js";
+import { contractAbi, contractAddress } from "../config.js";
 import classes from "./TestContractFunctions.module.css";
 import { useWatchContractEvent } from "wagmi";
 
@@ -13,8 +13,8 @@ const TestContractFunctions = () => {
   // listening to the InitializeCluster event
 
   useWatchContractEvent({
-    address: hhContractAddress,
-    abi: hhContractAbi,
+    address: contractAddress,
+    abi: contractAbi,
     eventName: "InitializeCluster",
     onLogs(logs) {
       console.log("New logs!", logs);
@@ -27,8 +27,8 @@ const TestContractFunctions = () => {
   const [shouldRunGetSequencerList, setShouldRunGetSequencerList] =
     useState(false);
   const { data, error, isLoading } = useReadContract({
-    abi: hhContractAbi,
-    address: hhContractAddress,
+    abi: contractAbi,
+    address: contractAddress,
     functionName: "getSequencerList",
     args: [clusterId],
     account: address,
@@ -71,8 +71,8 @@ const TestContractFunctions = () => {
     if (shouldRunInitializeCluster) {
       console.log("inside useEffect for initializeCluster");
       writeContract({
-        abi: hhContractAbi,
-        address: hhContractAddress,
+        abi: contractAbi,
+        address: contractAddress,
         functionName: "initializeCluster",
         args: [],
         account: address,
@@ -101,8 +101,8 @@ const TestContractFunctions = () => {
     if (shouldRunRegisterSequencer) {
       console.log("inside useEffect for shouldRunRegisterSequencer");
       writeContract({
-        abi: hhContractAbi,
-        address: hhContractAddress,
+        abi: contractAbi,
+        address: contractAddress,
         functionName: "registerSequencer",
         args: [clusterId],
         account: address,
@@ -126,8 +126,8 @@ const TestContractFunctions = () => {
     if (shouldRunDeregisterSequencer) {
       console.log("inside useEffect for shouldRunDeregisterSequencer");
       writeContract({
-        abi: hhContractAbi,
-        address: hhContractAddress,
+        abi: contractAbi,
+        address: contractAddress,
         functionName: "deregisterSequencer",
         args: [clusterId],
         account: address,

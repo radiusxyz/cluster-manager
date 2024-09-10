@@ -1,20 +1,5 @@
-import { defineChain } from "viem";
-
-export const localhost = /*#__PURE__*/ defineChain({
-  id: 31337,
-  name: "Localhost",
-  nativeCurrency: {
-    decimals: 18,
-    name: "Ether",
-    symbol: "ETH",
-  },
-  rpcUrls: {
-    default: { http: ["http://127.0.0.1:8545"] },
-  },
-});
-
-export const contractAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
-export const contractAbi = [
+const contractAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+const contractAbi = [
   {
     inputs: [],
     stateMutability: "nonpayable",
@@ -919,3 +904,11 @@ export const contractAbi = [
     type: "function",
   },
 ];
+
+// CommonJS export for Node.js (backend)
+if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
+  module.exports = { contractAddress, contractAbi };
+}
+
+// ES6 export for frontend (browser)
+export { contractAddress, contractAbi };

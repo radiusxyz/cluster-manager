@@ -1,6 +1,7 @@
 import React, { createContext, useState } from "react";
 import { useAccount, useWriteContract } from "wagmi";
-import { hhContractAbi, hhContractAddress } from "../config";
+
+import { contractAbi, contractAddress } from "../../../common";
 
 const shorten = (ethAddr) => ethAddr.slice(0, 15) + "..." + ethAddr.slice(-12);
 
@@ -25,8 +26,8 @@ export const ClusterProvider = ({ children }) => {
 
   const handleWriteToContract = (functionName, args = [], enabled = false) => {
     writeContract({
-      abi: hhContractAbi,
-      address: hhContractAddress,
+      abi: contractAbi,
+      address: contractAddress,
       functionName,
       args,
       account: address,
