@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import * as s from "./ExplorerStyles";
+import Loader from "../components/Loader";
 
 import useGET from "../hooks/useGET";
 
@@ -24,12 +25,7 @@ const Explorer = () => {
     data: dataClusters,
     refetch: refetchClusters,
     isFetching: isFetchingClusters,
-  } = useGET(
-    ["clusters"],
-    "http://localhost:3333/api/v1/clusters",
-    shouldGetClusters,
-    pollingInterval
-  );
+  } = useGET(["clusters"], "http://localhost:3333/api/v1/clusters", true, 3000);
 
   useEffect(() => {
     if (dataClusters) {
@@ -74,42 +70,32 @@ const Explorer = () => {
           <s.Header>ID</s.Header>
           <s.Header>Quota</s.Header>
         </s.Headers>
+
         <s.Rows>
-          <s.Row to="/0/details">
-            <s.Cell>
-              <s.CellTxt>Active/Inactive</s.CellTxt>
-            </s.Cell>
-            <s.Cell>
-              <s.CellTxt>Address</s.CellTxt>
-            </s.Cell>
-
-            <s.Cell>
-              <s.CellTxt>num/num</s.CellTxt>
-            </s.Cell>
-          </s.Row>
-          <s.Row to="/1/details">
-            <s.Cell>
-              <s.CellTxt>Active/Inactive</s.CellTxt>
-            </s.Cell>
-            <s.Cell>
-              <s.CellTxt>Address</s.CellTxt>
-            </s.Cell>
-
-            <s.Cell>
-              <s.CellTxt>num/num</s.CellTxt>
-            </s.Cell>
-          </s.Row>
-          <s.Row to="/2/details">
-            <s.Cell>
-              <s.CellTxt>Active/Inactive</s.CellTxt>
-            </s.Cell>
-            <s.Cell>
-              <s.CellTxt>Address</s.CellTxt>
-            </s.Cell>
-            <s.Cell>
-              <s.CellTxt>num/num</s.CellTxt>
-            </s.Cell>
-          </s.Row>
+          {isPendingClusters ? (
+            <Loader />
+          ) : (
+            clusters.map((cluster) => (
+              <s.Row
+                to={`/${cluster.clusterId}/details`}
+                key={cluster.clusterId}
+              >
+                <s.Cell>
+                  <s.CellTxt>
+                    {cluster.active ? "Active" : "Inactive"}
+                  </s.CellTxt>
+                </s.Cell>
+                <s.Cell>
+                  <s.CellTxt>{cluster.clusterId}</s.CellTxt>
+                </s.Cell>
+                <s.Cell>
+                  <s.CellTxt>
+                    {cluster.sequencers.length}/{cluster.size}
+                  </s.CellTxt>
+                </s.Cell>
+              </s.Row>
+            ))
+          )}
         </s.Rows>
       </s.Table>
       {showModal && <Modal toggle={toggleModal} />}
