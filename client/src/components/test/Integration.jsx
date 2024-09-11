@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useWriteContract, useAccount } from "wagmi";
 import { contractAbi, contractAddress } from "../config.js";
 import classes from "./TestContractFunctions.module.css";
-import useGET from "../hooks/useGET.js";
+import useGET from "../hooks/useServer.js";
 import { ClusterContext } from "../contexts/ClusterContext.jsx";
 import Clusters from "./Clusters.jsx";
 import ClustersGenerated from "./ClustersGenerated.jsx";

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as s from "./GeneratedCardsStyles";
-import useGET from "../hooks/useGET";
+import useGET from "../hooks/useServer";
 
 const Generated = ({ address }) => {
   const [clustersGenerated, setClustersGenerated] = useState([]);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as s from "./DashboardStyles";
 import Generated from "../components/Generated";
 import Modal from "../components/Modal";
-import useGET from "../hooks/useGET";
+import useGET from "../hooks/useServer";
 import Joined from "../components/Joined";
 
 const Dashboard = () => {

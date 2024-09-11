@@ -2,9 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import * as s from "./ExplorerStyles";
 import Loader from "../components/Loader";
 
-import useGET from "../hooks/useGET";
+import useGET from "../hooks/useServer";
 
-import { ClusterContext } from "../contexts/ClusterContext";
 import Modal from "../components/Modal";
 
 const Explorer = () => {
@@ -89,7 +88,14 @@ const Explorer = () => {
                 </s.Cell>
                 <s.Cell>
                   <s.CellTxt>
-                    {cluster.sequencers.length}/{cluster.size}
+                    {
+                      cluster.sequencers.filter(
+                        (sequencer) =>
+                          sequencer !==
+                          "0x0000000000000000000000000000000000000000"
+                      ).length
+                    }
+                    /{cluster.sequencers.length}
                   </s.CellTxt>
                 </s.Cell>
               </s.Row>

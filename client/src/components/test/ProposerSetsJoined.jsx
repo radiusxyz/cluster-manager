@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import useGET from "../hooks/useGET";
+import useGET from "../hooks/useServer";
 import classes from "./TestContractFunctions.module.css";
 import { ClusterContext } from "../contexts/ClusterContext";
 

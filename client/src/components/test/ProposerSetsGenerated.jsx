@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ClusterContext } from "../contexts/ClusterContext";
 import classes from "./TestContractFunctions.module.css";
-import useGET from "../hooks/useGET";
+import useGET from "../hooks/useServer";
 
 const urls = {
   rpcUrl: "gylman.eth",

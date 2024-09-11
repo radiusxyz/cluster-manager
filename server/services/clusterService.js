@@ -62,8 +62,8 @@ const addRollup = async (logs) => {
       if (!cluster) {
         throw new Error(`Cluster with ID ${clusterId} not found`);
       }
-
-      cluster.rollupAddress = rollupAddress;
+      cluster.rollupId = rollupId;
+      cluster.rollupOwnerAddress = rollupOwnerAddress;
       await cluster.save();
       console.log(
         `Rollup ${rollupAddress} added to Cluster ${clusterId} successfully.`
