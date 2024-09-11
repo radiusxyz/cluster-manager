@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import Button from "./Button";
+import { useAccount } from "wagmi";
 
 const Overlay = styled.div`
   position: fixed;
@@ -86,23 +87,49 @@ export const SelectBox = styled.select`
 `;
 
 const Modal = ({ toggle }) => {
-  const [name, setName] = useState("");
-  const [symbol, setSymbol] = useState("");
-  const [chainId, setChainId] = useState("");
-  const [type, setType] = useState("");
+  const { address } = useAccount();
+
+  // Step 1
+  const [clusterId, setClusterId] = useState("A");
+  const [maxSequencerNumber, setMaxSequencerNumber] = useState(30);
+
+  // Step 2
+  const [rollupId, setRollupId] = useState("1");
+  const [chainType, setChainType] = useState("ethereum");
+  const [orderCommitmentType, setOrderCommitmentType] =
+    useState("orderCommitment");
+  const [platform, setPlatform] = useState("ethereum");
+  const [serviceProvider, setServiceProvider] = useState("eigenlayer");
+  const [rpcUrl, setRpcUrl] = useState("https://www.google.ru/");
+  const [webSocketUrl, setWebSocketUrl] = useState("https://www.naver.com/");
+  const [blockExplorerUrl, setBlockExplorerUrl] = useState(
+    "https://www.hello-world.com/"
+  );
+
   const [step, setStep] = useState(1);
 
   const handleInitializeCluster = () => {
-    console.log({ name, symbol, chainId, type });
+    console.log({ clusterId, maxSequencerNumber });
     setStep(2);
   };
   const handleAddRollup = () => {
-    console.log({ name, symbol, chainId, type });
+    console.log({
+      clusterId,
+      rollupId,
+      chainType,
+      address,
+      orderCommitmentType,
+      validationInfo: { platform, serviceProvider },
+    });
     setStep(3);
   };
 
   const handleAddServerData = () => {
-    console.log({ name, symbol, chainId, type });
+    console.log({
+      rpcUrl,
+      webSocketUrl,
+      blockExplorerUrl,
+    });
     toggle();
   };
 
@@ -128,18 +155,20 @@ const Modal = ({ toggle }) => {
             <InputContainer>
               <Label>Cluster ID</Label>
               <Input
+                value={clusterId}
                 type="text"
                 onChange={(e) => {
-                  setName(e.target.value);
+                  setClusterId(e.target.value);
                 }}
               />
             </InputContainer>{" "}
             <InputContainer>
               <Label>Max # of sequencers</Label>
               <Input
+                value={maxSequencerNumber}
                 type="text"
                 onChange={(e) => {
-                  setName(e.target.value);
+                  setMaxSequencerNumber(e.target.value);
                 }}
               />
             </InputContainer>{" "}
@@ -150,21 +179,24 @@ const Modal = ({ toggle }) => {
               <InputContainer>
                 <Label>Rollup Id</Label>
                 <Input
+                  value={rollupId}
                   type="text"
                   onChange={(e) => {
-                    setChainId(e.target.value);
+                    setRollupId(e.target.value);
                   }}
                 />
               </InputContainer>
               <InputContainer>
                 <Label>Chain Type</Label>
-                <SelectBox>
+                <SelectBox onChange={(e) => setChainType(e.target.value)}>
                   <option defaultValue="Ethereum">Ethereum</option>
                 </SelectBox>
               </InputContainer>{" "}
               <InputContainer>
                 <Label>Order Commitment Type</Label>
-                <SelectBox>
+                <SelectBox
+                  onChange={(e) => setOrderCommitmentType(e.target.value)}
+                >
                   <option defaultValue="orderCommtiment">
                     Order Commitment
                   </option>
@@ -184,14 +216,16 @@ const Modal = ({ toggle }) => {
               >
                 <InputContainer>
                   <SubLabel>Platform</SubLabel>
-                  <SelectBox>
-                    <option>Ethereum</option>
+                  <SelectBox onChange={(e) => setPlatform(e.target.value)}>
+                    <option defaultValue="ethereum">Ethereum</option>
                   </SelectBox>
                 </InputContainer>{" "}
                 <InputContainer>
                   <SubLabel>Service provider</SubLabel>
-                  <SelectBox>
-                    <option defaultValue="Eigenlayer">Eigenlayer</option>
+                  <SelectBox
+                    onChange={(e) => setServiceProvider(e.target.value)}
+                  >
+                    <option defaultValue="eigenlayer">Eigenlayer</option>
                     <option>Symbiotic</option>
                   </SelectBox>
                 </InputContainer>
@@ -203,9 +237,10 @@ const Modal = ({ toggle }) => {
               <InputContainer>
                 <Label>RPC URL</Label>
                 <Input
+                  value={rpcUrl}
                   type="text"
                   onChange={(e) => {
-                    setName(e.target.value);
+                    setRpcUrl(e.target.value);
                   }}
                 />
               </InputContainer>
@@ -213,17 +248,19 @@ const Modal = ({ toggle }) => {
                 <Label>Web-Socket URL</Label>
                 <Input
                   type="text"
+                  value={webSocketUrl}
                   onChange={(e) => {
-                    setSymbol(e.target.value);
+                    setWebSocketUrl(e.target.value);
                   }}
                 />
               </InputContainer>
               <InputContainer>
                 <Label>Block Explorer URL</Label>
                 <Input
+                  value={blockExplorerUrl}
                   type="text"
                   onChange={(e) => {
-                    setChainId(e.target.value);
+                    setBlockExplorerUrl(e.target.value);
                   }}
                 />
               </InputContainer>
