@@ -8,7 +8,6 @@ import { ClusterContext } from "../contexts/ClusterContext";
 import Modal from "../components/Modal";
 
 const Explorer = () => {
-  const { pollingInterval, shorten } = useContext(ClusterContext);
   const [clusters, setClusters] = useState([]);
   const [shouldGetClusters, setShouldGetClusters] = useState(false);
   const [all, setAll] = useState(false);

@@ -1,11 +1,13 @@
 import React from "react";
 import { Outlet } from "react-router";
-import { useAccount } from "wagmi";
+import { useAccount, useConnect } from "wagmi";
 import * as s from "./RootStyles";
 import { StyledButton } from "../components/Button";
 
 const Root = () => {
   const { address } = useAccount();
+
+  const { connectors, connect } = useConnect();
 
   return (
     <s.LayoutContainer>
@@ -19,7 +21,15 @@ const Root = () => {
           {/* <s.Stat>Total #</s.Stat>
           <s.Stat>Total $</s.Stat> */}
           <s.Stat>
-            {address ? address : <StyledButton>Connect Wallet</StyledButton>}
+            {address ? (
+              address
+            ) : (
+              <StyledButton
+                onClick={() => connect({ connector: connectors[0] })}
+              >
+                Connect Wallet
+              </StyledButton>
+            )}
           </s.Stat>
         </s.StatsContainer>
       </s.NavBarContainer>
