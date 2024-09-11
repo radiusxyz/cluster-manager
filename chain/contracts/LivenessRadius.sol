@@ -10,12 +10,7 @@ import "./interfaces/ILivenessRadius.sol";
 // Uncomment this line to use console.log
 // import "hardhat/console.sol";
 
-contract LivenessRadius is 
-    ILivenessRadius,
-    AccessControlUpgradeable,
-    ReentrancyGuardUpgradeable,
-    OwnableUpgradeable
-{
+contract LivenessRadius is ILivenessRadius, AccessControlUpgradeable, ReentrancyGuardUpgradeable, OwnableUpgradeable {
     uint256 public constant BLOCK_MARGIN = 7;
 
     mapping(string => Cluster) private clusters;
@@ -40,10 +35,7 @@ contract LivenessRadius is
     function initializeCluster(string calldata clusterId, uint256 maxSequencerNumber) public {
         Cluster storage cluster = clusters[clusterId];
 
-        require(
-            cluster.owner == address(0),
-            "Already initialized cluster"
-        );
+        require(cluster.owner == address(0), "Already initialized cluster");
 
         cluster.owner = msg.sender;
         cluster.maxSequencerNumber = maxSequencerNumber;
@@ -57,16 +49,20 @@ contract LivenessRadius is
         allClusterIds.push(clusterId);
         clusterByOwner[msg.sender].push(clusterId);
 
-        emit InitializeCluster(clusterId, msg.sender);
+        emit InitializeCluster(clusterId, msg.sender, maxSequencerNumber);
     }
 
-    function addRollup(string calldata clusterId, string calldata rollupId, string calldata chainType, address rollupOwnerAddress, string calldata orderCommitmentType, ValidationInfo calldata validationInfo) public {
+    function addRollup(
+        string calldata clusterId,
+        string calldata rollupId,
+        string calldata chainType,
+        address rollupOwnerAddress,
+        string calldata orderCommitmentType,
+        ValidationInfo calldata validationInfo
+    ) public {
         Cluster storage cluster = clusters[clusterId];
 
-        require(
-            cluster.owner == msg.sender,
-            "Not cluster owner"
-        );
+        require(cluster.owner == msg.sender, "Not cluster owner");
 
         Rollup storage rollup = cluster.rollups[rollupId];
         cluster.rollupIdList.push(rollupId);
@@ -76,27 +72,25 @@ contract LivenessRadius is
         rollup.orderCommitmentType = orderCommitmentType;
         rollup.validationInfo = validationInfo;
         rollup.isRegisteredExecutor[rollupOwnerAddress] = true;
-        
+
         // 배열 초기화 및 값 할당
         rollup.executorAddresses.push(rollupOwnerAddress);
 
         emit AddRollup(clusterId, rollupId, rollupOwnerAddress);
     }
 
-    function registerRollupExecutor(string calldata clusterId, string calldata rollupId, address rollupExecutorAddress) public {
+    function registerRollupExecutor(
+        string calldata clusterId,
+        string calldata rollupId,
+        address rollupExecutorAddress
+    ) public {
         Cluster storage cluster = clusters[clusterId];
 
-        require(
-            cluster.owner != address(0),
-            "Not initialized cluster"
-        );
+        require(cluster.owner != address(0), "Not initialized cluster");
 
         Rollup storage rollup = cluster.rollups[rollupId];
 
-        require(
-            rollup.owner == msg.sender,
-            "Not rollup owner"
-        );
+        require(rollup.owner == msg.sender, "Not rollup owner");
 
         rollup.isRegisteredExecutor[rollupExecutorAddress] = true;
         rollup.executorAddresses.push(rollupExecutorAddress);
@@ -107,18 +101,9 @@ contract LivenessRadius is
     function registerSequencer(string calldata clusterId) public {
         Cluster storage cluster = clusters[clusterId];
 
-        require(
-            cluster.owner != address(0),
-            "Proposer set not initialized"
-        );
-        require(
-            !cluster.isRegisteredSequencer[msg.sender],
-            "Already registered sequencer"
-        );
-        require(
-            cluster.currentSequencerCount < cluster.maxSequencerNumber,
-            "Max sequencer count exceeded"
-        );
+        require(cluster.owner != address(0), "Proposer set not initialized");
+        require(!cluster.isRegisteredSequencer[msg.sender], "Already registered sequencer");
+        require(cluster.currentSequencerCount < cluster.maxSequencerNumber, "Max sequencer count exceeded");
 
         uint256 slotIndex = cluster.emptySlots[cluster.emptySlots.length - 1];
         cluster.emptySlots.pop();
@@ -137,14 +122,8 @@ contract LivenessRadius is
     function deregisterSequencer(string calldata clusterId) public {
         Cluster storage cluster = clusters[clusterId];
 
-        require(
-            cluster.owner != address(0),
-            "Proposer set not initialized"
-        );
-        require(
-            cluster.isRegisteredSequencer[msg.sender],
-            "Not registered sequencer"
-        );
+        require(cluster.owner != address(0), "Proposer set not initialized");
+        require(cluster.isRegisteredSequencer[msg.sender], "Not registered sequencer");
 
         cluster.isRegisteredSequencer[msg.sender] = false;
 
@@ -169,13 +148,7 @@ contract LivenessRadius is
         emit DeregisterSequencer(clusterId, msg.sender);
     }
 
-    function getSequencerList(
-        string calldata clusterId
-    )
-        public
-        view
-        returns (address[] memory)
-    {
+    function getSequencerList(string calldata clusterId) public view returns (address[] memory) {
         Cluster storage cluster = clusters[clusterId];
         uint256 count = 0;
         address[] memory validSequencers = new address[](cluster.maxSequencerNumber);
@@ -192,11 +165,7 @@ contract LivenessRadius is
     function getExecutorList(
         string calldata clusterId,
         string calldata rollupId
-    )
-        public
-        view
-        returns (address[] memory)
-    {
+    ) public view returns (address[] memory) {
         Cluster storage cluster = clusters[clusterId];
         Rollup storage rollup = cluster.rollups[rollupId];
 
@@ -238,12 +207,14 @@ contract LivenessRadius is
                 orderCommitmentType: rollup.orderCommitmentType,
                 executorAddresses: rollup.executorAddresses
             });
-
         }
         return rollupList;
     }
 
-    function getRollupInfo(string calldata clusterId, string calldata rollupId) public view returns (RollupInfo memory) {
+    function getRollupInfo(
+        string calldata clusterId,
+        string calldata rollupId
+    ) public view returns (RollupInfo memory) {
         Cluster storage cluster = clusters[clusterId];
 
         Rollup storage rollup = cluster.rollups[rollupId];
@@ -256,7 +227,7 @@ contract LivenessRadius is
             orderCommitmentType: rollup.orderCommitmentType,
             executorAddresses: rollup.executorAddresses
         });
-          
+
         return rollupInfo;
     }
 
@@ -264,37 +235,27 @@ contract LivenessRadius is
         return clusters[clusterId].maxSequencerNumber;
     }
 
-    function isAddedRollup(
-        string calldata clusterId, string calldata rollupId
-    ) public view returns (bool) {
-        return
-            clusters[clusterId].rollups[rollupId].owner != address(0);
+    function isAddedRollup(string calldata clusterId, string calldata rollupId) public view returns (bool) {
+        return clusters[clusterId].rollups[rollupId].owner != address(0);
     }
 
     function isRegisteredRollupExecutor(
-        string calldata clusterId, string calldata rollupId, address executorAddress
-    ) public view returns (bool) {
-        return
-            clusters[clusterId].rollups[rollupId].isRegisteredExecutor[executorAddress];
-    }
-
-    function isRegisteredSequencer(
         string calldata clusterId,
-        address sequencerAddress
+        string calldata rollupId,
+        address executorAddress
     ) public view returns (bool) {
-        return
-            clusters[clusterId].isRegisteredSequencer[sequencerAddress];
+        return clusters[clusterId].rollups[rollupId].isRegisteredExecutor[executorAddress];
     }
 
-    function getClustersByOwner(
-        address owner
-    ) public view returns (string[] memory) {
+    function isRegisteredSequencer(string calldata clusterId, address sequencerAddress) public view returns (bool) {
+        return clusters[clusterId].isRegisteredSequencer[sequencerAddress];
+    }
+
+    function getClustersByOwner(address owner) public view returns (string[] memory) {
         return clusterByOwner[owner];
     }
 
-    function getClustersBySequencer(
-        address sequencer
-    ) public view returns (string[] memory) {
+    function getClustersBySequencer(address sequencer) public view returns (string[] memory) {
         return clusterBySequencer[sequencer];
     }
 
