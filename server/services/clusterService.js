@@ -12,12 +12,12 @@ const getJoinedClusters = async (walletAddress) => {
   return await Cluster.find({ sequencers: walletAddress });
 };
 
-const getSequencersInCluster = async (clusterId) => {
+const getCluster = async (clusterId) => {
   const cluster = await Cluster.findOne({ clusterId });
   if (!cluster) {
     throw new Error("Cluster not found");
   }
-  return cluster.sequencers;
+  return cluster;
 };
 
 const initializeCluster = async (logs) => {
@@ -148,7 +148,7 @@ const clusterService = {
   getAllClusters,
   getGeneratedClusters,
   getJoinedClusters,
-  getSequencersInCluster,
+  getCluster,
   initializeCluster,
   addRollup,
   registerSequencer,

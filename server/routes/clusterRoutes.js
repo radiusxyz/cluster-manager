@@ -12,10 +12,7 @@ router.get(
   "/addresses/:walletAddress/clusters/joined",
   clusterController.getJoinedClusters
 );
-router.get(
-  "/clusters/:clusterId/sequencers",
-  clusterController.getSequencersInCluster
-);
+router.get("/clusters/:clusterId", clusterController.getCluster);
 router.post("/clusters/:clusterId", clusterController.updateCluster);
 
 export default router;
