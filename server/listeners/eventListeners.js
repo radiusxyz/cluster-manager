@@ -2,12 +2,10 @@ import { createPublicClient, http } from "viem";
 import eventService from "../services/eventService.js";
 import blockSyncService from "../services/blockSyncService.js";
 
-import common from "../../common.js";
+import { contractAddress, contractAbi } from "../../common.js";
 import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
 import { localhost } from "../config.js";
-
-const { contractAbi, contractAddress } = common;
 
 const [CONTRACT_ADDRESS, CONTRACT_ABI] = [contractAddress, contractAbi];
 
