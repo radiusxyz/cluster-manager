@@ -1,110 +1,89 @@
-import { useState } from "react";
-import styled from "styled-components";
+import { useEffect, useState } from "react";
 import Button from "./Button";
-
-const Overlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ModalContainer = styled.div`
-  width: 100%;
-  z-index: 2;
-  max-width: 500px;
-  border-radius: 10px;
-  gap: 10px;
-  padding: 30px;
-  background-color: #fff;
-  position: absolute;
-`;
-
-const StepsContainer = styled.div`
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-bottom: 20px;
-`;
-
-const Step = styled.div`
-  border-radius: 50%;
-  width: 20px;
-  aspect-ratio: 1;
-  background-color: ${(props) => (props.$active ? "#000" : "#ccc")};
-`;
-
-const Title = styled.h2`
-  margin-bottom: 20px;
-`;
-
-const InputContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
-`;
-
-const Label = styled.p`
-  font-weight: 600;
-`;
-
-const SubLabel = styled(Label)`
-  font-size: 14px;
-`;
-
-const Buttons = styled.div`
-  display: flex;
-  gap: 10px;
-  width: 100%;
-  justify-content: center;
-`;
-
-const SubmitBtnContainer = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-const Input = styled.input`
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  width: 100%;
-`;
-
-export const SelectBox = styled.select`
-  width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
-`;
+import { useAccount } from "wagmi";
+import useWrite from "../hooks/useContract";
+import Loader from "./Loader";
+import {
+  Buttons,
+  Input,
+  InputContainer,
+  Label,
+  ModalContainer,
+  Overlay,
+  SelectBox,
+  Step,
+  StepsContainer,
+  SubLabel,
+  SubmitBtnContainer,
+  Title,
+} from "./ModalStyles";
 
 const Modal = ({ toggle }) => {
-  const [name, setName] = useState("");
-  const [symbol, setSymbol] = useState("");
-  const [chainId, setChainId] = useState("");
-  const [type, setType] = useState("");
+  const { address } = useAccount();
+
+  // Step 1
+  const [clusterId, setClusterId] = useState("A");
+  const [maxSequencerNumber, setMaxSequencerNumber] = useState(30);
+
+  // Step 2
+  const [rollupId, setRollupId] = useState("1");
+  const [chainType, setChainType] = useState("ethereum");
+  const [orderCommitmentType, setOrderCommitmentType] =
+    useState("orderCommitment");
+  const [platform, setPlatform] = useState("ethereum");
+  const [serviceProvider, setServiceProvider] = useState("eigenlayer");
+  const [rpcUrl, setRpcUrl] = useState("https://www.google.ru/");
+  const [webSocketUrl, setWebSocketUrl] = useState("https://www.naver.com/");
+  const [blockExplorerUrl, setBlockExplorerUrl] = useState(
+    "https://www.hello-world.com/"
+  );
+
   const [step, setStep] = useState(1);
+  const [transactionCompleted, setTransactionCompleted] = useState(false); // New state to track transaction completion
 
+  const { write, hash, isHashPending } = useWrite();
+
+  // Handle cluster initialization (Step 1)
   const handleInitializeCluster = () => {
-    console.log({ name, symbol, chainId, type });
-    setStep(2);
-  };
-  const handleAddRollup = () => {
-    console.log({ name, symbol, chainId, type });
-    setStep(3);
+    write("initializeCluster", [clusterId, maxSequencerNumber]);
+    setTransactionCompleted(false); // Reset the flag when a new transaction begins
   };
 
-  const handleAddServerData = () => {
-    console.log({ name, symbol, chainId, type });
-    toggle();
+  // Handle rollup addition (Step 2)
+  const handleAddRollup = () => {
+    write("addRollup", [
+      clusterId,
+      rollupId,
+      chainType,
+      address,
+      orderCommitmentType,
+      { platform, serviceProvider },
+    ]);
+    setTransactionCompleted(false); // Reset the flag when a new transaction begins
   };
+
+  // Handle server data submission (Step 3)
+  const handleAddServerData = () => {
+    write("addServerData", [rpcUrl, webSocketUrl, blockExplorerUrl]);
+    setTransactionCompleted(false); // Reset the flag when a new transaction begins
+  };
+
+  // Effect to move to the next step when the hash arrives and it's not pending
+  useEffect(() => {
+    console.log("hash", hash);
+
+    // Only proceed if the transaction is not pending and it hasn't already triggered a step transition
+    if (hash && !isHashPending && !transactionCompleted) {
+      if (step === 1) {
+        setStep(2);
+      } else if (step === 2) {
+        setStep(3);
+      } else if (step === 3) {
+        toggle();
+      }
+      setTransactionCompleted(true); // Mark the transaction as completed, preventing multiple triggers
+    }
+  }, [hash, isHashPending, step, transactionCompleted]);
 
   return (
     <Overlay onClick={toggle}>
@@ -123,48 +102,56 @@ const Modal = ({ toggle }) => {
           <Step $active={step === 2}></Step>
           <Step $active={step === 3}></Step>
         </StepsContainer>
-        {(step === 1 && (
-          <>
-            <InputContainer>
-              <Label>Cluster ID</Label>
-              <Input
-                type="text"
-                onChange={(e) => {
-                  setName(e.target.value);
-                }}
-              />
-            </InputContainer>{" "}
-            <InputContainer>
-              <Label>Max # of sequencers</Label>
-              <Input
-                type="text"
-                onChange={(e) => {
-                  setName(e.target.value);
-                }}
-              />
-            </InputContainer>{" "}
-          </>
-        )) ||
+        {isHashPending ? (
+          <Loader />
+        ) : (
+          (step === 1 && (
+            <>
+              <InputContainer>
+                <Label>Cluster ID</Label>
+                <Input
+                  value={clusterId}
+                  type="text"
+                  onChange={(e) => {
+                    setClusterId(e.target.value);
+                  }}
+                />
+              </InputContainer>{" "}
+              <InputContainer>
+                <Label>Max # of sequencers</Label>
+                <Input
+                  value={maxSequencerNumber}
+                  type="text"
+                  onChange={(e) => {
+                    setMaxSequencerNumber(e.target.value);
+                  }}
+                />
+              </InputContainer>{" "}
+            </>
+          )) ||
           (step === 2 && (
             <>
               <InputContainer>
                 <Label>Rollup Id</Label>
                 <Input
+                  value={rollupId}
                   type="text"
                   onChange={(e) => {
-                    setChainId(e.target.value);
+                    setRollupId(e.target.value);
                   }}
                 />
               </InputContainer>
               <InputContainer>
                 <Label>Chain Type</Label>
-                <SelectBox>
+                <SelectBox onChange={(e) => setChainType(e.target.value)}>
                   <option defaultValue="Ethereum">Ethereum</option>
                 </SelectBox>
               </InputContainer>{" "}
               <InputContainer>
                 <Label>Order Commitment Type</Label>
-                <SelectBox>
+                <SelectBox
+                  onChange={(e) => setOrderCommitmentType(e.target.value)}
+                >
                   <option defaultValue="orderCommtiment">
                     Order Commitment
                   </option>
@@ -184,14 +171,16 @@ const Modal = ({ toggle }) => {
               >
                 <InputContainer>
                   <SubLabel>Platform</SubLabel>
-                  <SelectBox>
-                    <option>Ethereum</option>
+                  <SelectBox onChange={(e) => setPlatform(e.target.value)}>
+                    <option defaultValue="ethereum">Ethereum</option>
                   </SelectBox>
                 </InputContainer>{" "}
                 <InputContainer>
                   <SubLabel>Service provider</SubLabel>
-                  <SelectBox>
-                    <option defaultValue="Eigenlayer">Eigenlayer</option>
+                  <SelectBox
+                    onChange={(e) => setServiceProvider(e.target.value)}
+                  >
+                    <option defaultValue="eigenlayer">Eigenlayer</option>
                     <option>Symbiotic</option>
                   </SelectBox>
                 </InputContainer>
@@ -203,9 +192,10 @@ const Modal = ({ toggle }) => {
               <InputContainer>
                 <Label>RPC URL</Label>
                 <Input
+                  value={rpcUrl}
                   type="text"
                   onChange={(e) => {
-                    setName(e.target.value);
+                    setRpcUrl(e.target.value);
                   }}
                 />
               </InputContainer>
@@ -213,22 +203,25 @@ const Modal = ({ toggle }) => {
                 <Label>Web-Socket URL</Label>
                 <Input
                   type="text"
+                  value={webSocketUrl}
                   onChange={(e) => {
-                    setSymbol(e.target.value);
+                    setWebSocketUrl(e.target.value);
                   }}
                 />
               </InputContainer>
               <InputContainer>
                 <Label>Block Explorer URL</Label>
                 <Input
+                  value={blockExplorerUrl}
                   type="text"
                   onChange={(e) => {
-                    setChainId(e.target.value);
+                    setBlockExplorerUrl(e.target.value);
                   }}
                 />
               </InputContainer>
             </>
-          ))}
+          ))
+        )}
         <Buttons>
           <SubmitBtnContainer>
             <Button onClick={handleInitializeCluster} disabled={step !== 1}>

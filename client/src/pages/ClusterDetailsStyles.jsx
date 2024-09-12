@@ -70,6 +70,7 @@ export const Property = styled.p`
 
 export const Value = styled.p`
   flex: 1;
+  font-weight: 600;
 `;
 
 export const Table = styled.div``;

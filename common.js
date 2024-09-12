@@ -122,6 +122,12 @@ const contractAbi = [
         name: "owner",
         type: "address",
       },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "maxSequencerNumber",
+        type: "uint256",
+      },
     ],
     name: "InitializeCluster",
     type: "event",
@@ -904,11 +910,6 @@ const contractAbi = [
     type: "function",
   },
 ];
-
-// CommonJS export for Node.js (backend)
-if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
-  module.exports = { contractAddress, contractAbi };
-}
 
 // ES6 export for frontend (browser)
 export { contractAddress, contractAbi };

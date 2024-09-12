@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import Button from "../components/Button";
+import Button from "./Button";
 
 export const CardsContainer = styled.div`
   display: grid;
@@ -36,14 +36,16 @@ export const NameIdEditWrapper = styled.div`
 
 export const NameIdWrapper = styled.div`
   display: flex;
-  flex-direction: column;
+  gap: 10px;
 `;
 
 export const Name = styled.span`
-  font-weight: 600;
-  font-size: 20px;
+  font-size: 16px;
 `;
-export const Id = styled.span``;
+export const Id = styled.span`
+  font-weight: 600;
+  font-size: 16px;
+`;
 
 export const EditBtn = styled(Button)``;
 
@@ -54,11 +56,11 @@ export const PropsWrapper = styled.div`
 
 export const PropWrapper = styled.div`
   display: flex;
-  flex-direction: column;
+  gap: 10px;
 `;
 
-export const PropTitle = styled.span`
+export const PropTitle = styled.span``;
+export const PropValue = styled.span`
   font-weight: 600;
-  font-size: 20px;
+  font-size: 16px;
 `;
-export const PropValue = styled.span``;

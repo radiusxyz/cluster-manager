@@ -12,12 +12,12 @@ const getJoinedClusters = async (walletAddress) => {
   return await Cluster.find({ sequencers: walletAddress });
 };
 
-const getSequencersInCluster = async (clusterId) => {
+const getCluster = async (clusterId) => {
   const cluster = await Cluster.findOne({ clusterId });
   if (!cluster) {
     throw new Error("Cluster not found");
   }
-  return cluster.sequencers;
+  return cluster;
 };
 
 const initializeCluster = async (logs) => {
@@ -62,8 +62,8 @@ const addRollup = async (logs) => {
       if (!cluster) {
         throw new Error(`Cluster with ID ${clusterId} not found`);
       }
-
-      cluster.rollupAddress = rollupAddress;
+      cluster.rollupId = rollupId;
+      cluster.rollupOwnerAddress = rollupOwnerAddress;
       await cluster.save();
       console.log(
         `Rollup ${rollupAddress} added to Cluster ${clusterId} successfully.`
@@ -148,7 +148,7 @@ const clusterService = {
   getAllClusters,
   getGeneratedClusters,
   getJoinedClusters,
-  getSequencersInCluster,
+  getCluster,
   initializeCluster,
   addRollup,
   registerSequencer,
