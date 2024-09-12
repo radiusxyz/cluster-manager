@@ -1,4 +1,5 @@
 import Cluster from "../models/clusterModel.js";
+import { getRollupInfoList } from "./contractService.js";
 
 const getAllClusters = async () => {
   return await Cluster.find();
@@ -52,17 +53,30 @@ const addRollup = async (logs) => {
       const clusterId = log.args.clusterId;
       const rollupId = log.args.rollupId;
       const rollupOwnerAddress = log.args.rollupOwnerAddress;
-      const rollupType = log.args.rollupType;
-      const orderCommitmentType = log.args.orderCommitmentType;
-      const validationInfo = {
-        platform: log.args.platform,
-        serviceProvider: log.args.serviceProvider,
-      };
-      const executors = log.args.executors.map((executor) => ({
-        address: executor.address,
-        rpcUrl: executor.rpcUrl,
-        websocketUrl: executor.websocketUrl,
-        blockExplorerUrl: executor.blockExplorerUrl,
+
+      const rollupInfoList = await getRollupInfoList(clusterId);
+      const rollupInfo = rollupInfoList.find(
+        (info) => info.rollupId === rollupId
+      );
+
+      if (!rollupInfo) {
+        throw new Error(
+          `Rollup with ID ${rollupId} not found in contract for cluster ${clusterId}`
+        );
+      }
+
+      const {
+        chainType,
+        validationInfo,
+        orderCommitmentType,
+        executorAddresses,
+      } = rollupInfo;
+
+      const executors = executorAddresses.map((address) => ({
+        address,
+        rpcUrl: "",
+        websocketUrl: "",
+        blockExplorerUrl: "",
       }));
 
       const cluster = await Cluster.findOne({ clusterId });
@@ -70,13 +84,15 @@ const addRollup = async (logs) => {
         throw new Error(`Cluster with ID ${clusterId} not found`);
       }
 
-      // Push the new rollup to the array of rollups
       cluster.rollups.push({
         rollupId,
         owner: rollupOwnerAddress,
-        type: rollupType,
+        type: chainType,
         orderCommitmentType,
-        validationInfo,
+        validationInfo: {
+          platform: validationInfo.platform,
+          serviceProvider: validationInfo.serviceProvider,
+        },
         executors,
       });
 
