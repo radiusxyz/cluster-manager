@@ -25,26 +25,21 @@ const initializeCluster = async (logs) => {
   try {
     for (const log of logs) {
       const clusterId = log.args.clusterId;
+      const maxSequencerNumber = log.args.maxSequencerNumber;
       const owner = log.args.owner;
 
       const newCluster = new Cluster({
         clusterId,
         owner,
-        name: log.args.name || "",
-        symbol: log.args.symbol || "",
-        rpcUrl: log.args.rpcUrl || "",
-        webSocketUrl: log.args.webSocketUrl || "",
-        chainId: log.args.chainId || "",
-        rollupType: log.args.rollupType || "",
-        blockExplorerUrl: log.args.blockExplorerUrl || "",
-        sequencers: Array(30).fill(
+        sequencers: Array(maxSequencerNumber).fill(
           "0x0000000000000000000000000000000000000000"
         ),
-        createdAt: new Date(),
+        rollups: [],
+        maxSequencerNumber,
       });
 
       await newCluster.save();
-      console.log(`Cluster with ID ${clusterId} created successfully.`);
+      console.log(`Cluster with ID ${clusterId} created by owner ${owner}.`);
     }
   } catch (error) {
     console.error("Error in initializeCluster:", error.message);
@@ -57,16 +52,37 @@ const addRollup = async (logs) => {
       const clusterId = log.args.clusterId;
       const rollupId = log.args.rollupId;
       const rollupOwnerAddress = log.args.rollupOwnerAddress;
-      const cluster = await Cluster.findOne({ clusterId });
+      const rollupType = log.args.rollupType;
+      const orderCommitmentType = log.args.orderCommitmentType;
+      const validationInfo = {
+        platform: log.args.platform,
+        serviceProvider: log.args.serviceProvider,
+      };
+      const executors = log.args.executors.map((executor) => ({
+        address: executor.address,
+        rpcUrl: executor.rpcUrl,
+        websocketUrl: executor.websocketUrl,
+        blockExplorerUrl: executor.blockExplorerUrl,
+      }));
 
+      const cluster = await Cluster.findOne({ clusterId });
       if (!cluster) {
         throw new Error(`Cluster with ID ${clusterId} not found`);
       }
-      cluster.rollupId = rollupId;
-      cluster.rollupOwnerAddress = rollupOwnerAddress;
+
+      // Push the new rollup to the array of rollups
+      cluster.rollups.push({
+        rollupId,
+        owner: rollupOwnerAddress,
+        type: rollupType,
+        orderCommitmentType,
+        validationInfo,
+        executors,
+      });
+
       await cluster.save();
       console.log(
-        `Rollup ${rollupAddress} added to Cluster ${clusterId} successfully.`
+        `Rollup ${rollupId} added to Cluster ${clusterId} successfully.`
       );
     }
   } catch (error) {
