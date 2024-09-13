@@ -185,34 +185,31 @@ const updateCluster = async (clusterId, updateData) => {
   try {
     const cluster = await Cluster.findOne({ clusterId });
     if (!cluster) {
-      return res.status(404).json({ message: "Cluster not found" });
+      throw new Error("Cluster not found");
     }
 
-    // Find the rollup
     const rollup = cluster.rollups.find((r) => r.rollupId === rollupId);
     if (!rollup) {
-      return res.status(404).json({ message: "Rollup not found" });
+      throw new Error("Rollup not found");
     }
 
-    // Find the executor and update the rpcUrl
     const executor = rollup.executors.find(
       (e) => e.address === executorAddress
     );
 
     if (!executor) {
-      return res.status(404).json({ message: "Executor not found" });
+      throw new Error("Executor not found");
     }
 
-    executor.rpcUrl = rpcUrl; // Update the rpcUrl
-    executor.blockExplorerUrl = blockExplorerUrl; // Update the blockExplorerUrl
-    executor.websocketUrl = websocketUrl; // Update the websocket
+    executor.rpcUrl = rpcUrl;
+    executor.blockExplorerUrl = blockExplorerUrl;
+    executor.websocketUrl = websocketUrl;
 
-    await cluster.save(); // Save the updated cluster
-    res.status(200).json({ message: "RPC URL updated successfully" });
+    const updatedCluster = await cluster.save();
+    console.log(updatedCluster);
+    return updatedCluster;
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error updating cluster", error: error.message });
+    throw new Error(error.message);
   }
 };
 

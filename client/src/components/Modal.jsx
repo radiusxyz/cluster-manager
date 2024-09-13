@@ -17,6 +17,7 @@ import {
   SubmitBtnContainer,
   Title,
 } from "./ModalStyles";
+import { usePATCH } from "../hooks/useServer";
 
 const Modal = ({ toggle }) => {
   const { address } = useAccount();
@@ -43,6 +44,22 @@ const Modal = ({ toggle }) => {
 
   const { write, hash, isHashPending } = useWrite();
 
+  const {
+    mutate: patchData,
+    isLoading: isPatchLoading,
+    isError: isPatchError,
+    error: patchError,
+  } = usePATCH(`http://localhost:3333/api/v1/clusters/${clusterId}`, {
+    onSuccess: (data) => {
+      console.log("Resource updated successfully:", data);
+    },
+    onError: (error) => {
+      console.log(data);
+
+      console.error("Error updating resource:", error);
+    },
+  });
+
   // Handle cluster initialization (Step 1)
   const handleInitializeCluster = () => {
     write("initializeCluster", [clusterId, maxSequencerNumber]);
@@ -62,10 +79,19 @@ const Modal = ({ toggle }) => {
     setTransactionCompleted(false); // Reset the flag when a new transaction begins
   };
 
-  // Handle server data submission (Step 3)
   const handleAddServerData = () => {
-    write("addServerData", [rpcUrl, webSocketUrl, blockExplorerUrl]);
-    setTransactionCompleted(false); // Reset the flag when a new transaction begins
+    const data = {
+      rollupId,
+      executorAddress: address,
+      rpcUrl,
+      blockExplorerUrl,
+      websocketUrl: webSocketUrl,
+    };
+    patchData(data);
+    console.log("data", data);
+    if (!isPatchError) {
+      setTransactionCompleted(true);
+    }
   };
 
   // Effect to move to the next step when the hash arrives and it's not pending

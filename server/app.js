@@ -23,7 +23,7 @@ mongoose
   .then(async () => {
     console.log("DB connection successful!");
     // Clear the Cluster collection on startup
-    // await Cluster.deleteMany({});
+
     // console.log("Cluster collection cleared");
   })
   .catch((error) => {

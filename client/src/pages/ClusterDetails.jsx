@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as s from "./ClusterDetailsStyles";
 import Copy from "../components/Copy";
 import { useParams } from "react-router";
-import useGET from "../hooks/useServer";
+import { useGET } from "../hooks/useServer";
 import Loader from "../components/Loader";
 
 const ClusterDetails = () => {

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import * as s from "./ExplorerStyles";
 import Loader from "../components/Loader";
 
-import useGET from "../hooks/useServer";
+import { useGET } from "../hooks/useServer";
 
 import Modal from "../components/Modal";
 
