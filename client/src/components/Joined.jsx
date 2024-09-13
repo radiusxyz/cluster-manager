@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { tableStyles as tS } from "../pages/ExplorerStyles";
 import Loader from "./Loader";
-import useGET from "../hooks/useServer";
+import { useGET } from "../hooks/useServer";
 
 const Joined = ({ address }) => {
   const [clustersJoined, setClustersJoined] = useState(null);

@@ -7,8 +7,6 @@ import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
 import { localhost } from "../config.js";
 
-const [CONTRACT_ADDRESS, CONTRACT_ABI] = [contractAddress, contractAbi];
-
 // setting the public client
 const client = createPublicClient({
   chain: localhost,
@@ -22,12 +20,18 @@ const watchContractEventFromBlock = async (eventName, handleEvent) => {
     const lastProcessedBlock = await blockSyncService.getLastProcessedBlock(
       eventName
     );
+    const currentBlock = await client.getBlock();
+    const currentBlockNumber = currentBlock.number;
+    console.log(currentBlockNumber);
+    console.log(lastProcessedBlock);
 
     client.watchContractEvent({
-      address: CONTRACT_ADDRESS,
-      abi: CONTRACT_ABI,
+      address: contractAddress,
+      abi: contractAbi,
       eventName,
-      fromBlock: lastProcessedBlock ? BigInt(lastProcessedBlock) : 1n, // Default to block 1 if no record found
+      // fromBlock: lastProcessedBlock
+      //   ? BigInt(lastProcessedBlock)
+      //   : BigInt(currentBlockNumber), // Default to block 1 if no record found
       onLogs: async (logs) => {
         console.log(`Received ${eventName} event logs:`, logs);
 

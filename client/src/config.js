@@ -1,9 +1,5 @@
 import { http, createConfig, injected } from "@wagmi/core";
 import { defineChain } from "viem";
-import {
-  contractAddress as hhCA,
-  contractAbi as hhAbi,
-} from "../../server/config";
 
 export const localhost = /*#__PURE__*/ defineChain({
   id: 31337,
@@ -25,6 +21,3 @@ export const config = createConfig({
   },
   connectors: [injected()],
 });
-
-export const contractAddress = hhCA;
-export const contractAbi = hhAbi;

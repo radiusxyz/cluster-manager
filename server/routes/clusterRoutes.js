@@ -13,6 +13,6 @@ router.get(
   clusterController.getJoinedClusters
 );
 router.get("/clusters/:clusterId", clusterController.getCluster);
-router.post("/clusters/:clusterId", clusterController.updateCluster);
+router.patch("/clusters/:clusterId", clusterController.updateCluster);
 
 export default router;
