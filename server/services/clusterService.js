@@ -23,7 +23,6 @@ const getCluster = async (clusterId) => {
 };
 
 const initializeCluster = async (logs) => {
-  console.log("initializeCluster logs: ", logs);
   try {
     for (const log of logs) {
       const clusterId = log.args.clusterId;
@@ -56,7 +55,6 @@ const addRollup = async (logs) => {
       const rollupOwnerAddress = log.args.rollupOwnerAddress;
 
       const rollupInfoList = await getRollupInfoList(clusterId);
-      console.log("rollupInfoList:", rollupInfoList);
       const rollupInfo = rollupInfoList.find(
         (info) => info.rollupId === rollupId
       );
@@ -206,7 +204,6 @@ const updateCluster = async (clusterId, updateData) => {
     executor.websocketUrl = websocketUrl;
 
     const updatedCluster = await cluster.save();
-    console.log(updatedCluster);
     return updatedCluster;
   } catch (error) {
     throw new Error(error.message);

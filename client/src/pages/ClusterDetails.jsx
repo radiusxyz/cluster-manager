@@ -53,7 +53,9 @@ const ClusterDetails = () => {
             <s.InfoItem>
               <s.Property>Web-Socket URL</s.Property>
               <s.Value>
-                {cluster.webSocketUrl ? cluster.webSocketUrl : "not added"}
+                {cluster.rollups[0].executors[0].websocketUrl
+                  ? cluster.rollups[0].executors[0].websocketUrl
+                  : "not added"}
               </s.Value>{" "}
               <Copy />
             </s.InfoItem>
@@ -61,7 +63,9 @@ const ClusterDetails = () => {
               <s.Property>RPC-URL</s.Property>
               <s.Value>
                 {" "}
-                {cluster.rpcUrl ? cluster.rpcUrl : "not added"}
+                {cluster.rollups[0].executors[0]
+                  ? cluster.rollups[0].executors[0].rpcUrl
+                  : "not added"}
               </s.Value>{" "}
               <Copy />
             </s.InfoItem>
@@ -69,8 +73,8 @@ const ClusterDetails = () => {
               <s.Property>Block Explorer URL</s.Property>
               <s.Value>
                 {" "}
-                {cluster.blockExplorerUrl
-                  ? cluster.blockExplorerUrl
+                {cluster.rollups[0].executors[0]
+                  ? cluster.rollups[0].executors[0].blockExplorerUrl
                   : "not added"}
               </s.Value>{" "}
               <Copy />
