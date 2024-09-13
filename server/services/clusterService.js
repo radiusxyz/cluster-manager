@@ -1,3 +1,4 @@
+import e from "express";
 import Cluster from "../models/clusterModel.js";
 import { getRollupInfoList } from "./contractService.js";
 
@@ -26,7 +27,7 @@ const initializeCluster = async (logs) => {
   try {
     for (const log of logs) {
       const clusterId = log.args.clusterId;
-      const maxSequencerNumber = log.args.maxSequencerNumber;
+      const maxSequencerNumber = Number(log.args.maxSequencerNumber);
       const owner = log.args.owner;
 
       const newCluster = new Cluster({
@@ -55,6 +56,7 @@ const addRollup = async (logs) => {
       const rollupOwnerAddress = log.args.rollupOwnerAddress;
 
       const rollupInfoList = await getRollupInfoList(clusterId);
+      console.log("rollupInfoList:", rollupInfoList);
       const rollupInfo = rollupInfoList.find(
         (info) => info.rollupId === rollupId
       );
@@ -74,9 +76,9 @@ const addRollup = async (logs) => {
 
       const executors = executorAddresses.map((address) => ({
         address,
-        rpcUrl: "",
-        websocketUrl: "",
-        blockExplorerUrl: "",
+        rpcUrl: "not added",
+        websocketUrl: "not added",
+        blockExplorerUrl: "not added",
       }));
 
       const cluster = await Cluster.findOne({ clusterId });
@@ -176,11 +178,50 @@ const deregisterSequencer = async (logs) => {
   }
 };
 
+const updateCluster = async (clusterId, updateData) => {
+  const { rollupId, executorAddress, rpcUrl, blockExplorerUrl, websocketUrl } =
+    updateData;
+
+  try {
+    const cluster = await Cluster.findOne({ clusterId });
+    if (!cluster) {
+      return res.status(404).json({ message: "Cluster not found" });
+    }
+
+    // Find the rollup
+    const rollup = cluster.rollups.find((r) => r.rollupId === rollupId);
+    if (!rollup) {
+      return res.status(404).json({ message: "Rollup not found" });
+    }
+
+    // Find the executor and update the rpcUrl
+    const executor = rollup.executors.find(
+      (e) => e.address === executorAddress
+    );
+
+    if (!executor) {
+      return res.status(404).json({ message: "Executor not found" });
+    }
+
+    executor.rpcUrl = rpcUrl; // Update the rpcUrl
+    executor.blockExplorerUrl = blockExplorerUrl; // Update the blockExplorerUrl
+    executor.websocketUrl = websocketUrl; // Update the websocket
+
+    await cluster.save(); // Save the updated cluster
+    res.status(200).json({ message: "RPC URL updated successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error updating cluster", error: error.message });
+  }
+};
+
 const clusterService = {
   getAllClusters,
   getGeneratedClusters,
   getJoinedClusters,
   getCluster,
+  updateCluster,
   initializeCluster,
   addRollup,
   registerSequencer,

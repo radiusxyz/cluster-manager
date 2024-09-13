@@ -1,5 +1,6 @@
 import { createPublicClient, http } from "viem";
 import { localhost } from "../config.js";
+import { contractAbi, contractAddress } from "../../common.js";
 
 const client = createPublicClient({
   chain: localhost,

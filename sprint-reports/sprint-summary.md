@@ -1,12 +1,13 @@
 # Sprint Summary
 
 ## Closed Issues
+
 - [refactor: remove redundant properties, fix styles](https://github.com/radiusxyz/cluster-manager/pull/100) - Closed by @gylman
 - [feat: replace ~proposer set~ with ~cluster~, style appropriately filt…](https://github.com/radiusxyz/cluster-manager/pull/99) - Closed by @gylman
 - [Rename `Proposer Set` in all the codebase](https://github.com/radiusxyz/cluster-manager/issues/98) - Closed by @gylman
 - [Feat/implement configs page](https://github.com/radiusxyz/cluster-manager/pull/97) - Closed by @gylman
 - [Modal needs additional step: Add Rollup](https://github.com/radiusxyz/cluster-manager/issues/93) - Closed by @gylman
-- [implement dynamic 2-step  modal interactive ui](https://github.com/radiusxyz/cluster-manager/pull/92) - Closed by @gylman
+- [implement dynamic 2-step modal interactive ui](https://github.com/radiusxyz/cluster-manager/pull/92) - Closed by @gylman
 - [Modal needed for joining the proposer set and submitting the URLs to the server](https://github.com/radiusxyz/cluster-manager/issues/91) - Closed by @gylman
 - [Feat/implement wireframe](https://github.com/radiusxyz/cluster-manager/pull/90) - Closed by @gylman
 - [Feat/selectbox and dashboard page](https://github.com/radiusxyz/cluster-manager/pull/89) - Closed by @gylman
