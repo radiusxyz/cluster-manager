@@ -22,7 +22,7 @@ const watchContractEventFromBlock = async (eventName, handleEvent) => {
     );
 
     const fromBlock = lastProcessedBlock
-      ? BigInt(lastProcessedBlock)
+      ? BigInt(lastProcessedBlock + 1)
       : BigInt(1);
 
     console.log(fromBlock);
