@@ -5,6 +5,7 @@ import startEventListeners from "./listeners/eventListeners.js";
 import clusterRoutes from "./routes/clusterRoutes.js";
 import mongoose from "mongoose";
 import Cluster from "./models/clusterModel.js";
+import BlockSync from "./models/blockSyncModel.js";
 dotenv.config({ path: "./.env" });
 
 const app = express();
@@ -22,8 +23,9 @@ mongoose
   .connect(DB)
   .then(async () => {
     console.log("DB connection successful!");
-    // Clear the Cluster collection on startup
-
+    // // Clear the Cluster collection on startup
+    // await Cluster.deleteMany({});
+    // await BlockSync.deleteMany({});
     // console.log("Cluster collection cleared");
   })
   .catch((error) => {

@@ -20,18 +20,18 @@ const watchContractEventFromBlock = async (eventName, handleEvent) => {
     const lastProcessedBlock = await blockSyncService.getLastProcessedBlock(
       eventName
     );
-    const currentBlock = await client.getBlock();
-    const currentBlockNumber = currentBlock.number;
-    console.log(currentBlockNumber);
-    console.log(lastProcessedBlock);
+
+    const fromBlock = lastProcessedBlock
+      ? BigInt(lastProcessedBlock)
+      : BigInt(1);
+
+    console.log(fromBlock);
 
     client.watchContractEvent({
       address: contractAddress,
       abi: contractAbi,
       eventName,
-      // fromBlock: lastProcessedBlock
-      //   ? BigInt(lastProcessedBlock)
-      //   : BigInt(currentBlockNumber), // Default to block 1 if no record found
+      fromBlock,
       onLogs: async (logs) => {
         console.log(`Received ${eventName} event logs:`, logs);
 
