@@ -1,3 +1,47 @@
+# Setup
+
+#### 1. **Client Setup**
+   Navigate to the `client` directory and install the necessary dependencies. Once installed, start the development server:
+
+   ```bash
+   cd client
+   npm install
+   npm run dev
+   ```
+
+#### 2. **Blockchain Setup**
+   Move to the `chain` directory to install dependencies, compile the contracts, and deploy them using Hardhat:
+
+   ```bash
+   cd chain
+   npm install
+   npx hardhat compile
+   npx hardhat ignition deploy ignition/modules/ProxyModule.ts --network localhost
+   ```
+
+#### 3. **Server Setup**
+   Navigate to the `server` directory, set up your environment variables, install MongoDB, and then start the server:
+
+   1. **Add the `.env` file** with the following content:
+      ```env
+      DATABASE=mongodb://localhost:27017/proposer-set-manager
+      ```
+
+   2. **Install MongoDB** using Homebrew:
+      ```bash
+      brew tap mongodb/brew
+      brew update
+      brew install mongodb-community@7.0
+      brew services start mongodb-community@7.0
+      ```
+
+   3. **Install dependencies and start the server:**
+      ```bash
+      npm install
+      npm run dev
+      ```
+---
+
 # Client
 
 ## Overview
@@ -61,12 +105,6 @@ The application uses a `createBrowserRouter` from React Router to manage navigat
 
 - The application assumes that the backend API is running locally on `http://localhost:3333`.
 - It is recommended to connect your Ethereum wallet to interact with the blockchain features effectively.
-
-## Future Improvements
-
-- **Enhanced Filtering:** Expand the filtering options in the `Explorer` component to allow more granular control over displayed clusters.
-- **Error Handling:** Improve error handling in API requests to provide better feedback to users.
-- **Documentation:** Include inline documentation and comments in the codebase for better maintainability.
 
 ---
 
