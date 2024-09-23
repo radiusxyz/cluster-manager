@@ -39,7 +39,7 @@ const Dashboard = () => {
         <s.Tab $active={activeTab === "joined" ? 1 : 0} onClick={toggleTab}>
           Joined
         </s.Tab>
-        <s.ConnectWalletBtn>Connect Wallet</s.ConnectWalletBtn>
+        {/* <s.ConnectWalletBtn>Connect Wallet</s.ConnectWalletBtn> */}
       </s.TabsWrapper>
       {activeTab === "joined" ? (
         <Joined address={queryAddress} />
