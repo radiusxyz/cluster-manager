@@ -29,11 +29,19 @@ export const Title = styled.p`
   text-align: left;
 `;
 
-export const JoinBtn = styled(StyledButton)`
-  margin-top: auto;
-  align-self: flex-start;
+export const BtnsContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
   margin-left: auto;
+  margin-top: auto;
 `;
+
+export const JoinBtn = styled(StyledButton)`
+  align-self: flex-start;
+`;
+
+export const RunBtn = styled(StyledButton)``;
 
 export const Container = styled.div`
   display: flex;

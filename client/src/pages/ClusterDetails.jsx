@@ -6,13 +6,17 @@ import { useGET } from "../hooks/useServer";
 import Loader from "../components/Loader";
 import useWrite from "../hooks/useContract";
 import { useAccount } from "wagmi";
+import RunModal from "../components/RunModal";
 
 const ClusterDetails = () => {
   const { clusterId } = useParams();
   const { address } = useAccount();
   const [cluster, setCluster] = useState(null);
   const [shouldGetSequencers, setShouldGetSequencers] = useState(false);
-
+  const [showModal, setShowModal] = useState(false);
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
   const { write, hash, isHashPending } = useWrite();
 
   const {
@@ -35,6 +39,10 @@ const ClusterDetails = () => {
     }
   };
 
+  const handleRun = () => {
+    toggleModal();
+  };
+
   useEffect(() => {
     if (dataSequencers) {
       console.log("dataSequencers: ", dataSequencers);
@@ -48,9 +56,14 @@ const ClusterDetails = () => {
         <s.Title>Cluster details</s.Title>
         {/* TODO: Maybe add later, but currently, it is difficult to test, register deregister with it, because wallet is problematic */}
         {address && cluster && cluster.sequencers.includes(address) ? (
-          <s.JoinBtn onClick={handleJoinLeave}>Leave</s.JoinBtn>
+          <s.BtnsContainer>
+            <s.RunBtn onClick={handleRun}>Run</s.RunBtn>
+            <s.JoinBtn onClick={handleJoinLeave}>Leave</s.JoinBtn>
+          </s.BtnsContainer>
         ) : (
-          <s.JoinBtn onClick={handleJoinLeave}>Join</s.JoinBtn>
+          <s.BtnsContainer>
+            <s.JoinBtn onClick={handleJoinLeave}>Join</s.JoinBtn>
+          </s.BtnsContainer>
         )}
       </s.TitleJoinBtnContainer>
       <s.Container>
@@ -135,6 +148,7 @@ const ClusterDetails = () => {
           </s.Table>
         </s.Container>
       )}
+      {showModal && <RunModal toggle={toggleModal} cluster={cluster} />}
     </s.PageContainer>
   );
 };
