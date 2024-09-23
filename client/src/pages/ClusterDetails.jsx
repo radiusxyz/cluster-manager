@@ -148,7 +148,7 @@ const ClusterDetails = () => {
           </s.Table>
         </s.Container>
       )}
-      {showModal && <RunModal toggle={toggleModal} />}
+      {showModal && <RunModal toggle={toggleModal} cluster={cluster} />}
     </s.PageContainer>
   );
 };

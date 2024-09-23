@@ -17,7 +17,7 @@ import {
 
 import React from "react";
 
-const RunModal = ({ toggle }) => {
+const RunModal = ({ toggle, cluster }) => {
   return (
     <Overlay onClick={toggle}>
       <ModalContainer
@@ -26,6 +26,7 @@ const RunModal = ({ toggle }) => {
         }}
       >
         <Title>Run a sequencer</Title>
+        <div>{cluster?.configs}</div>
         <Buttons>
           <SubmitBtnContainer>
             <Button onClick={() => {}}>Download All</Button>
