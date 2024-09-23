@@ -14,11 +14,7 @@ const getJoinedClusters = async (walletAddress) => {
 };
 
 const getCluster = async (clusterId) => {
-  const cluster = await Cluster.findOne({ clusterId });
-  if (!cluster) {
-    throw new Error("Cluster not found");
-  }
-  return cluster;
+  return await Cluster.findOne({ clusterId });
 };
 
 const initializeCluster = async ({ clusterId, owner, maxSequencerNumber }) => {
@@ -158,12 +154,12 @@ const updateCluster = async (clusterId, updateData) => {
   try {
     const cluster = await Cluster.findOne({ clusterId });
     if (!cluster) {
-      throw new Error("Cluster not found");
+      return null;
     }
 
     const rollup = cluster.rollups.find((r) => r.rollupId === rollupId);
     if (!rollup) {
-      throw new Error("Rollup not found");
+      return null;
     }
 
     const executor = rollup.executors.find(
@@ -171,7 +167,7 @@ const updateCluster = async (clusterId, updateData) => {
     );
 
     if (!executor) {
-      throw new Error("Executor not found");
+      return null;
     }
 
     executor.rpcUrl = rpcUrl;
@@ -181,7 +177,8 @@ const updateCluster = async (clusterId, updateData) => {
     const updatedCluster = await cluster.save();
     return updatedCluster;
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Error in updateCluster:", error.message);
+    throw new Error("Failed to update cluster");
   }
 };
 
