@@ -4,12 +4,16 @@ import Copy from "../components/Copy";
 import { useParams } from "react-router";
 import { useGET } from "../hooks/useServer";
 import Loader from "../components/Loader";
+import useWrite from "../hooks/useContract";
+import { useAccount } from "wagmi";
 
 const ClusterDetails = () => {
   const { clusterId } = useParams();
-
+  const { address } = useAccount();
   const [cluster, setCluster] = useState(null);
   const [shouldGetSequencers, setShouldGetSequencers] = useState(false);
+
+  const { write, hash, isHashPending } = useWrite();
 
   const {
     isPending: isPendingSequencers,
@@ -23,6 +27,14 @@ const ClusterDetails = () => {
     3000
   );
 
+  const handleJoinLeave = () => {
+    if (cluster.sequencers.includes(address)) {
+      write("deregisterSequencer", [clusterId]);
+    } else {
+      write("registerSequencer", [clusterId]);
+    }
+  };
+
   useEffect(() => {
     if (dataSequencers) {
       console.log("dataSequencers: ", dataSequencers);
@@ -35,7 +47,11 @@ const ClusterDetails = () => {
       <s.TitleJoinBtnContainer>
         <s.Title>Cluster details</s.Title>
         {/* TODO: Maybe add later, but currently, it is difficult to test, register deregister with it, because wallet is problematic */}
-        {/* <s.JoinBtn>Join</s.JoinBtn> */}
+        {address && cluster && cluster.sequencers.includes(address) ? (
+          <s.JoinBtn onClick={handleJoinLeave}>Leave</s.JoinBtn>
+        ) : (
+          <s.JoinBtn onClick={handleJoinLeave}>Join</s.JoinBtn>
+        )}
       </s.TitleJoinBtnContainer>
       <s.Container>
         <s.SubTitle>Cluster Info</s.SubTitle>
@@ -53,8 +69,8 @@ const ClusterDetails = () => {
             <s.InfoItem>
               <s.Property>Web-Socket URL</s.Property>
               <s.Value>
-                {cluster.rollups[0].executors[0].websocketUrl
-                  ? cluster.rollups[0].executors[0].websocketUrl
+                {cluster.rollups[0]?.executors[0].websocketUrl
+                  ? cluster.rollups[0]?.executors[0].websocketUrl
                   : "not added"}
               </s.Value>{" "}
               <Copy />
@@ -63,8 +79,8 @@ const ClusterDetails = () => {
               <s.Property>RPC-URL</s.Property>
               <s.Value>
                 {" "}
-                {cluster.rollups[0].executors[0]
-                  ? cluster.rollups[0].executors[0].rpcUrl
+                {cluster.rollups[0]?.executors[0]
+                  ? cluster.rollups[0]?.executors[0].rpcUrl
                   : "not added"}
               </s.Value>{" "}
               <Copy />
@@ -73,8 +89,8 @@ const ClusterDetails = () => {
               <s.Property>Block Explorer URL</s.Property>
               <s.Value>
                 {" "}
-                {cluster.rollups[0].executors[0]
-                  ? cluster.rollups[0].executors[0].blockExplorerUrl
+                {cluster.rollups[0]?.executors[0]
+                  ? cluster.rollups[0]?.executors[0].blockExplorerUrl
                   : "not added"}
               </s.Value>{" "}
               <Copy />
