@@ -90,7 +90,7 @@ const Modal = ({ toggle }) => {
     patchData(data);
     console.log("data", data);
     if (!isPatchError) {
-      setTransactionCompleted(true);
+      setTransactionCompleted(false);
     }
   };
 
