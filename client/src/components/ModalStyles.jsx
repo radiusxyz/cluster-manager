@@ -73,6 +73,7 @@ export const Buttons = styled.div`
 export const SubmitBtnContainer = styled.div`
   display: flex;
   justify-content: center;
+  gap: 10px;
 `;
 
 export const Input = styled.input`
@@ -87,4 +88,34 @@ export const SelectBox = styled.select`
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 10px;
+`;
+
+export const Files = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+`;
+
+export const DownloadBinBtn = styled.a`
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  background: black;
+  color: white;
+  border: none;
+  &:hover {
+    cursor: pointer;
+    background: grey;
+    color: white;
+  }
+
+  &:disabled {
+    background: lightgray;
+    color: darkgray;
+    cursor: not-allowed; /* Change the cursor to indicate it's disabled */
+  }
 `;
