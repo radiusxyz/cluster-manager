@@ -1,4 +1,10 @@
 import clusterService from "../services/clusterService.js";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Create __dirname equivalent in ES6
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const getAllClusters = async (_, res) => {
   try {
@@ -58,12 +64,28 @@ const updateCluster = async (req, res) => {
   }
 };
 
+const downloadSequencer = (_, res) => {
+  try {
+    const filePath = path.join(__dirname, "../bin/sequencer.bin");
+    console.log(filePath);
+    res.download(filePath, "sequencer.bin", (err) => {
+      if (err) {
+        console.error("Error during file download:", err);
+        res.status(500).json({ error: "File download failed" });
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 const clusterController = {
   getAllClusters,
   getGeneratedClusters,
   getJoinedClusters,
   getCluster,
   updateCluster,
+  downloadSequencer,
 };
 
 export default clusterController;
