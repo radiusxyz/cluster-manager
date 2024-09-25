@@ -27,12 +27,11 @@ mongoose
     await Cluster.deleteMany({});
     await BlockSync.deleteMany({});
     // console.log("Cluster collection cleared");
+    await startEventListeners();
   })
   .catch((error) => {
     console.error("DB connection failed:", error.message);
     process.exit(1);
   });
-
-startEventListeners();
 
 export default app;
