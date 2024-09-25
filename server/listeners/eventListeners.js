@@ -22,10 +22,12 @@ const watchContractEventFromBlock = async (eventName, handleEvent) => {
     );
 
     const fromBlock = lastProcessedBlock
-      ? BigInt(lastProcessedBlock + 1)
+      ? BigInt(lastProcessedBlock)
       : BigInt(1);
+    const currentBlockNumber = await client.getBlockNumber();
 
-    console.log(fromBlock);
+    console.log("Last synced block", fromBlock, eventName);
+    console.log("Current block", currentBlockNumber, eventName);
 
     client.watchContractEvent({
       address: contractAddress,
@@ -54,32 +56,51 @@ const watchContractEventFromBlock = async (eventName, handleEvent) => {
 };
 
 // Define specific event handlers
-const watchInitializeCluster = () =>
-  watchContractEventFromBlock(
+const watchInitializeCluster = async () =>
+  await watchContractEventFromBlock(
     "InitializeCluster",
     eventService.handleInitializeCluster
   );
 
-const watchAddRollup = () =>
-  watchContractEventFromBlock("AddRollup", eventService.handleAddRollup);
+const watchAddRollup = async () =>
+  await watchContractEventFromBlock("AddRollup", eventService.handleAddRollup);
 
-const watchRegisterSequencer = () =>
-  watchContractEventFromBlock(
+const watchRegisterSequencer = async () =>
+  await watchContractEventFromBlock(
     "RegisterSequencer",
     eventService.handleRegisterSequencer
   );
-const watchDeregisterSequencer = () =>
-  watchContractEventFromBlock(
+const watchDeregisterSequencer = async () =>
+  await watchContractEventFromBlock(
     "DeregisterSequencer",
     eventService.handleDeregisterSequencer
   );
 
 // Start event listeners
-const startEventListeners = () => {
-  watchInitializeCluster();
-  watchAddRollup();
-  watchRegisterSequencer();
-  watchDeregisterSequencer();
+const startEventListeners = async () => {
+  try {
+    await watchInitializeCluster();
+  } catch (error) {
+    console.error("Failed to start InitializeCluster watcher:", error);
+  }
+
+  try {
+    await watchAddRollup();
+  } catch (error) {
+    console.error("Failed to start AddRollup watcher:", error);
+  }
+
+  try {
+    await watchRegisterSequencer();
+  } catch (error) {
+    console.error("Failed to start RegisterSequencer watcher:", error);
+  }
+
+  try {
+    await watchDeregisterSequencer();
+  } catch (error) {
+    console.error("Failed to start DeregisterSequencer watcher:", error);
+  }
 };
 
 export default startEventListeners;
