@@ -16,14 +16,11 @@ const client = createPublicClient({
 // Function to watch contract events starting from a specific block number
 const watchContractEventFromBlock = async (eventName, handleEvent) => {
   try {
-    // Get the last processed block number from the database
-    const lastProcessedBlock = await blockSyncService.getLastProcessedBlock(
-      eventName
-    );
+    // Get the last processed block number and transaction hash from the database
+    const { lastBlockNumber, lastTransactionHash } =
+      await blockSyncService.getLastProcessedEvent(eventName);
 
-    const fromBlock = lastProcessedBlock
-      ? BigInt(lastProcessedBlock)
-      : BigInt(1);
+    const fromBlock = lastBlockNumber ? BigInt(lastBlockNumber) : BigInt(1);
     const currentBlockNumber = await client.getBlockNumber();
 
     console.log("Last synced block", fromBlock, eventName);
@@ -38,13 +35,23 @@ const watchContractEventFromBlock = async (eventName, handleEvent) => {
         console.log(`Received ${eventName} event logs:`, logs);
 
         try {
-          await handleEvent(logs);
-          // Update the last processed block number in the database
-          const latestBlockNumber = logs[logs.length - 1].blockNumber;
-          await blockSyncService.updateLastProcessedBlock(
-            eventName,
-            Number(latestBlockNumber)
+          const filteredLogs = logs.filter(
+            (log) =>
+              log.blockNumber > lastBlockNumber ||
+              (log.blockNumber === lastBlockNumber &&
+                log.transactionHash !== lastTransactionHash)
           );
+
+          if (filteredLogs.length > 0) {
+            await handleEvent(filteredLogs);
+
+            // Update the last processed block number and transaction hash in the database
+            const latestLog = filteredLogs[filteredLogs.length - 1];
+            await blockSyncService.updateLastProcessedEvent(eventName, {
+              blockNumber: Number(latestLog.blockNumber),
+              transactionHash: latestLog.transactionHash,
+            });
+          }
         } catch (error) {
           console.error(`Error handling ${eventName} event:`, error);
         }
