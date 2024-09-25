@@ -1,0 +1,54 @@
+title Proposer Set Manager
+participant Frontend as F
+participant Smart Contract as C
+participant Backend as B
+participant Database as DB
+
+F->>F: 0. enter web-app
+F->>B: 1. fetch all proposerSetIds at / route
+B->>DB: 2. fetch all proposerSetIds
+DB-->>B: 3. proposerSetIds
+B-->>F: 4. proposerSetIds
+F->>F: 5. click "Generate Proposer Set"
+F->>C: 6. initializeProposerSet
+C->>C: 7. InitializeProposerSet event fires
+C->>B: 8. event logs
+B->>DB: 8.1. store new proposerSetId
+C->>F: 8. event logs
+F->>B: 9. fetch all proposerSetIds
+B->>DB: 10. fetch all proposerSetIds
+DB-->>B: 11. proposerSetIds
+B-->>F: 12. proposerSetIds
+F->>F: check if it is newly added proposerSetId
+F->>B: post URLs
+B->>DB: save URL's into the proposerSet document
+B->>DB: fetch the same proposerSet
+DB-->>B: proposerSet
+B-->>F: proposerSet
+F->>F: 13. click on any proposer set
+F->>B: 14. fetch all sequencers at /proposer-set/${proposerSetId}/sequencers
+B->>DB: 15. fetch all sequencers by proposer set id
+DB-->>B: 16. sequencer list
+B-->>F: 17. sequencer list
+F->>F: 18. click "Join"
+F->>C: 19. registerSequencer
+C->>C: 20. RegisterSequencer event fires
+C->>B: 21. event logs
+B->>DB: 21.1 store the sequencer address into \n array of sequencers for the given proposer set id
+B->>DB: 21.2 store the proposer id into \n array of sequencer's proposer set ids
+C->>F: 21. event logs
+F->>B: 22. fetch sequencer list of a given proposer set
+B->>DB: 23. fetch sequencer list of a given proposer set
+DB-->>B: 24. sequencer list
+B-->>F: 25. sequencer list
+F->>F: 26. click "Leave"
+F->>C: 27. deregisterSequencer
+C->>C: 28. DeregisterSequencer event fires
+C->>B: 29. event logs
+B->>DB: 29.1. remove sequencer address from array \n of sequencers for the given proposer set id
+B->>DB: 29.2. remove proposer id from array \n of sequencer's proposer sets id
+C->>F: 29. event logs
+F->>B: 30. fetch sequencer list of a given proposer set
+B->>DB: 31. fetch sequencer list of a given proposer set
+DB-->>B: 32. sequencer list
+B-->>F: 33. sequencer list
