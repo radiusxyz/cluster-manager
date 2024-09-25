@@ -2,7 +2,14 @@ import clusterService from "../services/clusterService.js";
 
 const handleInitializeCluster = async (logs) => {
   try {
-    await clusterService.initializeCluster(logs);
+    for (const log of logs) {
+      const clusterData = {
+        clusterId: log.args.clusterId,
+        owner: log.args.owner,
+        maxSequencerNumber: Number(log.args.maxSequencerNumber),
+      };
+      await clusterService.initializeCluster(clusterData);
+    }
   } catch (error) {
     console.error("Error in handleInitializeCluster:", error.message);
   }
@@ -10,7 +17,14 @@ const handleInitializeCluster = async (logs) => {
 
 const handleAddRollup = async (logs) => {
   try {
-    await clusterService.addRollup(logs);
+    for (const log of logs) {
+      const rollupData = {
+        clusterId: log.args.clusterId,
+        rollupId: log.args.rollupId,
+        rollupOwnerAddress: log.args.rollupOwnerAddress,
+      };
+      await clusterService.addRollup(rollupData);
+    }
   } catch (error) {
     console.error("Error in handleAddRollup:", error.message);
   }
@@ -18,7 +32,14 @@ const handleAddRollup = async (logs) => {
 
 const handleRegisterSequencer = async (logs) => {
   try {
-    await clusterService.registerSequencer(logs);
+    for (const log of logs) {
+      const sequencerData = {
+        clusterId: log.args.clusterId,
+        sequencerAddress: log.args.sequencerAddress,
+        index: log.args.index,
+      };
+      await clusterService.registerSequencer(sequencerData);
+    }
   } catch (error) {
     console.error("Error in handleRegisterSequencer:", error.message);
   }
@@ -26,7 +47,13 @@ const handleRegisterSequencer = async (logs) => {
 
 const handleDeregisterSequencer = async (logs) => {
   try {
-    await clusterService.deregisterSequencer(logs);
+    for (const log of logs) {
+      const sequencerData = {
+        clusterId: log.args.clusterId,
+        sequencerAddress: log.args.sequencerAddress,
+      };
+      await clusterService.deregisterSequencer(sequencerData);
+    }
   } catch (error) {
     console.error("Error in handleDeregisterSequencer:", error.message);
   }

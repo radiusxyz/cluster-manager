@@ -39,6 +39,11 @@ const getCluster = async (req, res) => {
   try {
     const { clusterId } = req.params;
     const cluster = await clusterService.getCluster(clusterId);
+
+    if (!cluster) {
+      return res.status(404).json({ message: "Cluster not found" });
+    }
+
     res.status(200).json(cluster);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -60,7 +65,9 @@ const updateCluster = async (req, res) => {
 
     res.status(200).json(updatedCluster);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res
+      .status(404)
+      .json({ message: "Cluster or related entity not found" });
   }
 };
 
