@@ -15,26 +15,28 @@ const client = createPublicClient({
 // Function to watch multiple contract events starting from a specific block number
 const watchMultipleContractEvents = async (events) => {
   try {
-    // Determine the lowest block number to start from
-    let fromBlock = BigInt(1);
+    // Get the current block number to start from
+    const currentBlockNumber = await client.getBlockNumber();
+    let fromBlock = currentBlockNumber;
     let lastProcessedEvents = {};
 
-    // Fetch the last processed event for each eventName and determine the minimum fromBlock
+    // Fetch the last processed event for each eventName
     for (const { eventName } of events) {
       const { lastBlockNumber, lastTransactionHash } =
         await blockSyncService.getLastProcessedEvent(eventName);
 
       lastProcessedEvents[eventName] = {
-        lastBlockNumber: lastBlockNumber ? BigInt(lastBlockNumber) : BigInt(1),
+        lastBlockNumber: lastBlockNumber
+          ? BigInt(lastBlockNumber)
+          : currentBlockNumber,
         lastTransactionHash,
       };
 
-      if (lastProcessedEvents[eventName].lastBlockNumber > fromBlock) {
+      // Ensure fromBlock is the minimum of the current block or the last processed block
+      if (lastProcessedEvents[eventName].lastBlockNumber < fromBlock) {
         fromBlock = lastProcessedEvents[eventName].lastBlockNumber;
       }
     }
-
-    const currentBlockNumber = await client.getBlockNumber();
 
     console.log("Last synced block", fromBlock);
     console.log("Current block", currentBlockNumber);
