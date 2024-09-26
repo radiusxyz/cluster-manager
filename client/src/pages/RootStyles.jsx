@@ -45,6 +45,12 @@ export const Stat = styled.span`
   align-items: center;
 `;
 
+export const Address = styled.span`
+  color: #000;
+  font-weight: 600;
+  margin-right: 10px;
+`;
+
 export const StatsContainer = styled(NavBarLinksContainer)``;
 
 export const OutletContainer = styled.div`
