@@ -5,7 +5,7 @@ import blockSyncService from "../services/blockSyncService.js";
 import { contractAddress, contractAbi } from "../../common.js";
 import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
-import { localhost, holesky } from "../config.js";
+import { holesky } from "../config.js";
 
 const client = createPublicClient({
   chain: holesky,
