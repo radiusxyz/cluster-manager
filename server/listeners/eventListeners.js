@@ -7,106 +7,110 @@ import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
 import { localhost } from "../config.js";
 
-// setting the public client
 const client = createPublicClient({
   chain: localhost,
   transport: http(),
 });
 
-// Function to watch contract events starting from a specific block number
-const watchContractEventFromBlock = async (eventName, handleEvent) => {
+// Function to watch multiple contract events starting from a specific block number
+const watchMultipleContractEvents = async (events) => {
   try {
-    // Get the last processed block number and transaction hash from the database
-    const { lastBlockNumber, lastTransactionHash } =
-      await blockSyncService.getLastProcessedEvent(eventName);
+    // Determine the lowest block number to start from
+    let fromBlock = BigInt(1);
+    let lastProcessedEvents = {};
 
-    const fromBlock = lastBlockNumber ? BigInt(lastBlockNumber) : BigInt(1);
+    // Fetch the last processed event for each eventName and determine the minimum fromBlock
+    for (const { eventName } of events) {
+      const { lastBlockNumber, lastTransactionHash } =
+        await blockSyncService.getLastProcessedEvent(eventName);
+
+      lastProcessedEvents[eventName] = {
+        lastBlockNumber: lastBlockNumber ? BigInt(lastBlockNumber) : BigInt(1),
+        lastTransactionHash,
+      };
+
+      if (lastProcessedEvents[eventName].lastBlockNumber > fromBlock) {
+        fromBlock = lastProcessedEvents[eventName].lastBlockNumber;
+      }
+    }
+
     const currentBlockNumber = await client.getBlockNumber();
 
-    console.log("Last synced block", fromBlock, eventName);
-    console.log("Current block", currentBlockNumber, eventName);
+    console.log("Last synced block", fromBlock);
+    console.log("Current block", currentBlockNumber);
 
+    // Set up a single watcher for all events
     client.watchContractEvent({
       address: contractAddress,
       abi: contractAbi,
-      eventName,
       fromBlock,
       onLogs: async (logs) => {
-        console.log(`Received ${eventName} event logs:`, logs);
+        console.log("Received event logs:", logs);
 
         try {
-          const filteredLogs = logs.filter(
-            (log) =>
+          // Process each log and route it to the correct handler
+          for (const log of logs) {
+            const { eventName } = log;
+            const { lastBlockNumber, lastTransactionHash } =
+              lastProcessedEvents[eventName] || {};
+
+            // Filter out already processed logs
+            if (
               log.blockNumber > lastBlockNumber ||
               (log.blockNumber === lastBlockNumber &&
                 log.transactionHash !== lastTransactionHash)
-          );
+            ) {
+              // Find the corresponding event handler
+              const event = events.find((e) => e.eventName === eventName);
+              if (event && event.handleEvent) {
+                await event.handleEvent([log]);
 
-          if (filteredLogs.length > 0) {
-            await handleEvent(filteredLogs);
+                // Update the last processed block number and transaction hash in the database
+                await blockSyncService.updateLastProcessedEvent(eventName, {
+                  blockNumber: Number(log.blockNumber),
+                  transactionHash: log.transactionHash,
+                });
 
-            // Update the last processed block number and transaction hash in the database
-            const latestLog = filteredLogs[filteredLogs.length - 1];
-            await blockSyncService.updateLastProcessedEvent(eventName, {
-              blockNumber: Number(latestLog.blockNumber),
-              transactionHash: latestLog.transactionHash,
-            });
+                // Update in-memory tracking of the last processed event
+                lastProcessedEvents[eventName] = {
+                  lastBlockNumber: log.blockNumber,
+                  lastTransactionHash: log.transactionHash,
+                };
+              }
+            }
           }
         } catch (error) {
-          console.error(`Error handling ${eventName} event:`, error);
+          console.error("Error handling event logs:", error);
         }
       },
     });
   } catch (error) {
-    console.error(`Error setting up watcher for ${eventName} event:`, error);
+    console.error("Error setting up watcher for events:", error);
   }
 };
 
-// Define specific event handlers
-const watchInitializeCluster = async () =>
-  await watchContractEventFromBlock(
-    "InitializeCluster",
-    eventService.handleInitializeCluster
-  );
-
-const watchAddRollup = async () =>
-  await watchContractEventFromBlock("AddRollup", eventService.handleAddRollup);
-
-const watchRegisterSequencer = async () =>
-  await watchContractEventFromBlock(
-    "RegisterSequencer",
-    eventService.handleRegisterSequencer
-  );
-const watchDeregisterSequencer = async () =>
-  await watchContractEventFromBlock(
-    "DeregisterSequencer",
-    eventService.handleDeregisterSequencer
-  );
-
 // Start event listeners
 const startEventListeners = async () => {
-  try {
-    await watchInitializeCluster();
-  } catch (error) {
-    console.error("Failed to start InitializeCluster watcher:", error);
-  }
+  const events = [
+    {
+      eventName: "InitializeCluster",
+      handleEvent: eventService.handleInitializeCluster,
+    },
+    { eventName: "AddRollup", handleEvent: eventService.handleAddRollup },
+    {
+      eventName: "RegisterSequencer",
+      handleEvent: eventService.handleRegisterSequencer,
+    },
+    {
+      eventName: "DeregisterSequencer",
+      handleEvent: eventService.handleDeregisterSequencer,
+    },
+  ];
 
   try {
-    await watchAddRollup();
+    await watchMultipleContractEvents(events);
   } catch (error) {
-    console.error("Failed to start AddRollup watcher:", error);
-  }
-
-  try {
-    await watchRegisterSequencer();
-  } catch (error) {
-    console.error("Failed to start RegisterSequencer watcher:", error);
-  }
-
-  try {
-    await watchDeregisterSequencer();
-  } catch (error) {
-    console.error("Failed to start DeregisterSequencer watcher:", error);
+    console.error("Failed to start event watcher:", error);
   }
 };
 
