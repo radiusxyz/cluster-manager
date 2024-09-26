@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router";
-import { useAccount, useConnect } from "wagmi";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
 import * as s from "./RootStyles";
 import { StyledButton } from "../components/Button";
 
@@ -8,6 +8,7 @@ const Root = () => {
   const { address } = useAccount();
 
   const { connectors, connect } = useConnect();
+  const { disconnect } = useDisconnect();
 
   return (
     <s.LayoutContainer>
@@ -22,7 +23,12 @@ const Root = () => {
           <s.Stat>Total $</s.Stat> */}
           <s.Stat>
             {address ? (
-              address
+              <>
+                <s.Address>{address}</s.Address>{" "}
+                <StyledButton onClick={() => disconnect()}>
+                  Disconnect Wallet
+                </StyledButton>
+              </>
             ) : (
               <StyledButton
                 onClick={() => connect({ connector: connectors[0] })}
@@ -38,14 +44,6 @@ const Root = () => {
       </s.OutletContainer>
       <s.FooterLinksContainer>
         <s.FooterLink>Made by Gylman</s.FooterLink>
-        {/* Seem redundant */}
-        {/* <s.FooterLink>Docs</s.FooterLink>
-        <s.FooterLink>Blog</s.FooterLink>
-        <s.FooterLink>Report bug</s.FooterLink>
-        <s.FooterLink>X</s.FooterLink>
-        <s.FooterLink>Instagram</s.FooterLink>
-        <s.FooterLink>YouTube</s.FooterLink>
-        <s.FooterLink>LinkedIn</s.FooterLink> */}
       </s.FooterLinksContainer>
     </s.LayoutContainer>
   );
