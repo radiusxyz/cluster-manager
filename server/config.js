@@ -1,4 +1,5 @@
 import { defineChain } from "viem";
+import { holesky as nonLocal } from "viem/chains";
 
 export const localhost = /*#__PURE__*/ defineChain({
   id: 31337,
@@ -12,3 +13,5 @@ export const localhost = /*#__PURE__*/ defineChain({
     default: { http: ["http://127.0.0.1:8545"] },
   },
 });
+
+export const holesky = nonLocal;

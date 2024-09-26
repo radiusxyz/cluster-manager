@@ -1,4 +1,6 @@
 import { http, createConfig, injected } from "@wagmi/core";
+import { holesky } from "wagmi/chains";
+
 import { defineChain } from "viem";
 
 export const localhost = /*#__PURE__*/ defineChain({
@@ -15,9 +17,9 @@ export const localhost = /*#__PURE__*/ defineChain({
 });
 
 export const config = createConfig({
-  chains: [localhost],
+  chains: [holesky],
   transports: {
-    [localhost.id]: http(),
+    [holesky.id]: http(),
   },
   connectors: [injected()],
 });
