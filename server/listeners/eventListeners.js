@@ -4,80 +4,120 @@ import blockSyncService from "../services/blockSyncService.js";
 
 import { contractAddress, contractAbi } from "../../common.js";
 import dotenv from "dotenv";
-dotenv.config({ path: "./.env" });
-import { holesky } from "../config.js";
+dotenv.config();
+import { localhost, holesky } from "../config.js";
 
 const client = createPublicClient({
   chain: holesky,
   transport: http(),
 });
 
+// Function to fetch missed events and process them
+const fetchMissedEvents = async (events, fromBlock, toBlock) => {
+  try {
+    // Fetch historical logs without specifying the event name
+    const logs = await client.getContractEvents({
+      address: contractAddress,
+      abi: contractAbi,
+      fromBlock,
+      toBlock,
+    });
+
+    // Get the last processed event from the database
+    const { lastBlockNumber, lastTransactionHash, lastLogIndex } =
+      await blockSyncService.getLastProcessedEvent();
+
+    console.log("Last processed event", {
+      lastBlockNumber,
+      lastTransactionHash,
+      lastLogIndex,
+    });
+
+    // Process each log
+    for (const log of logs) {
+      // Check if the log is new by comparing block number, transaction hash, and logIndex
+      if (
+        BigInt(log.blockNumber) > BigInt(lastBlockNumber) ||
+        (BigInt(log.blockNumber) === BigInt(lastBlockNumber) &&
+          log.transactionHash === lastTransactionHash &&
+          log.logIndex > lastLogIndex)
+      ) {
+        console.log("Processing missed event log:", log);
+
+        // Find the matching event from the events array
+        const event = events.find((e) => e.eventName === log.eventName);
+        if (event && event.handleEvent) {
+          // Handle the event
+          await event.handleEvent([log]);
+
+          // Update the last processed block number, transaction hash, and log index in the database
+          await blockSyncService.updateLastProcessedEvent({
+            eventName: log.eventName, // Optional, can remove if not needed
+            blockNumber: Number(log.blockNumber),
+            transactionHash: log.transactionHash,
+            logIndex: log.logIndex,
+          });
+        }
+      } else {
+        console.log("Skipping already processed log:", log);
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching and processing missed events:", error);
+  }
+};
+
 // Function to watch multiple contract events starting from a specific block number
 const watchMultipleContractEvents = async (events) => {
   try {
-    // Get the current block number to start from
     const currentBlockNumber = await client.getBlockNumber();
     let fromBlock = currentBlockNumber;
-    let lastProcessedEvents = {};
 
-    // Fetch the last processed event for each eventName
-    for (const { eventName } of events) {
-      const { lastBlockNumber, lastTransactionHash } =
-        await blockSyncService.getLastProcessedEvent(eventName);
+    // Fetch the last processed event
+    const { lastBlockNumber } = await blockSyncService.getLastProcessedEvent();
 
-      lastProcessedEvents[eventName] = {
-        lastBlockNumber: lastBlockNumber
-          ? BigInt(lastBlockNumber)
-          : currentBlockNumber,
-        lastTransactionHash,
-      };
-
-      // Ensure fromBlock is the minimum of the current block or the last processed block
-      if (lastProcessedEvents[eventName].lastBlockNumber < fromBlock) {
-        fromBlock = lastProcessedEvents[eventName].lastBlockNumber;
-      }
+    if (lastBlockNumber !== null) {
+      fromBlock = BigInt(lastBlockNumber);
     }
 
     console.log("Last synced block", fromBlock);
     console.log("Current block", currentBlockNumber);
 
-    // Set up a single watcher for all events
+    // Fetch missed events before setting up watcher
+    await fetchMissedEvents(events, fromBlock, currentBlockNumber);
+    console.log("Fetched missed events");
+
+    // Start watching contract events after fetching missed events
     client.watchContractEvent({
       address: contractAddress,
       abi: contractAbi,
-      fromBlock,
+      fromBlock: currentBlockNumber + 1n, // Ensure we start from the next block
       onLogs: async (logs) => {
         console.log("Received event logs:", logs);
 
         try {
-          // Process each log and route it to the correct handler
           for (const log of logs) {
             const { eventName } = log;
-            const { lastBlockNumber, lastTransactionHash } =
-              lastProcessedEvents[eventName] || {};
+            const { lastBlockNumber, lastTransactionHash, lastLogIndex } =
+              await blockSyncService.getLastProcessedEvent();
 
-            // Filter out already processed logs
+            // Ensure the log is new based on block number, transaction hash, and logIndex
             if (
-              log.blockNumber > lastBlockNumber ||
-              (log.blockNumber === lastBlockNumber &&
-                log.transactionHash !== lastTransactionHash)
+              BigInt(log.blockNumber) > BigInt(lastBlockNumber) ||
+              (BigInt(log.blockNumber) === BigInt(lastBlockNumber) &&
+                log.transactionHash === lastTransactionHash &&
+                log.logIndex > lastLogIndex)
             ) {
-              // Find the corresponding event handler
               const event = events.find((e) => e.eventName === eventName);
               if (event && event.handleEvent) {
                 await event.handleEvent([log]);
 
-                // Update the last processed block number and transaction hash in the database
-                await blockSyncService.updateLastProcessedEvent(eventName, {
+                // Update the last processed block number, transaction hash, and log index
+                await blockSyncService.updateLastProcessedEvent({
                   blockNumber: Number(log.blockNumber),
                   transactionHash: log.transactionHash,
+                  logIndex: log.logIndex,
                 });
-
-                // Update in-memory tracking of the last processed event
-                lastProcessedEvents[eventName] = {
-                  lastBlockNumber: log.blockNumber,
-                  lastTransactionHash: log.transactionHash,
-                };
               }
             }
           }
