@@ -15,12 +15,7 @@ const client = createPublicClient({
 // Helper function to check if the log is new
 const isNewLog = (log, lastProcessedEvent) => {
   // If lastProcessedEvent is null or missing fields, consider the log new
-  if (
-    !lastProcessedEvent ||
-    lastProcessedEvent.lastBlockNumber === null ||
-    lastProcessedEvent.lastTransactionHash === null ||
-    lastProcessedEvent.lastLogIndex === null
-  ) {
+  if (!lastProcessedEvent) {
     return true;
   }
 
@@ -89,7 +84,7 @@ const watchMultipleContractEvents = async (events) => {
     const lastProcessedEvent = await blockSyncService.getLastProcessedEvent();
 
     // If lastProcessedEvent is not null, sync missed events
-    if (lastProcessedEvent && lastProcessedEvent.lastBlockNumber !== null) {
+    if (lastProcessedEvent) {
       fromBlock = BigInt(lastProcessedEvent.lastBlockNumber);
       console.log("Last synced block", fromBlock);
       console.log("Current block", currentBlockNumber);
