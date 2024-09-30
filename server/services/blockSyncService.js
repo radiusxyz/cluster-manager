@@ -1,30 +1,36 @@
 import BlockSync from "../models/blockSyncModel.js";
 
-// Get the last processed block number and transaction hash for a specific event
-const getLastProcessedEvent = async (eventName) => {
-  const record = await BlockSync.findOne({ eventName });
+// Update to include logIndex
+const updateLastProcessedEvent = async ({
+  blockNumber,
+  transactionHash,
+  logIndex,
+}) => {
+  await BlockSync.findOneAndUpdate(
+    {},
+    {
+      lastBlockNumber: blockNumber,
+      lastTransactionHash: transactionHash,
+      lastLogIndex: logIndex,
+    },
+    { upsert: true, new: true }
+  );
+};
+
+const getLastProcessedEvent = async () => {
+  const record = await BlockSync.findOne();
   if (record) {
     return {
       lastBlockNumber: record.lastBlockNumber,
       lastTransactionHash: record.lastTransactionHash,
+      lastLogIndex: record.lastLogIndex,
     };
   }
   return {
-    lastBlockNumber: null,
-    lastTransactionHash: null,
+    lastBlockNumber: 0,
+    lastTransactionHash: 0,
+    lastLogIndex: 0,
   };
-};
-
-// Update the last processed block number and transaction hash for a specific event
-const updateLastProcessedEvent = async (
-  eventName,
-  { blockNumber, transactionHash }
-) => {
-  await BlockSync.findOneAndUpdate(
-    { eventName },
-    { lastBlockNumber: blockNumber, lastTransactionHash: transactionHash },
-    { upsert: true, new: true }
-  );
 };
 
 export default {
