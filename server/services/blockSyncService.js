@@ -26,11 +26,7 @@ const getLastProcessedEvent = async () => {
       lastLogIndex: record.lastLogIndex,
     };
   }
-  return {
-    lastBlockNumber: null,
-    lastTransactionHash: null,
-    lastLogIndex: null,
-  };
+  return null;
 };
 
 export default {
