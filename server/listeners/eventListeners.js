@@ -12,6 +12,45 @@ const client = createPublicClient({
   transport: http(),
 });
 
+// Helper function to check if the log is new
+const isNewLog = (log, lastProcessedEvent) => {
+  // If lastProcessedEvent is null or missing fields, consider the log new
+  if (
+    !lastProcessedEvent ||
+    lastProcessedEvent.lastBlockNumber === null ||
+    lastProcessedEvent.lastTransactionHash === null ||
+    lastProcessedEvent.lastLogIndex === null
+  ) {
+    return true;
+  }
+
+  const { lastBlockNumber, lastTransactionHash, lastLogIndex } =
+    lastProcessedEvent;
+
+  return (
+    BigInt(log.blockNumber) > BigInt(lastBlockNumber) ||
+    (BigInt(log.blockNumber) === BigInt(lastBlockNumber) &&
+      log.transactionHash === lastTransactionHash &&
+      log.logIndex > lastLogIndex)
+  );
+};
+
+// Helper function to process logs
+const processLog = async (log, events) => {
+  const event = events.find((e) => e.eventName === log.eventName);
+  if (event && event.handleEvent) {
+    await event.handleEvent([log]);
+
+    // Update the last processed block number, transaction hash, and log index in the database
+    await blockSyncService.updateLastProcessedEvent({
+      eventName: log.eventName, // Optional, can remove if not needed
+      blockNumber: Number(log.blockNumber),
+      transactionHash: log.transactionHash,
+      logIndex: log.logIndex,
+    });
+  }
+};
+
 // Function to fetch missed events and process them
 const fetchMissedEvents = async (events, fromBlock, toBlock) => {
   try {
@@ -24,40 +63,13 @@ const fetchMissedEvents = async (events, fromBlock, toBlock) => {
     });
 
     // Get the last processed event from the database
-    const { lastBlockNumber, lastTransactionHash, lastLogIndex } =
-      await blockSyncService.getLastProcessedEvent();
-
-    console.log("Last processed event", {
-      lastBlockNumber,
-      lastTransactionHash,
-      lastLogIndex,
-    });
+    const lastProcessedEvent = await blockSyncService.getLastProcessedEvent();
 
     // Process each log
     for (const log of logs) {
-      // Check if the log is new by comparing block number, transaction hash, and logIndex
-      if (
-        BigInt(log.blockNumber) > BigInt(lastBlockNumber) ||
-        (BigInt(log.blockNumber) === BigInt(lastBlockNumber) &&
-          log.transactionHash === lastTransactionHash &&
-          log.logIndex > lastLogIndex)
-      ) {
+      if (isNewLog(log, lastProcessedEvent)) {
         console.log("Processing missed event log:", log);
-
-        // Find the matching event from the events array
-        const event = events.find((e) => e.eventName === log.eventName);
-        if (event && event.handleEvent) {
-          // Handle the event
-          await event.handleEvent([log]);
-
-          // Update the last processed block number, transaction hash, and log index in the database
-          await blockSyncService.updateLastProcessedEvent({
-            eventName: log.eventName, // Optional, can remove if not needed
-            blockNumber: Number(log.blockNumber),
-            transactionHash: log.transactionHash,
-            logIndex: log.logIndex,
-          });
-        }
+        await processLog(log, events);
       } else {
         console.log("Skipping already processed log:", log);
       }
@@ -74,51 +86,39 @@ const watchMultipleContractEvents = async (events) => {
     let fromBlock = currentBlockNumber;
 
     // Fetch the last processed event
-    const { lastBlockNumber } = await blockSyncService.getLastProcessedEvent();
+    const lastProcessedEvent = await blockSyncService.getLastProcessedEvent();
 
-    if (lastBlockNumber !== null) {
-      fromBlock = BigInt(lastBlockNumber);
+    // If lastProcessedEvent is not null, sync missed events
+    if (lastProcessedEvent && lastProcessedEvent.lastBlockNumber !== null) {
+      fromBlock = BigInt(lastProcessedEvent.lastBlockNumber);
+      console.log("Last synced block", fromBlock);
+      console.log("Current block", currentBlockNumber);
+
+      // Fetch missed events before setting up watcher
+      await fetchMissedEvents(events, fromBlock, currentBlockNumber);
+    } else {
+      console.log("No previous events to sync, starting fresh.");
     }
 
-    console.log("Last synced block", fromBlock);
-    console.log("Current block", currentBlockNumber);
-
-    // Fetch missed events before setting up watcher
-    await fetchMissedEvents(events, fromBlock, currentBlockNumber);
-    console.log("Fetched missed events");
-
-    // Start watching contract events after fetching missed events
+    // Start watching contract events after fetching missed events (if any)
     client.watchContractEvent({
       address: contractAddress,
       abi: contractAbi,
-      fromBlock: currentBlockNumber + 1n, // Ensure we start from the next block
+      poll: true,
+      pollingInterval: 5000, // Poll every 5 seconds
+      fromBlock: lastProcessedEvent
+        ? currentBlockNumber + 1n
+        : currentBlockNumber, // Start from current block if first time
       onLogs: async (logs) => {
         console.log("Received event logs:", logs);
 
         try {
+          const lastProcessedEvent =
+            await blockSyncService.getLastProcessedEvent();
           for (const log of logs) {
-            const { eventName } = log;
-            const { lastBlockNumber, lastTransactionHash, lastLogIndex } =
-              await blockSyncService.getLastProcessedEvent();
-
-            // Ensure the log is new based on block number, transaction hash, and logIndex
-            if (
-              BigInt(log.blockNumber) > BigInt(lastBlockNumber) ||
-              (BigInt(log.blockNumber) === BigInt(lastBlockNumber) &&
-                log.transactionHash === lastTransactionHash &&
-                log.logIndex > lastLogIndex)
-            ) {
-              const event = events.find((e) => e.eventName === eventName);
-              if (event && event.handleEvent) {
-                await event.handleEvent([log]);
-
-                // Update the last processed block number, transaction hash, and log index
-                await blockSyncService.updateLastProcessedEvent({
-                  blockNumber: Number(log.blockNumber),
-                  transactionHash: log.transactionHash,
-                  logIndex: log.logIndex,
-                });
-              }
+            // If there is no lastProcessedEvent or the log is new, process it
+            if (isNewLog(log, lastProcessedEvent)) {
+              await processLog(log, events);
             }
           }
         } catch (error) {
