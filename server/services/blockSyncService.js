@@ -27,9 +27,9 @@ const getLastProcessedEvent = async () => {
     };
   }
   return {
-    lastBlockNumber: 0,
-    lastTransactionHash: 0,
-    lastLogIndex: 0,
+    lastBlockNumber: null,
+    lastTransactionHash: null,
+    lastLogIndex: null,
   };
 };
 
