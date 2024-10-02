@@ -57,6 +57,8 @@ const fetchMissedEvents = async (events, fromBlock, toBlock) => {
       toBlock,
     });
 
+    console.log("Fetched missed events:", logs);
+
     // Get the last processed event from the database
     const lastProcessedEvent = await blockSyncService.getLastProcessedEvent();
 
@@ -79,6 +81,7 @@ const watchMultipleContractEvents = async (events) => {
   try {
     // Fetch the last processed event
     const lastProcessedEvent = await blockSyncService.getLastProcessedEvent();
+
     let currentBlockNumber = await client.getBlockNumber();
 
     // If lastProcessedEvent is not null, sync missed events
@@ -95,6 +98,8 @@ const watchMultipleContractEvents = async (events) => {
     } else {
       console.log("No previous events to sync, starting fresh.");
     }
+
+    console.log("currentBlockNumber", currentBlockNumber);
 
     // Start watching contract events after fetching missed events (if any)
     client.watchContractEvent({
