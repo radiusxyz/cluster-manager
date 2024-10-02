@@ -5,7 +5,7 @@ import blockSyncService from "../services/blockSyncService.js";
 import { contractAddress, contractAbi } from "../../common.js";
 import dotenv from "dotenv";
 dotenv.config();
-import { localhost, holesky } from "../config.js";
+import { holesky } from "../config.js";
 
 const client = createPublicClient({
   chain: holesky,
@@ -14,6 +14,7 @@ const client = createPublicClient({
 
 // Helper function to check if the log is new
 const isNewLog = (log, lastProcessedEvent) => {
+  // If lastProcessedEvent is null or missing fields, consider the log new
   if (!lastProcessedEvent) {
     return true;
   }
@@ -37,20 +38,18 @@ const processLog = async (log, events) => {
 
     // Update the last processed block number, transaction hash, and log index in the database
     await blockSyncService.updateLastProcessedEvent({
-      eventName: log.eventName,
+      eventName: log.eventName, // Optional, can remove if not needed
       blockNumber: Number(log.blockNumber),
       transactionHash: log.transactionHash,
       logIndex: log.logIndex,
     });
-
-    const lastProcessedEvent = await blockSyncService.getLastProcessedEvent();
-    console.log("Updated last processed event:", lastProcessedEvent);
   }
 };
 
 // Function to fetch missed events and process them
 const fetchMissedEvents = async (events, fromBlock, toBlock) => {
   try {
+    // Fetch historical logs without specifying the event name
     const logs = await client.getContractEvents({
       address: contractAddress,
       abi: contractAbi,
@@ -58,8 +57,10 @@ const fetchMissedEvents = async (events, fromBlock, toBlock) => {
       toBlock,
     });
 
+    // Get the last processed event from the database
     const lastProcessedEvent = await blockSyncService.getLastProcessedEvent();
 
+    // Process each log
     for (const log of logs) {
       if (isNewLog(log, lastProcessedEvent)) {
         console.log("Processing missed event log:", log);
@@ -73,78 +74,52 @@ const fetchMissedEvents = async (events, fromBlock, toBlock) => {
   }
 };
 
-// Function to watch multiple contract events with continuous monitoring
+// Function to watch multiple contract events starting from a specific block number
 const watchMultipleContractEvents = async (events) => {
   try {
+    // Fetch the last processed event
     const lastProcessedEvent = await blockSyncService.getLastProcessedEvent();
+    let currentBlockNumber = await client.getBlockNumber();
 
+    // If lastProcessedEvent is not null, sync missed events
     if (lastProcessedEvent) {
       const fromBlock = BigInt(lastProcessedEvent.lastBlockNumber);
-      console.log("Last synced block:", fromBlock);
 
-      // Fetch missed events up to current block
-      let currentBlockNumber = await client.getBlockNumber();
-      console.log("Fetching missed events up to block:", currentBlockNumber);
+      console.log("Last synced block", fromBlock);
+      console.log("Current block", currentBlockNumber);
+
+      // Fetch missed events before setting up watcher
       await fetchMissedEvents(events, fromBlock, currentBlockNumber);
+
       currentBlockNumber = BigInt(lastProcessedEvent.lastBlockNumber);
-
-      // After fetching, start the watcher from the last processed block + 1
-      console.log(
-        "Setting up watcher starting from block:",
-        currentBlockNumber + 1n
-      );
-
-      // Start watching events from the block after the last one fetched
-      client.watchContractEvent({
-        address: contractAddress,
-        abi: contractAbi,
-        fromBlock: currentBlockNumber + 1n,
-        onLogs: async (logs) => {
-          console.log("Received event logs:", logs);
-
-          try {
-            const lastProcessedEvent =
-              await blockSyncService.getLastProcessedEvent();
-            for (const log of logs) {
-              if (isNewLog(log, lastProcessedEvent)) {
-                await processLog(log, events);
-              }
-            }
-          } catch (error) {
-            console.error("Error handling event logs:", error);
-          }
-        },
-      });
     } else {
-      // No previous event: Start fresh from current block number
       console.log("No previous events to sync, starting fresh.");
-      const currentBlockNumber = await client.getBlockNumber();
-      console.log(
-        "Setting up watcher starting from block:",
-        currentBlockNumber
-      );
-
-      client.watchContractEvent({
-        address: contractAddress,
-        abi: contractAbi,
-        fromBlock: currentBlockNumber,
-        onLogs: async (logs) => {
-          console.log("Received event logs:", logs);
-
-          try {
-            const lastProcessedEvent =
-              await blockSyncService.getLastProcessedEvent();
-            for (const log of logs) {
-              if (isNewLog(log, lastProcessedEvent)) {
-                await processLog(log, events);
-              }
-            }
-          } catch (error) {
-            console.error("Error handling event logs:", error);
-          }
-        },
-      });
     }
+
+    // Start watching contract events after fetching missed events (if any)
+    client.watchContractEvent({
+      address: contractAddress,
+      abi: contractAbi,
+      fromBlock: lastProcessedEvent
+        ? currentBlockNumber + 1n
+        : currentBlockNumber, // Start from current block if first time
+      onLogs: async (logs) => {
+        console.log("Received event logs:", logs);
+
+        try {
+          const lastProcessedEvent =
+            await blockSyncService.getLastProcessedEvent();
+          for (const log of logs) {
+            // If there is no lastProcessedEvent or the log is new, process it
+            if (isNewLog(log, lastProcessedEvent)) {
+              await processLog(log, events);
+            }
+          }
+        } catch (error) {
+          console.error("Error handling event logs:", error);
+        }
+      },
+    });
   } catch (error) {
     console.error("Error setting up watcher for events:", error);
   }
