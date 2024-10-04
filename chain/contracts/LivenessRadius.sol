@@ -52,31 +52,27 @@ contract LivenessRadius is ILivenessRadius, AccessControlUpgradeable, Reentrancy
         emit InitializeCluster(clusterId, msg.sender, maxSequencerNumber);
     }
 
-    function addRollup(
-        string calldata clusterId,
-        string calldata rollupId,
-        string calldata chainType,
-        address rollupOwnerAddress,
-        string calldata orderCommitmentType,
-        ValidationInfo calldata validationInfo
-    ) public {
+    function addRollup(string calldata clusterId, AddRollupInfo calldata rollupInfo) public {
         Cluster storage cluster = clusters[clusterId];
 
         require(cluster.owner == msg.sender, "Not cluster owner");
 
-        Rollup storage rollup = cluster.rollups[rollupId];
-        cluster.rollupIdList.push(rollupId);
+        Rollup storage rollup = cluster.rollups[rollupInfo.rollupId];
 
-        rollup.owner = rollupOwnerAddress;
-        rollup.chainType = chainType;
-        rollup.orderCommitmentType = orderCommitmentType;
-        rollup.validationInfo = validationInfo;
-        rollup.isRegisteredExecutor[rollupOwnerAddress] = true;
+        require(rollup.owner == address(0), "Already added rollup");
 
-        // 배열 초기화 및 값 할당
-        rollup.executorAddresses.push(rollupOwnerAddress);
+        cluster.rollupIdList.push(rollupInfo.rollupId);
 
-        emit AddRollup(clusterId, rollupId, rollupOwnerAddress);
+        rollup.owner = rollupInfo.owner;
+        rollup.rollupType = rollupInfo.rollupType;
+        rollup.encryptedTransactionType = rollupInfo.encryptedTransactionType;
+        rollup.orderCommitmentType = rollupInfo.orderCommitmentType;
+        rollup.validationInfo = rollupInfo.validationInfo;
+        rollup.isRegisteredExecutor[rollupInfo.owner] = true;
+
+        rollup.executorAddresses.push(rollupInfo.owner);
+
+        emit AddRollup(clusterId, rollupInfo.rollupId, rollupInfo.owner);
     }
 
     function registerRollupExecutor(
@@ -202,7 +198,8 @@ contract LivenessRadius is ILivenessRadius, AccessControlUpgradeable, Reentrancy
             rollupList[i] = RollupInfo({
                 rollupId: cluster.rollupIdList[i],
                 owner: rollup.owner,
-                chainType: rollup.chainType,
+                rollupType: rollup.rollupType,
+                encryptedTransactionType: rollup.encryptedTransactionType,
                 validationInfo: rollup.validationInfo,
                 orderCommitmentType: rollup.orderCommitmentType,
                 executorAddresses: rollup.executorAddresses
@@ -222,7 +219,8 @@ contract LivenessRadius is ILivenessRadius, AccessControlUpgradeable, Reentrancy
         RollupInfo memory rollupInfo = RollupInfo({
             rollupId: rollupId,
             owner: rollup.owner,
-            chainType: rollup.chainType,
+            rollupType: rollup.rollupType,
+            encryptedTransactionType: rollup.encryptedTransactionType,
             validationInfo: rollup.validationInfo,
             orderCommitmentType: rollup.orderCommitmentType,
             executorAddresses: rollup.executorAddresses
