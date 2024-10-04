@@ -28,9 +28,11 @@ const Modal = ({ toggle }) => {
 
   // Step 2
   const [rollupId, setRollupId] = useState("1");
-  const [chainType, setChainType] = useState("ethereum");
+  const [rollupType, setRollupType] = useState("ethereum");
   const [orderCommitmentType, setOrderCommitmentType] =
     useState("orderCommitment");
+  const [encryptedTransactionType, setEncryptedTransactionType] =
+    useState("pvde");
   const [platform, setPlatform] = useState("ethereum");
   const [serviceProvider, setServiceProvider] = useState("eigenlayer");
   const [rpcUrl, setRpcUrl] = useState("https://www.google.ru/");
@@ -70,11 +72,14 @@ const Modal = ({ toggle }) => {
   const handleAddRollup = () => {
     write("addRollup", [
       clusterId,
-      rollupId,
-      chainType,
-      address,
-      orderCommitmentType,
-      { platform, serviceProvider },
+      {
+        rollupId,
+        rollupType,
+        encryptedTransactionType,
+        owner: address,
+        orderCommitmentType,
+        validationInfo: { platform, serviceProvider },
+      },
     ]);
     setTransactionCompleted(false); // Reset the flag when a new transaction begins
   };
@@ -168,9 +173,18 @@ const Modal = ({ toggle }) => {
                 />
               </InputContainer>
               <InputContainer>
-                <Label>Chain Type</Label>
-                <SelectBox onChange={(e) => setChainType(e.target.value)}>
+                <Label>Rollup Type</Label>
+                <SelectBox onChange={(e) => setRollupType(e.target.value)}>
                   <option defaultValue="Ethereum">Ethereum</option>
+                </SelectBox>
+              </InputContainer>{" "}
+              <InputContainer>
+                <Label>Encrypted Transaction Type</Label>
+                <SelectBox
+                  onChange={(e) => setEncryptedTransactionType(e.target.value)}
+                >
+                  <option defaultValue="pvde">Pvde</option>
+                  <option>Skde</option>
                 </SelectBox>
               </InputContainer>{" "}
               <InputContainer>

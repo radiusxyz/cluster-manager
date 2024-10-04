@@ -323,40 +323,52 @@ const contractAbi = [
         type: "string",
       },
       {
-        internalType: "string",
-        name: "rollupId",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "chainType",
-        type: "string",
-      },
-      {
-        internalType: "address",
-        name: "rollupOwnerAddress",
-        type: "address",
-      },
-      {
-        internalType: "string",
-        name: "orderCommitmentType",
-        type: "string",
-      },
-      {
         components: [
           {
             internalType: "string",
-            name: "platform",
+            name: "rollupId",
+            type: "string",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "string",
+            name: "rollupType",
             type: "string",
           },
           {
             internalType: "string",
-            name: "serviceProvider",
+            name: "encryptedTransactionType",
+            type: "string",
+          },
+          {
+            components: [
+              {
+                internalType: "string",
+                name: "platform",
+                type: "string",
+              },
+              {
+                internalType: "string",
+                name: "serviceProvider",
+                type: "string",
+              },
+            ],
+            internalType: "struct ILivenessRadius.ValidationInfo",
+            name: "validationInfo",
+            type: "tuple",
+          },
+          {
+            internalType: "string",
+            name: "orderCommitmentType",
             type: "string",
           },
         ],
-        internalType: "struct ILivenessRadius.ValidationInfo",
-        name: "validationInfo",
+        internalType: "struct ILivenessRadius.AddRollupInfo",
+        name: "rollupInfo",
         type: "tuple",
       },
     ],
@@ -520,7 +532,12 @@ const contractAbi = [
           },
           {
             internalType: "string",
-            name: "chainType",
+            name: "rollupType",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "encryptedTransactionType",
             type: "string",
           },
           {
@@ -583,7 +600,12 @@ const contractAbi = [
           },
           {
             internalType: "string",
-            name: "chainType",
+            name: "rollupType",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "encryptedTransactionType",
             type: "string",
           },
           {

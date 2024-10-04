@@ -91,8 +91,6 @@ const watchMultipleContractEvents = async (events) => {
 
     let currentBlockNumber = await client.getBlockNumber();
 
-    console.log("currentBlockNumber", currentBlockNumber);
-
     // If lastProcessedEvent is not null, sync missed events
     if (lastProcessedEvent) {
       const fromBlock = BigInt(lastProcessedEvent.lastBlockNumber);
@@ -109,7 +107,6 @@ const watchMultipleContractEvents = async (events) => {
     }
 
     console.log("currentBlockNumber", currentBlockNumber);
-    console.log("lastProcessedEvent", lastProcessedEvent);
 
     // Start watching contract events after fetching missed events (if any)
     clientWS.watchContractEvent({

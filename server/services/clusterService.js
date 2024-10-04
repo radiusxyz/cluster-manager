@@ -51,7 +51,8 @@ const addRollup = async ({ clusterId, rollupId, rollupOwnerAddress }) => {
     }
 
     const {
-      chainType,
+      rollupType,
+      encryptedTransactionType,
       validationInfo,
       orderCommitmentType,
       executorAddresses,
@@ -72,7 +73,8 @@ const addRollup = async ({ clusterId, rollupId, rollupOwnerAddress }) => {
     cluster.rollups.push({
       rollupId,
       owner: rollupOwnerAddress,
-      type: chainType,
+      type: rollupType,
+      encryptedTransactionType,
       orderCommitmentType,
       validationInfo: {
         platform: validationInfo.platform,

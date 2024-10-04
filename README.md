@@ -9,6 +9,9 @@
    npm run dev
    ```
 
+   - To change the **contract address** and **ABI**, edit the file located at `cluster-manager/common.js`.
+   - For changing **chain-related configurations** on the client side, edit the file located at `client/src/config.js`.
+
 #### 2. **Blockchain Setup**
    Move to the `chain` directory to install dependencies, compile the contracts, and deploy them using Hardhat:
 
@@ -37,9 +40,13 @@
 
    3. **Install dependencies and start the server:**
       ```bash
+      cd server
       npm install
       npm run dev
       ```
+
+   - For changing **chain-related configurations** on the server side, edit the file located at `server/config.js`.
+
 ---
 
 # Client

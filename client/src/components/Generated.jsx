@@ -42,7 +42,7 @@ const Generated = ({ address }) => {
                   <s.Name>Cluster ID: </s.Name>
                   <s.Id>{cluster.clusterId}</s.Id>
                 </s.NameIdWrapper>
-                <s.EditBtn>Edit</s.EditBtn>
+                {/* <s.EditBtn>Edit</s.EditBtn> */}
               </s.NameIdEditWrapper>
               <s.PropsWrapper>
                 <s.PropWrapper>
