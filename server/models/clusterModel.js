@@ -16,6 +16,7 @@ const ExecutorSchema = new Schema({
 const RollupSchema = new Schema({
   rollupId: { type: String, required: true },
   owner: { type: String, required: true },
+  encryptedTransactionType: { type: String, required: true },
   type: { type: String, required: true },
   orderCommitmentType: { type: String, required: true },
   validationInfo: { type: ValidationInfoSchema, required: true },
