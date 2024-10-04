@@ -17,17 +17,28 @@ interface ILivenessRadius {
 
     struct Rollup {
         address owner;
-        string chainType;
+        string rollupType;
+        string encryptedTransactionType;
         ValidationInfo validationInfo;
         string orderCommitmentType;
         mapping(address => bool) isRegisteredExecutor;
         address[] executorAddresses;
     }
 
+    struct AddRollupInfo {
+        string rollupId;
+        address owner;
+        string rollupType;
+        string encryptedTransactionType;
+        ValidationInfo validationInfo;
+        string orderCommitmentType;
+    }
+
     struct RollupInfo {
         string rollupId;
         address owner;
-        string chainType;
+        string rollupType;
+        string encryptedTransactionType;
         ValidationInfo validationInfo;
         string orderCommitmentType;
         address[] executorAddresses;
@@ -42,14 +53,7 @@ interface ILivenessRadius {
 
     function initializeCluster(string calldata clusterId, uint256 maxSequencerNumber) external;
 
-    function addRollup(
-        string calldata clusterId,
-        string calldata rollupId,
-        string calldata chainType,
-        address rollupOwnerAddress,
-        string calldata orderCommitmentType,
-        ValidationInfo calldata validationInfo
-    ) external;
+    function addRollup(string calldata clusterId, AddRollupInfo calldata rollupInfo) external;
 
     function registerRollupExecutor(
         string calldata clusterId,
