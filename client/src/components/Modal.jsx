@@ -23,18 +23,17 @@ const Modal = ({ toggle }) => {
   const { address } = useAccount();
 
   // Step 1
-  const [clusterId, setClusterId] = useState("A");
+  const [clusterId, setClusterId] = useState("cluster_id");
   const [maxSequencerNumber, setMaxSequencerNumber] = useState(30);
 
   // Step 2
-  const [rollupId, setRollupId] = useState("1");
-  const [rollupType, setRollupType] = useState("ethereum");
-  const [orderCommitmentType, setOrderCommitmentType] =
-    useState("orderCommitment");
+  const [rollupId, setRollupId] = useState("rollup_id");
+  const [rollupType, setRollupType] = useState("polygon_cdk");
+  const [orderCommitmentType, setOrderCommitmentType] = useState("sign");
   const [encryptedTransactionType, setEncryptedTransactionType] =
-    useState("pvde");
+    useState("skde");
   const [platform, setPlatform] = useState("ethereum");
-  const [serviceProvider, setServiceProvider] = useState("eigenlayer");
+  const [serviceProvider, setServiceProvider] = useState("eigen_layer");
   const [rpcUrl, setRpcUrl] = useState("https://www.google.ru/");
   const [webSocketUrl, setWebSocketUrl] = useState("https://www.naver.com/");
   const [blockExplorerUrl, setBlockExplorerUrl] = useState(
@@ -175,7 +174,7 @@ const Modal = ({ toggle }) => {
               <InputContainer>
                 <Label>Rollup Type</Label>
                 <SelectBox onChange={(e) => setRollupType(e.target.value)}>
-                  <option defaultValue="Ethereum">Ethereum</option>
+                  <option defaultValue="polygon_cdk">Polygon CDK</option>
                 </SelectBox>
               </InputContainer>{" "}
               <InputContainer>
@@ -183,8 +182,8 @@ const Modal = ({ toggle }) => {
                 <SelectBox
                   onChange={(e) => setEncryptedTransactionType(e.target.value)}
                 >
-                  <option defaultValue="pvde">Pvde</option>
-                  <option>Skde</option>
+                  <option defaultValue="skde">Skde</option>
+                  <option value="pvde">Pvde</option>
                 </SelectBox>
               </InputContainer>{" "}
               <InputContainer>
@@ -192,10 +191,8 @@ const Modal = ({ toggle }) => {
                 <SelectBox
                   onChange={(e) => setOrderCommitmentType(e.target.value)}
                 >
-                  <option defaultValue="orderCommtiment">
-                    Order Commitment
-                  </option>
-                  <option>Transaction Hash</option>
+                  <option defaultValue="sign">Sign</option>
+                  <option value="transaction_hash">Transaction Hash</option>
                 </SelectBox>
               </InputContainer>{" "}
               <InputContainer>
@@ -220,8 +217,8 @@ const Modal = ({ toggle }) => {
                   <SelectBox
                     onChange={(e) => setServiceProvider(e.target.value)}
                   >
-                    <option defaultValue="eigenlayer">Eigenlayer</option>
-                    <option>Symbiotic</option>
+                    <option defaultValue="eigen_layer">Eigenlayer</option>
+                    <option value="symbiotic">Symbiotic</option>
                   </SelectBox>
                 </InputContainer>
               </div>
