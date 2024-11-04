@@ -32,6 +32,7 @@ interface ILivenessRadius {
         string encryptedTransactionType;
         ValidationInfo validationInfo;
         string orderCommitmentType;
+        address executorAddress;
     }
 
     struct RollupInfo {

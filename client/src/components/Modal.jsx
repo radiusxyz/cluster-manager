@@ -28,6 +28,7 @@ const Modal = ({ toggle }) => {
 
   // Step 2
   const [rollupId, setRollupId] = useState("rollup_id");
+  const [executorAddress, setExecutorAddress] = useState(address);
   const [rollupType, setRollupType] = useState("polygon_cdk");
   const [orderCommitmentType, setOrderCommitmentType] = useState("sign");
   const [encryptedTransactionType, setEncryptedTransactionType] =
@@ -78,6 +79,7 @@ const Modal = ({ toggle }) => {
         owner: address,
         orderCommitmentType,
         validationInfo: { platform, serviceProvider },
+        executorAddress: address,
       },
     ]);
     setTransactionCompleted(false); // Reset the flag when a new transaction begins
@@ -168,6 +170,16 @@ const Modal = ({ toggle }) => {
                   type="text"
                   onChange={(e) => {
                     setRollupId(e.target.value);
+                  }}
+                />
+              </InputContainer>
+              <InputContainer>
+                <Label>Executor Address</Label>
+                <Input
+                  value={executorAddress}
+                  type="text"
+                  onChange={(e) => {
+                    setExecutorAddress(e.target.value);
                   }}
                 />
               </InputContainer>
