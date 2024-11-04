@@ -49,6 +49,12 @@
 
 ---
 
+# Architecture
+
+![image](https://github.com/user-attachments/assets/4bdd4469-97ef-466f-afc4-e504783d2cbc)
+
+---
+
 # Client
 
 ## Overview
