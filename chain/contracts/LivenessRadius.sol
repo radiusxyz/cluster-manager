@@ -70,7 +70,7 @@ contract LivenessRadius is ILivenessRadius, AccessControlUpgradeable, Reentrancy
         rollup.validationInfo = rollupInfo.validationInfo;
         rollup.isRegisteredExecutor[rollupInfo.owner] = true;
 
-        rollup.executorAddresses.push(rollupInfo.owner);
+        rollup.executorAddresses.push(rollupInfo.executorAddress);
 
         emit AddRollup(clusterId, rollupInfo.rollupId, rollupInfo.owner);
     }
@@ -78,7 +78,7 @@ contract LivenessRadius is ILivenessRadius, AccessControlUpgradeable, Reentrancy
     function registerRollupExecutor(
         string calldata clusterId,
         string calldata rollupId,
-        address rollupExecutorAddress
+        address executorAddress
     ) public {
         Cluster storage cluster = clusters[clusterId];
 
@@ -88,10 +88,10 @@ contract LivenessRadius is ILivenessRadius, AccessControlUpgradeable, Reentrancy
 
         require(rollup.owner == msg.sender, "Not rollup owner");
 
-        rollup.isRegisteredExecutor[rollupExecutorAddress] = true;
-        rollup.executorAddresses.push(rollupExecutorAddress);
+        rollup.isRegisteredExecutor[executorAddress] = true;
+        rollup.executorAddresses.push(executorAddress);
 
-        emit RegisterRollupExecutor(clusterId, rollupId, rollupExecutorAddress);
+        emit RegisterRollupExecutor(clusterId, rollupId, executorAddress);
     }
 
     function registerSequencer(string calldata clusterId) public {
