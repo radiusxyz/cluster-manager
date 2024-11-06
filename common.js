@@ -1,5 +1,5 @@
 // LivenessContract Address
-const contractAddress = "0x70e0bA845a1A0F2DA3359C97E0285013525FFC49";
+const contractAddress = "0x38c7AFF2b28dF9f90b8cCC3c59C480599Cf0c846";
 const contractAbi = [
   {
     inputs: [],
@@ -366,6 +366,11 @@ const contractAbi = [
             internalType: "string",
             name: "orderCommitmentType",
             type: "string",
+          },
+          {
+            internalType: "address",
+            name: "executorAddress",
+            type: "address",
           },
         ],
         internalType: "struct ILivenessRadius.AddRollupInfo",
@@ -835,7 +840,7 @@ const contractAbi = [
       },
       {
         internalType: "address",
-        name: "rollupExecutorAddress",
+        name: "executorAddress",
         type: "address",
       },
     ],

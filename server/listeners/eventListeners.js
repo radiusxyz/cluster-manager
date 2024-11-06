@@ -1,15 +1,22 @@
-import { createPublicClient, http } from "viem";
+import { createPublicClient, http, webSocket } from "viem";
 import eventService from "../services/eventService.js";
 import blockSyncService from "../services/blockSyncService.js";
 
 import { contractAddress, contractAbi } from "../../common.js";
 import dotenv from "dotenv";
 dotenv.config();
-import { localhost } from "../config.js";
+import { holesky } from "viem/chains";
 
-const client = createPublicClient({
-  chain: localhost,
+const clientHttp = createPublicClient({
+  chain: holesky,
   transport: http(),
+});
+
+const clientWebSocket = createPublicClient({
+  chain: holesky,
+  transport: webSocket(
+    "wss://holesky.infura.io/ws/v3/45ea6e32af764f3cb6df2c21240b0ff1"
+  ),
 });
 
 // Helper function to check if the log is new
@@ -50,7 +57,7 @@ const processLog = async (log, events) => {
 const fetchMissedEvents = async (events, fromBlock, toBlock) => {
   try {
     // Fetch historical logs without specifying the event name
-    const logs = await client.getContractEvents({
+    const logs = await clientHttp.getContractEvents({
       address: contractAddress,
       abi: contractAbi,
       fromBlock,
@@ -82,7 +89,7 @@ const watchMultipleContractEvents = async (events) => {
     // Fetch the last processed event
     const lastProcessedEvent = await blockSyncService.getLastProcessedEvent();
 
-    let currentBlockNumber = await client.getBlockNumber();
+    let currentBlockNumber = await clientHttp.getBlockNumber();
 
     // If lastProcessedEvent is not null, sync missed events
     if (lastProcessedEvent) {
@@ -102,7 +109,7 @@ const watchMultipleContractEvents = async (events) => {
     console.log("currentBlockNumber", currentBlockNumber);
 
     // Start watching contract events after fetching missed events (if any)
-    client.watchContractEvent({
+    clientWebSocket.watchContractEvent({
       address: contractAddress,
       abi: contractAbi,
       fromBlock: lastProcessedEvent
