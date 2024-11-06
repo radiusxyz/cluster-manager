@@ -5,7 +5,7 @@ export const PageContainer = styled.div`
   margin-left: auto;
   margin-right: auto;
   margin-top: 50px;
-  max-width: 1600px;
+  max-width: 1700px;
   width: 100%;
   max-height: 840px;
   display: flex;
@@ -132,4 +132,7 @@ export const Message = styled.p`
   width: 100%;
   justify-content: center;
   align-items: center;
+  font-size: 20px;
+  font-weight: 600;
+  color: #777;
 `;

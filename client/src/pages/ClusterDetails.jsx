@@ -183,31 +183,32 @@ const ClusterDetails = () => {
             </Headers>
 
             <Rows>
-              {cluster.rollups.map((rollup, index) => (
-                <Row
-                  onClick={() => handleSelectRollup(rollup.rollupId)}
-                  key={rollup.rollupId + index}
-                >
-                  <Cell>
-                    <CellTxt>{rollup.rollupId}</CellTxt>
-                  </Cell>
-                  <Cell>
-                    <CellTxt>{rollup.type}</CellTxt>
-                  </Cell>
-                  <Cell>
-                    <CellTxt>{rollup.encryptedTransactionType}</CellTxt>
-                  </Cell>
-                  <Cell>
-                    <CellTxt>{rollup.validationInfo.platform}</CellTxt>
-                  </Cell>
-                  <Cell>
-                    <CellTxt>{rollup.validationInfo.serviceProvider}</CellTxt>
-                  </Cell>
-                  <Cell>
-                    <CellTxt>{rollup.orderCommitmentType}</CellTxt>
-                  </Cell>
-                </Row>
-              ))}
+              {(cluster.rollups.length &&
+                cluster.rollups.map((rollup, index) => (
+                  <Row
+                    onClick={() => handleSelectRollup(rollup.rollupId)}
+                    key={rollup.rollupId + index}
+                  >
+                    <Cell>
+                      <CellTxt>{rollup.rollupId}</CellTxt>
+                    </Cell>
+                    <Cell>
+                      <CellTxt>{rollup.type}</CellTxt>
+                    </Cell>
+                    <Cell>
+                      <CellTxt>{rollup.encryptedTransactionType}</CellTxt>
+                    </Cell>
+                    <Cell>
+                      <CellTxt>{rollup.validationInfo.platform}</CellTxt>
+                    </Cell>
+                    <Cell>
+                      <CellTxt>{rollup.validationInfo.serviceProvider}</CellTxt>
+                    </Cell>
+                    <Cell>
+                      <CellTxt>{rollup.orderCommitmentType}</CellTxt>
+                    </Cell>
+                  </Row>
+                ))) || <Message>No rollups added</Message>}
             </Rows>
           </Table>
         </Container>
@@ -223,10 +224,10 @@ const ClusterDetails = () => {
               <Header>WebSocket</Header>
             </Headers>
             <Rows>
-              {(selectedRollupId &&
+              {selectedRollupId &&
                 cluster.rollups
                   .find((rollup) => rollup.rollupId === selectedRollupId)
-                  .executors.map((executor, index) => (
+                  ?.executors.map((executor, index) => (
                     <Row key={executor.address + index}>
                       <Cell>
                         <CellTxt>{executor.address}</CellTxt>
@@ -241,10 +242,12 @@ const ClusterDetails = () => {
                         <CellTxt>{executor.websocketUrl}</CellTxt>
                       </Cell>
                     </Row>
-                  ))) || (
-                <Row>
-                  <Message>Click on a rollup to display its executors</Message>
-                </Row>
+                  ))}
+              {!selectedRollupId && cluster.rollups.length !== 0 && (
+                <Message>Click on a rollup to display its executors</Message>
+              )}
+              {cluster.rollups.length === 0 && (
+                <Message>Not Applicable</Message>
               )}
             </Rows>
           </Table>
