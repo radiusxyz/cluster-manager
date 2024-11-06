@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { tableStyles as tS } from "../pages/ExplorerStyles";
+
 import Loader from "./Loader";
 import { useGET } from "../hooks/useServer";
+import {
+  Cell,
+  CellTxt,
+  Header,
+  Headers,
+  Row,
+  Rows,
+  Table,
+} from "../pages/TableStyles";
 
 const Joined = ({ address }) => {
   const [clustersJoined, setClustersJoined] = useState(null);
@@ -26,36 +35,41 @@ const Joined = ({ address }) => {
     }
   }, [dataClustersJoined]);
   return (
-    <tS.Table>
-      <tS.Headers>
-        <tS.Header>Status</tS.Header>
-        <tS.Header>Id</tS.Header>
-        <tS.Header>RPC Endpoint</tS.Header>
-      </tS.Headers>
-      <tS.Rows>
+    <Table>
+      <Headers>
+        <Header>Status</Header>
+        <Header>ID</Header>
+        <Header>Quota</Header>
+      </Headers>
+      <Rows>
         {!clustersJoined ? (
           <Loader />
         ) : (
           clustersJoined.map((cluster) => (
-            <tS.Row key={cluster.clusterId}>
-              <tS.Cell>
-                <tS.CellTxt>
-                  {(cluster.active && "Active") || "Inactive"}
-                </tS.CellTxt>
-              </tS.Cell>
-              <tS.Cell>
-                <tS.CellTxt>{cluster.clusterId}</tS.CellTxt>
-              </tS.Cell>
-              <tS.Cell>
-                <tS.CellTxt>
-                  {cluster.rpcUrl ? cluster.rpcUrl : "Not added"}
-                </tS.CellTxt>
-              </tS.Cell>
-            </tS.Row>
+            <Row key={cluster.clusterId}>
+              <Cell>
+                <CellTxt>{(cluster.active && "Active") || "Inactive"}</CellTxt>
+              </Cell>
+              <Cell>
+                <CellTxt>{cluster.clusterId}</CellTxt>
+              </Cell>
+              <Cell>
+                <CellTxt>
+                  {
+                    cluster.sequencers.filter(
+                      (sequencer) =>
+                        sequencer !==
+                        "0x0000000000000000000000000000000000000000"
+                    ).length
+                  }
+                  /{cluster.sequencers.length}
+                </CellTxt>
+              </Cell>
+            </Row>
           ))
         )}
-      </tS.Rows>
-    </tS.Table>
+      </Rows>
+    </Table>
   );
 };
 

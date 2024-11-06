@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from "react";
-import * as s from "./GeneratedCardsStyles";
 import { useGET } from "../hooks/useServer";
+import Loader from "../components/Loader";
+import {
+  Cell,
+  CellTxt,
+  Header,
+  Headers,
+  Row,
+  Rows,
+  Table,
+} from "../pages/TableStyles";
 
 const Generated = ({ address }) => {
   const [clustersGenerated, setClustersGenerated] = useState([]);
@@ -27,43 +36,42 @@ const Generated = ({ address }) => {
   }, [dataClustersGenerated]);
 
   return (
-    <s.CardsContainer>
-      {!clustersGenerated ? (
-        <Loading />
-      ) : (
-        clustersGenerated.map((cluster) => (
-          <s.CardWrapperLink
-            to={`/${cluster.clusterId}/details`}
-            key={cluster.clusterId}
-          >
-            <s.Card>
-              <s.NameIdEditWrapper>
-                <s.NameIdWrapper>
-                  <s.Name>Cluster ID: </s.Name>
-                  <s.Id>{cluster.clusterId}</s.Id>
-                </s.NameIdWrapper>
-                {/* <s.EditBtn>Edit</s.EditBtn> */}
-              </s.NameIdEditWrapper>
-              <s.PropsWrapper>
-                <s.PropWrapper>
-                  <s.PropTitle>Quota:</s.PropTitle>
-                  <s.PropValue>
-                    {
-                      cluster.sequencers.filter(
-                        (sequencer) =>
-                          sequencer !==
-                          "0x0000000000000000000000000000000000000000"
-                      ).length
-                    }
-                    /{cluster.sequencers.length}
-                  </s.PropValue>
-                </s.PropWrapper>
-              </s.PropsWrapper>
-            </s.Card>
-          </s.CardWrapperLink>
-        ))
-      )}
-    </s.CardsContainer>
+    <Table>
+      <Headers>
+        <Header>Status</Header>
+        <Header>ID</Header>
+        <Header>Quota</Header>
+      </Headers>
+
+      <Rows>
+        {isPendingClustersGenerated ? (
+          <Loader />
+        ) : (
+          clustersGenerated.map((cluster) => (
+            <Row to={`/${cluster.clusterId}/details`} key={cluster.clusterId}>
+              <Cell>
+                <CellTxt>{cluster.active ? "Active" : "Inactive"}</CellTxt>
+              </Cell>
+              <Cell>
+                <CellTxt>{cluster.clusterId}</CellTxt>
+              </Cell>
+              <Cell>
+                <CellTxt>
+                  {
+                    cluster.sequencers.filter(
+                      (sequencer) =>
+                        sequencer !==
+                        "0x0000000000000000000000000000000000000000"
+                    ).length
+                  }
+                  /{cluster.sequencers.length}
+                </CellTxt>
+              </Cell>
+            </Row>
+          ))
+        )}
+      </Rows>
+    </Table>
   );
 };
 
