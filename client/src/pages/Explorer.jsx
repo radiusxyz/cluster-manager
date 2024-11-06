@@ -85,7 +85,7 @@ const Explorer = () => {
       <Table>
         <Headers>
           <Header>Status</Header>
-          <Header>ID</Header>
+          <Header>Id</Header>
           <Header>Quota</Header>
         </Headers>
 
@@ -110,7 +110,7 @@ const Explorer = () => {
                           "0x0000000000000000000000000000000000000000"
                       ).length
                     }
-                    /{cluster.sequencerlength}
+                    /{cluster.sequencers.length}
                   </CellTxt>
                 </Cell>
               </Row>

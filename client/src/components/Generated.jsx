@@ -39,7 +39,7 @@ const Generated = ({ address }) => {
     <Table>
       <Headers>
         <Header>Status</Header>
-        <Header>ID</Header>
+        <Header>Id</Header>
         <Header>Quota</Header>
       </Headers>
 

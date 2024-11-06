@@ -30,11 +30,12 @@ const Modal = ({ toggle }) => {
   const [rollupId, setRollupId] = useState("rollup_id");
   const [executorAddress, setExecutorAddress] = useState(address);
   const [rollupType, setRollupType] = useState("polygon_cdk");
-  const [orderCommitmentType, setOrderCommitmentType] = useState("sign");
+  const [orderCommitmentType, setOrderCommitmentType] =
+    useState("transaction_hash");
   const [encryptedTransactionType, setEncryptedTransactionType] =
     useState("skde");
   const [platform, setPlatform] = useState("ethereum");
-  const [serviceProvider, setServiceProvider] = useState("eigen_layer");
+  const [serviceProvider, setServiceProvider] = useState("symbiotic");
   const [rpcUrl, setRpcUrl] = useState("https://www.google.ru/");
   const [webSocketUrl, setWebSocketUrl] = useState("https://www.naver.com/");
   const [blockExplorerUrl, setBlockExplorerUrl] = useState(
@@ -140,7 +141,7 @@ const Modal = ({ toggle }) => {
           (step === 1 && (
             <>
               <InputContainer>
-                <Label>Cluster ID</Label>
+                <Label>Cluster Id</Label>
                 <Input
                   value={clusterId}
                   type="text"
@@ -203,8 +204,10 @@ const Modal = ({ toggle }) => {
                 <SelectBox
                   onChange={(e) => setOrderCommitmentType(e.target.value)}
                 >
-                  <option defaultValue="sign">Sign</option>
-                  <option value="transaction_hash">Transaction Hash</option>
+                  <option defaultValue="transaction_hash">
+                    Transaction Hash
+                  </option>
+                  <option value="sign">Sign</option>
                 </SelectBox>
               </InputContainer>{" "}
               <InputContainer>
@@ -229,8 +232,8 @@ const Modal = ({ toggle }) => {
                   <SelectBox
                     onChange={(e) => setServiceProvider(e.target.value)}
                   >
-                    <option defaultValue="eigen_layer">Eigenlayer</option>
-                    <option value="symbiotic">Symbiotic</option>
+                    <option defaultValue="symbiotic">Symbiotic</option>
+                    <option value="eigen_layer">Eigenlayer</option>
                   </SelectBox>
                 </InputContainer>
               </div>
