@@ -5,7 +5,7 @@ export const PageContainer = styled.div`
   margin-left: auto;
   margin-right: auto;
   margin-top: 50px;
-  max-width: 1192px;
+  max-width: 1700px;
   width: 100%;
   max-height: 840px;
   display: flex;
@@ -125,4 +125,14 @@ export const CellTxt = styled.span`
   font-size: 16px;
   font-weight: 400;
   line-height: 19.36px;
+`;
+
+export const Message = styled.p`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  font-weight: 600;
+  color: #777;
 `;

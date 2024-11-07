@@ -1,10 +1,30 @@
-import React, { useContext, useEffect, useState } from "react";
-import * as s from "./ExplorerStyles";
+import React, { useEffect, useState } from "react";
+
 import Loader from "../components/Loader";
 
 import { useGET } from "../hooks/useServer";
 
 import Modal from "../components/Modal";
+import {
+  ActionsContainer,
+  Filter,
+  GenerateBtn,
+  Input,
+  PageContainer,
+  SearchInput,
+  SelectSearchWrapper,
+  Title,
+  TypeSelectBox,
+} from "./ExplorerStyles";
+import {
+  Cell,
+  CellTxt,
+  Header,
+  Headers,
+  Row,
+  Rows,
+  Table,
+} from "./TableStyles";
 
 const Explorer = () => {
   const [clusters, setClusters] = useState([]);
@@ -39,55 +59,50 @@ const Explorer = () => {
     setEncrypted((prevState) => !prevState);
   };
   return (
-    <s.PageContainer>
-      <s.Title>All Clusters</s.Title>
-      <s.ActionsContainer>
-        <s.SelectSearchWrapper>
-          <s.TypeSelectBox>
+    <PageContainer>
+      <Title>All Clusters</Title>
+      <ActionsContainer>
+        <SelectSearchWrapper>
+          <TypeSelectBox>
             <option defaultValue="All">All</option>
             <option value="zkStack">zk Stack</option>
             <option value="polygonCdk">Polygon CDK</option>
             <option value="madara">Madara</option>
             <option value="arbitrumOrbit">Arbitrum Orbit</option>
-          </s.TypeSelectBox>
-          <s.SearchInput>
-            <s.Input />
-          </s.SearchInput>
-        </s.SelectSearchWrapper>
-        <s.Filter $active={all} onClick={toggleAll}>
+          </TypeSelectBox>
+          <SearchInput>
+            <Input />
+          </SearchInput>
+        </SelectSearchWrapper>
+        <Filter $active={all} onClick={toggleAll}>
           Active
-        </s.Filter>
-        <s.Filter $active={encrypted} onClick={toggleEncrypted}>
+        </Filter>
+        <Filter $active={encrypted} onClick={toggleEncrypted}>
           Encrypted Mempool
-        </s.Filter>
-        <s.GenerateBtn onClick={toggleModal}>Generate Cluster</s.GenerateBtn>
-      </s.ActionsContainer>
-      <s.Table>
-        <s.Headers>
-          <s.Header>Status</s.Header>
-          <s.Header>ID</s.Header>
-          <s.Header>Quota</s.Header>
-        </s.Headers>
+        </Filter>
+        <GenerateBtn onClick={toggleModal}>Generate Cluster</GenerateBtn>
+      </ActionsContainer>
+      <Table>
+        <Headers>
+          <Header>Status</Header>
+          <Header>Id</Header>
+          <Header>Quota</Header>
+        </Headers>
 
-        <s.Rows>
+        <Rows>
           {isPendingClusters ? (
             <Loader />
           ) : (
             clusters.map((cluster) => (
-              <s.Row
-                to={`/${cluster.clusterId}/details`}
-                key={cluster.clusterId}
-              >
-                <s.Cell>
-                  <s.CellTxt>
-                    {cluster.active ? "Active" : "Inactive"}
-                  </s.CellTxt>
-                </s.Cell>
-                <s.Cell>
-                  <s.CellTxt>{cluster.clusterId}</s.CellTxt>
-                </s.Cell>
-                <s.Cell>
-                  <s.CellTxt>
+              <Row to={`/${cluster.clusterId}/details`} key={cluster.clusterId}>
+                <Cell>
+                  <CellTxt>{cluster.active ? "Active" : "Inactive"}</CellTxt>
+                </Cell>
+                <Cell>
+                  <CellTxt>{cluster.clusterId}</CellTxt>
+                </Cell>
+                <Cell>
+                  <CellTxt>
                     {
                       cluster.sequencers.filter(
                         (sequencer) =>
@@ -96,15 +111,15 @@ const Explorer = () => {
                       ).length
                     }
                     /{cluster.sequencers.length}
-                  </s.CellTxt>
-                </s.Cell>
-              </s.Row>
+                  </CellTxt>
+                </Cell>
+              </Row>
             ))
           )}
-        </s.Rows>
-      </s.Table>
+        </Rows>
+      </Table>
       {showModal && <Modal toggle={toggleModal} />}
-    </s.PageContainer>
+    </PageContainer>
   );
 };
 

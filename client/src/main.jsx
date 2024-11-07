@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
-import { ClusterProvider } from "./contexts/ClusterContext.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { config } from "./config.js";
@@ -15,9 +14,7 @@ document.getElementById("root") &&
     <React.StrictMode>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          <ClusterProvider>
-            <App />
-          </ClusterProvider>
+          <App />
         </QueryClientProvider>
       </WagmiProvider>
     </React.StrictMode>

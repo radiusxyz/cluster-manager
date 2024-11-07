@@ -1,6 +1,27 @@
 import React, { useEffect, useState } from "react";
-import * as s from "./ClusterDetailsStyles";
-import Copy from "../components/Copy";
+import {
+  PageContainer,
+  TitleJoinBtnContainer,
+  BtnsContainer,
+  RunBtn,
+  JoinBtn,
+  Container,
+  SubTitle,
+  InfoItems,
+  InfoItem,
+  Property,
+  Value,
+  Table,
+  Headers,
+  Header,
+  Rows,
+  Row,
+  Cell,
+  CellTxt,
+  Title,
+  Message,
+} from "./ClusterDetailsStyles";
+
 import { useParams } from "react-router";
 import { useGET } from "../hooks/useServer";
 import Loader from "../components/Loader";
@@ -12,6 +33,7 @@ const ClusterDetails = () => {
   const { clusterId } = useParams();
   const { address } = useAccount();
   const [cluster, setCluster] = useState(null);
+  const [selectedRollupId, setSelectedRollupId] = useState(null);
   const [shouldGetSequencers, setShouldGetSequencers] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {
@@ -39,6 +61,10 @@ const ClusterDetails = () => {
     }
   };
 
+  const handleSelectRollup = (rollupId) => {
+    setSelectedRollupId(rollupId);
+  };
+
   const handleRun = () => {
     toggleModal();
   };
@@ -51,66 +77,62 @@ const ClusterDetails = () => {
   }, [dataSequencers]);
 
   return (
-    <s.PageContainer>
-      <s.TitleJoinBtnContainer>
-        <s.Title>Cluster details</s.Title>
-        {/* TODO: Maybe add later, but currently, it is difficult to test, register deregister with it, because wallet is problematic */}
+    <PageContainer>
+      <TitleJoinBtnContainer>
+        <Title>Cluster details</Title>
         {address && cluster && cluster.sequencers.includes(address) ? (
-          <s.BtnsContainer>
-            <s.RunBtn onClick={handleRun}>Run</s.RunBtn>
-            <s.JoinBtn onClick={handleJoinLeave}>Leave</s.JoinBtn>
-          </s.BtnsContainer>
+          <BtnsContainer>
+            <RunBtn onClick={handleRun}>Run</RunBtn>
+            <JoinBtn onClick={handleJoinLeave}>Leave</JoinBtn>
+          </BtnsContainer>
         ) : (
-          <s.BtnsContainer>
-            <s.JoinBtn onClick={handleJoinLeave}>Join</s.JoinBtn>
-          </s.BtnsContainer>
+          <BtnsContainer>
+            <JoinBtn onClick={handleJoinLeave}>Join</JoinBtn>
+          </BtnsContainer>
         )}
-      </s.TitleJoinBtnContainer>
-      <s.Container>
-        <s.SubTitle>Cluster Info</s.SubTitle>
+      </TitleJoinBtnContainer>
+      <Container>
+        <SubTitle>Cluster Info</SubTitle>
         {(!cluster && <Loader />) || (
-          <s.InfoItems>
-            <s.InfoItem>
-              <s.Property>Status</s.Property>
-              <s.Value>{(cluster.active && "Active") || "Inactive"}</s.Value>
-              <Copy />
-            </s.InfoItem>
-            <s.InfoItem>
-              <s.Property>ID</s.Property>
-              <s.Value>{cluster.clusterId}</s.Value> <Copy />
-            </s.InfoItem>
-            <s.InfoItem>
-              <s.Property>Web-Socket URL</s.Property>
-              <s.Value>
+          <InfoItems>
+            <InfoItem>
+              <Property>Status</Property>
+              <Value>{(cluster.active && "Active") || "Inactive"}</Value>
+            </InfoItem>
+            <InfoItem>
+              <Property>Id</Property>
+              <Value>{cluster.clusterId}</Value>
+            </InfoItem>
+            {/* <InfoItem>
+              <Property>Web-Socket URL</Property>
+              <Value>
                 {cluster.rollups[0]?.executors[0].websocketUrl
                   ? cluster.rollups[0]?.executors[0].websocketUrl
                   : "not added"}
-              </s.Value>{" "}
+              </Value>{" "}
               <Copy />
-            </s.InfoItem>
-            <s.InfoItem>
-              <s.Property>RPC-URL</s.Property>
-              <s.Value>
-                {" "}
+            </InfoItem>
+            <InfoItem>
+              <Property>RPC-URL</Property>
+              <Value>
                 {cluster.rollups[0]?.executors[0]
                   ? cluster.rollups[0]?.executors[0].rpcUrl
                   : "not added"}
-              </s.Value>{" "}
+              </Value>{" "}
               <Copy />
-            </s.InfoItem>
-            <s.InfoItem>
-              <s.Property>Block Explorer URL</s.Property>
-              <s.Value>
-                {" "}
+            </InfoItem>
+            <InfoItem>
+              <Property>Block Explorer URL</Property>
+              <Value>
                 {cluster.rollups[0]?.executors[0]
                   ? cluster.rollups[0]?.executors[0].blockExplorerUrl
                   : "not added"}
-              </s.Value>{" "}
+              </Value>{" "}
               <Copy />
-            </s.InfoItem>
-            <s.InfoItem>
-              <s.Property>Quota</s.Property>
-              <s.Value>
+            </InfoItem> */}
+            <InfoItem>
+              <Property>Quota</Property>
+              <Value>
                 {
                   cluster.sequencers.filter(
                     (sequencer) =>
@@ -118,38 +140,121 @@ const ClusterDetails = () => {
                   ).length
                 }
                 /{cluster.sequencers.length}
-              </s.Value>{" "}
-              <Copy />
-            </s.InfoItem>
-          </s.InfoItems>
+              </Value>{" "}
+            </InfoItem>
+          </InfoItems>
         )}
-      </s.Container>
+      </Container>
       {cluster && (
-        <s.Container>
-          <s.SubTitle>Sequencers</s.SubTitle>
-          <s.Table>
-            <s.Headers>
-              <s.Header>Address</s.Header>
-            </s.Headers>
-            <s.Rows>
+        <Container>
+          <SubTitle>Sequencers</SubTitle>
+          <Table>
+            <Headers>
+              <Header>Address</Header>
+            </Headers>
+            <Rows>
               {cluster.sequencers
                 .filter(
                   (sequencer) =>
                     sequencer !== "0x0000000000000000000000000000000000000000"
                 )
                 .map((sequencer, index) => (
-                  <s.Row key={sequencer + index}>
-                    <s.Cell>
-                      <s.CellTxt>{sequencer}</s.CellTxt>
-                    </s.Cell>
-                  </s.Row>
+                  <Row key={sequencer + index}>
+                    <Cell>
+                      <CellTxt>{sequencer}</CellTxt>
+                    </Cell>
+                  </Row>
                 ))}
-            </s.Rows>
-          </s.Table>
-        </s.Container>
+            </Rows>
+          </Table>
+        </Container>
+      )}
+      {cluster && (
+        <Container>
+          <SubTitle>Rollups</SubTitle>
+          <Table>
+            <Headers>
+              <Header>Id</Header>
+              <Header>Type</Header>
+              <Header>Encrypted Tx. Type</Header>
+              <Header>Platform</Header>
+              <Header>Service Provider</Header>
+              <Header>Order Commitment Type</Header>
+            </Headers>
+
+            <Rows>
+              {(cluster.rollups.length &&
+                cluster.rollups.map((rollup, index) => (
+                  <Row
+                    onClick={() => handleSelectRollup(rollup.rollupId)}
+                    key={rollup.rollupId + index}
+                  >
+                    <Cell>
+                      <CellTxt>{rollup.rollupId}</CellTxt>
+                    </Cell>
+                    <Cell>
+                      <CellTxt>{rollup.type}</CellTxt>
+                    </Cell>
+                    <Cell>
+                      <CellTxt>{rollup.encryptedTransactionType}</CellTxt>
+                    </Cell>
+                    <Cell>
+                      <CellTxt>{rollup.validationInfo.platform}</CellTxt>
+                    </Cell>
+                    <Cell>
+                      <CellTxt>{rollup.validationInfo.serviceProvider}</CellTxt>
+                    </Cell>
+                    <Cell>
+                      <CellTxt>{rollup.orderCommitmentType}</CellTxt>
+                    </Cell>
+                  </Row>
+                ))) || <Message>No rollups added</Message>}
+            </Rows>
+          </Table>
+        </Container>
+      )}
+      {cluster && (
+        <Container>
+          <SubTitle>Executors</SubTitle>
+          <Table>
+            <Headers>
+              <Header>Address</Header>
+              <Header>Block Explorer</Header>
+              <Header>RPC</Header>
+              <Header>WebSocket</Header>
+            </Headers>
+            <Rows>
+              {selectedRollupId &&
+                cluster.rollups
+                  .find((rollup) => rollup.rollupId === selectedRollupId)
+                  ?.executors.map((executor, index) => (
+                    <Row key={executor.address + index}>
+                      <Cell>
+                        <CellTxt>{executor.address}</CellTxt>
+                      </Cell>
+                      <Cell>
+                        <CellTxt>{executor.blockExplorerUrl}</CellTxt>
+                      </Cell>
+                      <Cell>
+                        <CellTxt>{executor.rpcUrl}</CellTxt>
+                      </Cell>
+                      <Cell>
+                        <CellTxt>{executor.websocketUrl}</CellTxt>
+                      </Cell>
+                    </Row>
+                  ))}
+              {!selectedRollupId && cluster.rollups.length !== 0 && (
+                <Message>Click on a rollup to display its executors</Message>
+              )}
+              {cluster.rollups.length === 0 && (
+                <Message>Not Applicable</Message>
+              )}
+            </Rows>
+          </Table>
+        </Container>
       )}
       {showModal && <RunModal toggle={toggleModal} cluster={cluster} />}
-    </s.PageContainer>
+    </PageContainer>
   );
 };
 
