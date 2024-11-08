@@ -30,12 +30,14 @@ const router = createBrowserRouter([
       {
         path: "/:clusterId/details", // No index: true here
         element: <ClusterDetails />,
-        children: [
-          {
-            path: "rollup/:rollupId",
-            element: <RollupDetails />,
-          },
-        ],
+        loader: () => {
+          window.scrollTo(0, 0);
+          return null;
+        },
+      },
+      {
+        path: ":clusterId/details/rollup/:rollupId",
+        element: <RollupDetails />,
         loader: () => {
           window.scrollTo(0, 0);
           return null;

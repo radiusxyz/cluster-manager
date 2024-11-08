@@ -20,14 +20,18 @@ import {
   CellTxt,
   Title,
   Message,
+  StyledNavLink,
+  AddRollupBtn,
+  TitleRow,
 } from "./ClusterDetailsStyles";
 
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useGET } from "../hooks/useServer";
 import Loader from "../components/Loader";
 import useWrite from "../hooks/useContract";
 import { useAccount } from "wagmi";
 import RunModal from "../components/RunModal";
+import { NavLink } from "react-router-dom";
 
 const ClusterDetails = () => {
   const { clusterId } = useParams();
@@ -36,6 +40,8 @@ const ClusterDetails = () => {
   const [selectedRollupId, setSelectedRollupId] = useState(null);
   const [shouldGetSequencers, setShouldGetSequencers] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
+
   const toggleModal = () => {
     setShowModal(!showModal);
   };
@@ -61,8 +67,8 @@ const ClusterDetails = () => {
     }
   };
 
-  const handleSelectRollup = (rollupId) => {
-    setSelectedRollupId(rollupId);
+  const handleNavigateToRollup = (rollup) => {
+    navigate(`rollup/${rollup.rollupId}`, { state: { rollup } });
   };
 
   const handleRun = () => {
@@ -87,7 +93,7 @@ const ClusterDetails = () => {
           </BtnsContainer>
         ) : (
           <BtnsContainer>
-            <JoinBtn onClick={handleJoinLeave}>Join</JoinBtn>
+            <JoinBtn onClick={handleJoinLeave}>Join as sequencer</JoinBtn>
           </BtnsContainer>
         )}
       </TitleJoinBtnContainer>
@@ -103,33 +109,6 @@ const ClusterDetails = () => {
               <Property>Id</Property>
               <Value>{cluster.clusterId}</Value>
             </InfoItem>
-            {/* <InfoItem>
-              <Property>Web-Socket URL</Property>
-              <Value>
-                {cluster.rollups[0]?.executors[0].websocketUrl
-                  ? cluster.rollups[0]?.executors[0].websocketUrl
-                  : "not added"}
-              </Value>{" "}
-              <Copy />
-            </InfoItem>
-            <InfoItem>
-              <Property>RPC-URL</Property>
-              <Value>
-                {cluster.rollups[0]?.executors[0]
-                  ? cluster.rollups[0]?.executors[0].rpcUrl
-                  : "not added"}
-              </Value>{" "}
-              <Copy />
-            </InfoItem>
-            <InfoItem>
-              <Property>Block Explorer URL</Property>
-              <Value>
-                {cluster.rollups[0]?.executors[0]
-                  ? cluster.rollups[0]?.executors[0].blockExplorerUrl
-                  : "not added"}
-              </Value>{" "}
-              <Copy />
-            </InfoItem> */}
             <InfoItem>
               <Property>Quota</Property>
               <Value>
@@ -171,7 +150,11 @@ const ClusterDetails = () => {
       )}
       {cluster && (
         <Container>
-          <SubTitle>Rollups</SubTitle>
+          <TitleRow>
+            <SubTitle>Rollups</SubTitle>
+            <AddRollupBtn>Add rollup</AddRollupBtn>
+          </TitleRow>
+
           <Table>
             <Headers>
               <Header>Id</Header>
@@ -185,8 +168,12 @@ const ClusterDetails = () => {
             <Rows>
               {(cluster.rollups.length &&
                 cluster.rollups.map((rollup, index) => (
+                  // <StyledNavLink
+                  //   key={rollup.rollupId}
+                  //   to={`rollup/${rollup.rollupId}`}
+                  // >
                   <Row
-                    onClick={() => handleSelectRollup(rollup.rollupId)}
+                    onClick={() => handleNavigateToRollup(rollup)}
                     key={rollup.rollupId + index}
                   >
                     <Cell>
@@ -208,47 +195,8 @@ const ClusterDetails = () => {
                       <CellTxt>{rollup.orderCommitmentType}</CellTxt>
                     </Cell>
                   </Row>
+                  // </StyledNavLink>
                 ))) || <Message>No rollups added</Message>}
-            </Rows>
-          </Table>
-        </Container>
-      )}
-      {cluster && (
-        <Container>
-          <SubTitle>Executors</SubTitle>
-          <Table>
-            <Headers>
-              <Header>Address</Header>
-              <Header>Block Explorer</Header>
-              <Header>RPC</Header>
-              <Header>WebSocket</Header>
-            </Headers>
-            <Rows>
-              {selectedRollupId &&
-                cluster.rollups
-                  .find((rollup) => rollup.rollupId === selectedRollupId)
-                  ?.executors.map((executor, index) => (
-                    <Row key={executor.address + index}>
-                      <Cell>
-                        <CellTxt>{executor.address}</CellTxt>
-                      </Cell>
-                      <Cell>
-                        <CellTxt>{executor.blockExplorerUrl}</CellTxt>
-                      </Cell>
-                      <Cell>
-                        <CellTxt>{executor.rpcUrl}</CellTxt>
-                      </Cell>
-                      <Cell>
-                        <CellTxt>{executor.websocketUrl}</CellTxt>
-                      </Cell>
-                    </Row>
-                  ))}
-              {!selectedRollupId && cluster.rollups.length !== 0 && (
-                <Message>Click on a rollup to display its executors</Message>
-              )}
-              {cluster.rollups.length === 0 && (
-                <Message>Not Applicable</Message>
-              )}
             </Rows>
           </Table>
         </Container>
