@@ -8,6 +8,7 @@ export const Headers = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 10px;
+  padding: 0px 10px;
 `;
 
 export const Header = styled.div`
@@ -21,7 +22,6 @@ export const Header = styled.div`
 export const Rows = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
 `;
 
 export const Row = styled(Link)`
@@ -32,6 +32,11 @@ export const Row = styled(Link)`
   align-items: center;
   width: 100%;
   cursor: pointer;
+  padding: 5px 10px;
+  &:hover {
+    background-color: #000;
+    color: #fff;
+  }
 `;
 
 export const Cell = styled.div`

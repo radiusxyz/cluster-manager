@@ -16,22 +16,14 @@ import {
 } from "./ModalStyles";
 import { usePATCH } from "../hooks/useServer";
 
-const AddExecutorModal = ({ toggle }) => {
+const AddExecutorModal = ({ toggle, clusterId, rollupId }) => {
   const { address } = useAccount();
 
-  // Step 1
-  const [clusterId, setClusterId] = useState("cluster_id");
-
-  // Step 2
-  const [rollupId, setRollupId] = useState("rollup_id");
   const [rpcUrl, setRpcUrl] = useState("https://www.google.ru/");
   const [webSocketUrl, setWebSocketUrl] = useState("https://www.naver.com/");
   const [blockExplorerUrl, setBlockExplorerUrl] = useState(
     "https://www.hello-world.com/"
   );
-
-  const [step, setStep] = useState(1);
-  const [transactionCompleted, setTransactionCompleted] = useState(false); // New state to track transaction completion
 
   const {
     mutate: patchData,
@@ -41,6 +33,7 @@ const AddExecutorModal = ({ toggle }) => {
   } = usePATCH(`http://localhost:3333/api/v1/clusters/${clusterId}`, {
     onSuccess: (data) => {
       console.log("Resource updated successfully:", data);
+      toggle();
     },
     onError: (error) => {
       console.log(data);
@@ -59,9 +52,6 @@ const AddExecutorModal = ({ toggle }) => {
     };
     patchData(data);
     console.log("data", data);
-    if (!isPatchError) {
-      setTransactionCompleted(false);
-    }
   };
 
   return (
@@ -75,7 +65,7 @@ const AddExecutorModal = ({ toggle }) => {
           <span>Add URLs</span>
         </Title>
 
-        {false ? (
+        {isPatchLoading ? (
           <Loader />
         ) : (
           <>

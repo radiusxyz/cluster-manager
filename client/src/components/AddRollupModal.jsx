@@ -2,8 +2,7 @@ import React from "react";
 
 import { useEffect, useState } from "react";
 import Button from "./Button";
-import { useAccount } from "wagmi";
-import useWrite from "../hooks/useContract";
+import { useAccount, useWriteContract } from "wagmi";
 import Loader from "./Loader";
 import {
   Buttons,
@@ -17,14 +16,11 @@ import {
   SubmitBtnContainer,
   Title,
 } from "./ModalStyles";
+import { contractAbi, contractAddress } from "../../../common";
 
-const AddRollupModal = ({ toggle }) => {
+const AddRollupModal = ({ toggle, clusterId }) => {
   const { address } = useAccount();
 
-  // Step 1
-  const [clusterId, setClusterId] = useState("cluster_id");
-
-  // Step 2
   const [rollupId, setRollupId] = useState("rollup_id");
   const [executorAddress, setExecutorAddress] = useState(address);
   const [rollupType, setRollupType] = useState("polygon_cdk");
@@ -35,26 +31,35 @@ const AddRollupModal = ({ toggle }) => {
   const [platform, setPlatform] = useState("ethereum");
   const [serviceProvider, setServiceProvider] = useState("symbiotic");
 
-  const [transactionCompleted, setTransactionCompleted] = useState(false); // New state to track transaction completion
+  const { writeContract, data, isPending } = useWriteContract();
 
-  const { write, hash, isHashPending } = useWrite();
-
-  // Handle rollup addition (Step 2)
   const handleAddRollup = () => {
-    write("addRollup", [
-      clusterId,
-      {
-        rollupId,
-        rollupType,
-        encryptedTransactionType,
-        owner: address,
-        orderCommitmentType,
-        validationInfo: { platform, serviceProvider },
-        executorAddress: address,
-      },
-    ]);
-    setTransactionCompleted(false); // Reset the flag when a new transaction begins
+    writeContract({
+      abi: contractAbi,
+      address: contractAddress,
+      functionName: "addRollup",
+      args: [
+        clusterId,
+        {
+          rollupId,
+          rollupType,
+          encryptedTransactionType,
+          owner: address,
+          orderCommitmentType,
+          validationInfo: { platform, serviceProvider },
+          executorAddress: address,
+        },
+      ],
+      account: address,
+    });
   };
+
+  useEffect(() => {
+    if (data) {
+      console.log("Rollup added successfully:", data);
+      toggle();
+    }
+  }, [data]);
 
   return (
     <Overlay onClick={toggle}>
@@ -67,7 +72,7 @@ const AddRollupModal = ({ toggle }) => {
           <span>Add Rollup</span>
         </Title>
 
-        {isHashPending ? (
+        {isPending ? (
           <Loader />
         ) : (
           <>
@@ -146,7 +151,9 @@ const AddRollupModal = ({ toggle }) => {
         )}
         <Buttons>
           <SubmitBtnContainer>
-            <Button onClick={handleAddRollup}>Add Rollup</Button>
+            <Button onClick={handleAddRollup} disabled={!rollupId}>
+              Add Rollup
+            </Button>
           </SubmitBtnContainer>
         </Buttons>
       </ModalContainer>

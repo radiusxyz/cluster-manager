@@ -216,6 +216,35 @@ const updateCluster = async (clusterId, updateData) => {
   }
 };
 
+const getRollupsByCluster = async (clusterId) => {
+  try {
+    const cluster = await Cluster.findOne({ clusterId });
+    if (!cluster) {
+      throw new Error(`Cluster with ID ${clusterId} not found`);
+    }
+
+    return cluster.rollups;
+  } catch (error) {
+    console.error("Error in getRollupsByCluster:", error.message);
+    throw new Error("Failed to retrieve rollups for the cluster");
+  }
+};
+
+const getRollupById = async (clusterId, rollupId) => {
+  try {
+    const cluster = await Cluster.findOne({ clusterId });
+    if (!cluster) {
+      throw new Error(`Cluster with ID ${clusterId} not found`);
+    }
+
+    const rollup = cluster.rollups.find((r) => r.rollupId === rollupId);
+    return rollup || null;
+  } catch (error) {
+    console.error("Error in getRollupById:", error.message);
+    throw new Error("Failed to retrieve rollup");
+  }
+};
+
 const clusterService = {
   getAllClusters,
   getGeneratedClusters,
@@ -226,6 +255,8 @@ const clusterService = {
   addRollup,
   registerSequencer,
   deregisterSequencer,
+  getRollupsByCluster,
+  getRollupById,
 };
 
 export default clusterService;

@@ -2,8 +2,7 @@ import React from "react";
 
 import { useEffect, useState } from "react";
 import Button from "./Button";
-import { useAccount } from "wagmi";
-import useWrite from "../hooks/useContract";
+import { useAccount, useWriteContract } from "wagmi";
 import Loader from "./Loader";
 import {
   Buttons,
@@ -12,13 +11,10 @@ import {
   Label,
   ModalContainer,
   Overlay,
-  SelectBox,
-  Step,
-  StepsContainer,
-  SubLabel,
   SubmitBtnContainer,
   Title,
 } from "./ModalStyles";
+import { contractAbi, contractAddress } from "../../../common";
 
 const InitializeClusterModal = ({ toggle }) => {
   const { address } = useAccount();
@@ -26,16 +22,24 @@ const InitializeClusterModal = ({ toggle }) => {
   const [clusterId, setClusterId] = useState("cluster_id");
   const [maxSequencerNumber, setMaxSequencerNumber] = useState(30);
 
-  const [step, setStep] = useState(1);
-  const [transactionCompleted, setTransactionCompleted] = useState(false); // New state to track transaction completion
+  const { writeContract, data, isPending } = useWriteContract();
 
-  const { write, hash, isHashPending } = useWrite();
-
-  // Handle cluster initialization (Step 1)
   const handleInitializeCluster = () => {
-    write("initializeCluster", [clusterId, maxSequencerNumber]);
-    setTransactionCompleted(false); // Reset the flag when a new transaction begins
+    writeContract({
+      abi: contractAbi,
+      address: contractAddress,
+      functionName: "initializeCluster",
+      args: [clusterId, maxSequencerNumber],
+      account: address,
+    });
   };
+
+  useEffect(() => {
+    if (data) {
+      console.log("Cluster initialized successfully:", data);
+      toggle();
+    }
+  }, [data]);
 
   return (
     <Overlay onClick={toggle}>
@@ -48,7 +52,7 @@ const InitializeClusterModal = ({ toggle }) => {
           <span>Generate Cluster</span>
         </Title>
 
-        {isHashPending ? (
+        {isPending ? (
           <Loader />
         ) : (
           <>
@@ -76,7 +80,10 @@ const InitializeClusterModal = ({ toggle }) => {
         )}
         <Buttons>
           <SubmitBtnContainer>
-            <Button onClick={handleInitializeCluster} disabled={step !== 1}>
+            <Button
+              onClick={handleInitializeCluster}
+              disabled={!clusterId || !maxSequencerNumber}
+            >
               Initialize cluster
             </Button>
           </SubmitBtnContainer>

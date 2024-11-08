@@ -11,15 +11,15 @@ export const PageContainer = styled.div`
   max-height: 840px;
 `;
 
-export const Title = styled.p`
-  font-family: var(--sds-typography-heading-font-family);
-  font-size: 36px;
-  font-weight: 600;
-  line-height: 43.2px;
-  letter-spacing: -0.02em;
-  text-align: left;
-  margin-bottom: 67px;
-`;
+// export const Title = styled.p`
+//   font-family: var(--sds-typography-heading-font-family);
+//   font-size: 36px;
+//   font-weight: 600;
+//   line-height: 43.2px;
+//   letter-spacing: -0.02em;
+//   text-align: left;
+//   margin-bottom: 67px;
+// `;
 
 export const ActionsContainer = styled.div`
   display: flex;
@@ -27,7 +27,7 @@ export const ActionsContainer = styled.div`
   justify-content: center;
   width: 100%;
   gap: 30px;
-  margin-bottom: 31px;
+  margin-bottom: 10px;
   border-bottom: 1px solid #e1e1e1;
   padding-bottom: 10px;
 `;
@@ -60,4 +60,43 @@ export const Filter = styled.div`
 `;
 export const GenerateBtn = styled(StyledButton)`
   margin-left: auto;
+`;
+
+export const TitleJoinBtnContainer = styled.div`
+  display: flex;
+  align-items: center;
+
+  margin-bottom: 10px;
+`;
+
+export const TitleRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const Title = styled.p`
+  font-family: var(--sds-typography-heading-font-family);
+  font-size: 36px;
+  font-weight: 600;
+  line-height: 43.2px;
+  letter-spacing: -0.02em;
+  text-align: left;
+`;
+
+export const SubTitle = styled.p`
+  font-size: 24px;
+  font-weight: 600;
+`;
+
+export const BtnsContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-left: auto;
+  margin-top: auto;
+`;
+
+export const InitializeClusterBtn = styled(StyledButton)`
+  align-self: flex-end;
 `;

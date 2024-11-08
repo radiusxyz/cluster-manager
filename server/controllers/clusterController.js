@@ -86,6 +86,40 @@ const downloadSequencer = (_, res) => {
   }
 };
 
+const getRollupsOfCluster = async (req, res) => {
+  try {
+    const { clusterId } = req.params;
+    const rollups = await clusterService.getRollupsByCluster(clusterId);
+
+    if (!rollups || rollups.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No rollups found for this cluster" });
+    }
+
+    res.status(200).json(rollups);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getRollupById = async (req, res) => {
+  try {
+    const { clusterId, rollupId } = req.params;
+    const rollup = await clusterService.getRollupById(clusterId, rollupId);
+
+    if (!rollup) {
+      return res
+        .status(404)
+        .json({ message: "Rollup not found in the specified cluster" });
+    }
+
+    res.status(200).json(rollup);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 const clusterController = {
   getAllClusters,
   getGeneratedClusters,
@@ -93,6 +127,8 @@ const clusterController = {
   getCluster,
   updateCluster,
   downloadSequencer,
+  getRollupsOfCluster,
+  getRollupById,
 };
 
 export default clusterController;

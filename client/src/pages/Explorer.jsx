@@ -9,12 +9,15 @@ import {
   ActionsContainer,
   Filter,
   GenerateBtn,
+  InitializeClusterBtn,
   Input,
   PageContainer,
   SearchInput,
   SelectSearchWrapper,
+  SubTitle,
   Title,
   TypeSelectBox,
+  TitleRow,
 } from "./ExplorerStyles";
 import {
   Cell,
@@ -34,9 +37,10 @@ const Explorer = () => {
   const [all, setAll] = useState(false);
   const [encrypted, setEncrypted] = useState(false);
   const { isConnected } = useAccount();
-  const [showModal, setShowModal] = useState(false);
-  const toggleModal = () => {
-    setShowModal(!showModal);
+  const [showInitializeClusterModal, setShowInitializeClusterModal] =
+    useState(false);
+  const toggleInitializeClusterModal = () => {
+    setShowInitializeClusterModal(!showInitializeClusterModal);
   };
 
   const {
@@ -62,37 +66,22 @@ const Explorer = () => {
   };
   return (
     <PageContainer>
-      <Title>All Clusters</Title>
-      <ActionsContainer>
-        <SelectSearchWrapper>
-          <TypeSelectBox>
-            <option defaultValue="All">All</option>
-            <option value="zkStack">zk Stack</option>
-            <option value="polygonCdk">Polygon CDK</option>
-            <option value="madara">Madara</option>
-            <option value="arbitrumOrbit">Arbitrum Orbit</option>
-          </TypeSelectBox>
-          <SearchInput>
-            <Input />
-          </SearchInput>
-        </SelectSearchWrapper>
-        <Filter $active={all} onClick={toggleAll}>
-          Active
-        </Filter>
-        <Filter $active={encrypted} onClick={toggleEncrypted}>
-          Encrypted Mempool
-        </Filter>
-        <GenerateBtn disabled={!isConnected} onClick={toggleModal}>
+      <TitleRow>
+        <Title>All Clusters</Title>
+        <InitializeClusterBtn
+          onClick={toggleInitializeClusterModal}
+          disabled={!isConnected}
+        >
           Generate Cluster
-        </GenerateBtn>
-      </ActionsContainer>
+        </InitializeClusterBtn>
+      </TitleRow>
+      <ActionsContainer></ActionsContainer>
       <Table>
         <Headers>
           <Header>Status</Header>
           <Header>Id</Header>
           <Header>Quota</Header>
         </Headers>
-
         <Rows>
           {isPendingClusters ? (
             <Loader />
@@ -122,7 +111,9 @@ const Explorer = () => {
           )}
         </Rows>
       </Table>
-      {showModal && <InitializeClusterModal toggle={toggleModal} />}
+      {showInitializeClusterModal && (
+        <InitializeClusterModal toggle={toggleInitializeClusterModal} />
+      )}
     </PageContainer>
   );
 };
