@@ -4,6 +4,7 @@ import Root from "./pages/Root";
 import Explorer from "./pages/Explorer";
 import Dashboard from "./pages/Dashboard";
 import ClusterDetails from "./pages/ClusterDetails";
+import RollupDetails from "./pages/RollupDetails";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,12 @@ const router = createBrowserRouter([
       {
         path: "/:clusterId/details", // No index: true here
         element: <ClusterDetails />,
+        children: [
+          {
+            path: "rollup/:rollupId",
+            element: <RollupDetails />,
+          },
+        ],
         loader: () => {
           window.scrollTo(0, 0);
           return null;
