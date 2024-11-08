@@ -14,6 +14,15 @@ router.get(
 );
 router.get("/clusters/:clusterId", clusterController.getCluster);
 router.patch("/clusters/:clusterId", clusterController.updateCluster);
+router.get(
+  "/clusters/:clusterId/rollups",
+  clusterController.getRollupsOfCluster
+);
+router.get(
+  "/clusters/:clusterId/rollups/:rollupId",
+  clusterController.getRollupById
+);
+
 router.get("/sequencer/download", clusterController.downloadSequencer);
 
 export default router;

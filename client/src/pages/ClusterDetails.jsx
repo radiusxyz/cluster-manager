@@ -31,7 +31,7 @@ import Loader from "../components/Loader";
 import useWrite from "../hooks/useContract";
 import { useAccount } from "wagmi";
 import RunModal from "../components/RunModal";
-import { NavLink } from "react-router-dom";
+import AddRollupModal from "../components/AddRollupModal";
 
 const ClusterDetails = () => {
   const { clusterId } = useParams();
@@ -39,18 +39,24 @@ const ClusterDetails = () => {
   const [cluster, setCluster] = useState(null);
   const [selectedRollupId, setSelectedRollupId] = useState(null);
   const [shouldGetSequencers, setShouldGetSequencers] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [showAddRollupModal, setShowAddRollupModal] = useState(false);
   const navigate = useNavigate();
 
-  const toggleModal = () => {
-    setShowModal(!showModal);
+  const toggleAddRollupModal = () => {
+    setShowAddRollupModal(!showAddRollupModal);
   };
+
+  const [showRunModal, setShowRunModal] = useState(false);
+  const toggleRunModal = () => {
+    setShowRunModal(!showRunModal);
+  };
+
   const { write, hash, isHashPending } = useWrite();
 
   const {
-    isPending: isPendingSequencers,
-    error: errorSequencers,
-    data: dataSequencers,
+    isPending,
+    error,
+    data,
     refetch: refetchSequencers,
   } = useGET(
     ["cluster", clusterId],
@@ -67,20 +73,16 @@ const ClusterDetails = () => {
     }
   };
 
-  const handleNavigateToRollup = (rollup) => {
-    navigate(`rollup/${rollup.rollupId}`, { state: { rollup } });
-  };
-
   const handleRun = () => {
-    toggleModal();
+    toggleRunModal();
   };
 
   useEffect(() => {
-    if (dataSequencers) {
-      console.log("dataSequencers: ", dataSequencers);
-      setCluster(dataSequencers);
+    if (data) {
+      console.log("cluster: ", data);
+      setCluster(data);
     }
-  }, [dataSequencers]);
+  }, [data]);
 
   return (
     <PageContainer>
@@ -155,7 +157,9 @@ const ClusterDetails = () => {
           <TitleRow>
             <SubTitle>Rollups</SubTitle>
             {cluster.owner === address && (
-              <AddRollupBtn>Add rollup</AddRollupBtn>
+              <AddRollupBtn onClick={toggleAddRollupModal}>
+                Add rollup
+              </AddRollupBtn>
             )}
           </TitleRow>
 
@@ -172,40 +176,42 @@ const ClusterDetails = () => {
             <Rows>
               {(cluster.rollups.length &&
                 cluster.rollups.map((rollup, index) => (
-                  // <StyledNavLink
-                  //   key={rollup.rollupId}
-                  //   to={`rollup/${rollup.rollupId}`}
-                  // >
-                  <Row
-                    onClick={() => handleNavigateToRollup(rollup)}
+                  <StyledNavLink
+                    to={`rollup/${rollup.rollupId}`}
                     key={rollup.rollupId + index}
                   >
-                    <Cell>
-                      <CellTxt>{rollup.rollupId}</CellTxt>
-                    </Cell>
-                    <Cell>
-                      <CellTxt>{rollup.type}</CellTxt>
-                    </Cell>
-                    <Cell>
-                      <CellTxt>{rollup.encryptedTransactionType}</CellTxt>
-                    </Cell>
-                    <Cell>
-                      <CellTxt>{rollup.validationInfo.platform}</CellTxt>
-                    </Cell>
-                    <Cell>
-                      <CellTxt>{rollup.validationInfo.serviceProvider}</CellTxt>
-                    </Cell>
-                    <Cell>
-                      <CellTxt>{rollup.orderCommitmentType}</CellTxt>
-                    </Cell>
-                  </Row>
-                  // </StyledNavLink>
+                    <Row>
+                      <Cell>
+                        <CellTxt>{rollup.rollupId}</CellTxt>
+                      </Cell>
+                      <Cell>
+                        <CellTxt>{rollup.type}</CellTxt>
+                      </Cell>
+                      <Cell>
+                        <CellTxt>{rollup.encryptedTransactionType}</CellTxt>
+                      </Cell>
+                      <Cell>
+                        <CellTxt>{rollup.validationInfo.platform}</CellTxt>
+                      </Cell>
+                      <Cell>
+                        <CellTxt>
+                          {rollup.validationInfo.serviceProvider}
+                        </CellTxt>
+                      </Cell>
+                      <Cell>
+                        <CellTxt>{rollup.orderCommitmentType}</CellTxt>
+                      </Cell>
+                    </Row>
+                  </StyledNavLink>
                 ))) || <Message>No rollups added</Message>}
             </Rows>
           </Table>
         </Container>
       )}
-      {showModal && <RunModal toggle={toggleModal} cluster={cluster} />}
+      {showRunModal && <RunModal toggle={toggleRunModal} cluster={cluster} />}
+      {showAddRollupModal && (
+        <AddRollupModal toggle={toggleAddRollupModal} clusterId={clusterId} />
+      )}
     </PageContainer>
   );
 };
