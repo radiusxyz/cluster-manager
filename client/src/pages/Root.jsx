@@ -16,7 +16,7 @@ import {
 import { StyledButton } from "../components/Button";
 
 const Root = () => {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
 
   const { connectors, connect } = useConnect();
   const { disconnect } = useDisconnect();
@@ -25,12 +25,14 @@ const Root = () => {
     <LayoutContainer>
       <NavBarContainer>
         <NavBarLinksContainer>
-          <NavBarLink to="dashboard">Dashboard</NavBarLink>
+          <NavBarLink $disabled={!isConnected} to="dashboard">
+            Dashboard
+          </NavBarLink>
           <NavBarLink to="/">Explorer</NavBarLink>
         </NavBarLinksContainer>
         <StatsContainer>
           <Stat>
-            {address ? (
+            {isConnected ? (
               <>
                 <Address>{address}</Address>{" "}
                 <StyledButton onClick={() => disconnect()}>

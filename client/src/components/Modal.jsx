@@ -22,11 +22,9 @@ import { usePATCH } from "../hooks/useServer";
 const Modal = ({ toggle }) => {
   const { address } = useAccount();
 
-  // Step 1
   const [clusterId, setClusterId] = useState("cluster_id");
   const [maxSequencerNumber, setMaxSequencerNumber] = useState(30);
 
-  // Step 2
   const [rollupId, setRollupId] = useState("rollup_id");
   const [executorAddress, setExecutorAddress] = useState(address);
   const [rollupType, setRollupType] = useState("polygon_cdk");

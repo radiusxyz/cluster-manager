@@ -32,6 +32,14 @@ export const NavBarLink = styled(NavLink)`
   font-weight: 400;
   background-color: transparent;
 
+  ${({ $disabled }) =>
+    $disabled &&
+    `
+      pointer-events: none;
+      opacity: 0.5;
+      cursor: not-allowed;
+    `};
+
   &.active {
     color: #000000;
     background-color: #f5f5f5;
