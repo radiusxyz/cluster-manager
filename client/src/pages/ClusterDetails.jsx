@@ -32,6 +32,7 @@ import useWrite from "../hooks/useContract";
 import { useAccount } from "wagmi";
 import RunModal from "../components/RunModal";
 import { NavLink } from "react-router-dom";
+import AddRollupModal from "../components/AddRollupModal";
 
 const ClusterDetails = () => {
   const { clusterId } = useParams();
@@ -39,12 +40,18 @@ const ClusterDetails = () => {
   const [cluster, setCluster] = useState(null);
   const [selectedRollupId, setSelectedRollupId] = useState(null);
   const [shouldGetSequencers, setShouldGetSequencers] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [showAddRollupModal, setShowAddRollupModal] = useState(false);
   const navigate = useNavigate();
 
-  const toggleModal = () => {
-    setShowModal(!showModal);
+  const toggleAddRollupModal = () => {
+    setShowAddRollupModal(!showAddRollupModal);
   };
+
+  const [showRunModal, setShowRunModal] = useState(false);
+  const toggleRunModal = () => {
+    setShowRunModal(!showRunModal);
+  };
+
   const { write, hash, isHashPending } = useWrite();
 
   const {
@@ -155,7 +162,9 @@ const ClusterDetails = () => {
           <TitleRow>
             <SubTitle>Rollups</SubTitle>
             {cluster.owner === address && (
-              <AddRollupBtn>Add rollup</AddRollupBtn>
+              <AddRollupBtn onClick={toggleAddRollupModal}>
+                Add rollup
+              </AddRollupBtn>
             )}
           </TitleRow>
 
@@ -172,10 +181,6 @@ const ClusterDetails = () => {
             <Rows>
               {(cluster.rollups.length &&
                 cluster.rollups.map((rollup, index) => (
-                  // <StyledNavLink
-                  //   key={rollup.rollupId}
-                  //   to={`rollup/${rollup.rollupId}`}
-                  // >
                   <Row
                     onClick={() => handleNavigateToRollup(rollup)}
                     key={rollup.rollupId + index}
@@ -199,13 +204,13 @@ const ClusterDetails = () => {
                       <CellTxt>{rollup.orderCommitmentType}</CellTxt>
                     </Cell>
                   </Row>
-                  // </StyledNavLink>
                 ))) || <Message>No rollups added</Message>}
             </Rows>
           </Table>
         </Container>
       )}
-      {showModal && <RunModal toggle={toggleModal} cluster={cluster} />}
+      {showRunModal && <RunModal toggle={toggleRunModal} cluster={cluster} />}
+      {showAddRollupModal && <AddRollupModal toggle={toggleAddRollupModal} />}
     </PageContainer>
   );
 };

@@ -26,6 +26,7 @@ import {
   Table,
 } from "./TableStyles";
 import { useAccount } from "wagmi";
+import InitializeClusterModal from "../components/InitializeClusterModal";
 
 const Explorer = () => {
   const [clusters, setClusters] = useState([]);
@@ -121,7 +122,7 @@ const Explorer = () => {
           )}
         </Rows>
       </Table>
-      {showModal && <Modal toggle={toggleModal} />}
+      {showModal && <InitializeClusterModal toggle={toggleModal} />}
     </PageContainer>
   );
 };

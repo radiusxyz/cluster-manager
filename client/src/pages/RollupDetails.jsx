@@ -30,6 +30,7 @@ import Loader from "../components/Loader";
 import useWrite from "../hooks/useContract";
 import { useAccount } from "wagmi";
 import RunModal from "../components/RunModal";
+import AddExecutorModal from "../components/AddExecutorModal";
 
 const RollupDetails = () => {
   console.log("here");
@@ -39,25 +40,15 @@ const RollupDetails = () => {
   const [rollup, setRollup] = useState(location.state?.rollup);
 
   const [selectedRollupId, setSelectedRollupId] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const toggleModal = () => {
-    setShowModal(!showModal);
+  const [showAddExecutorModal, setShowAddExecutorModal] = useState(false);
+  const toggleAddExecutorModal = () => {
+    setShowAddExecutorModal(!showAddExecutorModal);
   };
 
   return (
     <PageContainer>
       <TitleJoinBtnContainer>
         <Title>Rollup details</Title>
-        {/* {address && rollup && rollup.sequencers.includes(address) ? (
-          <BtnsContainer>
-            <RunBtn onClick={handleRun}>Run</RunBtn>
-            <JoinBtn onClick={handleJoinLeave}>Leave</JoinBtn>
-          </BtnsContainer>
-        ) : (
-          <BtnsContainer>
-            <JoinBtn onClick={handleJoinLeave}>Join</JoinBtn>
-          </BtnsContainer>
-        )} */}
       </TitleJoinBtnContainer>
       <Container>
         <SubTitle>Rollup Info</SubTitle>
@@ -90,49 +81,52 @@ const RollupDetails = () => {
           </InfoItems>
         )}
       </Container>
-      {rollup && (
-        <Container>
-          <TitleRow>
-            <SubTitle>Rollups</SubTitle>
-            {rollup.owner === address && (
-              <AddExecutorBtn disabled={!isConnected}>
-                Add executor
-              </AddExecutorBtn>
+      <Container>
+        <TitleRow>
+          <SubTitle>Executors</SubTitle>
+          {rollup.owner === address && (
+            <AddExecutorBtn
+              onClick={toggleAddExecutorModal}
+              disabled={!isConnected}
+            >
+              Add executor
+            </AddExecutorBtn>
+          )}
+        </TitleRow>
+        <Table>
+          <Headers>
+            <Header>Address</Header>
+            <Header>Block Explorer</Header>
+            <Header>RPC</Header>
+            <Header>WebSocket</Header>
+          </Headers>
+          <Rows>
+            {rollup.executors.length ? (
+              rollup.executors.map((executor, index) => (
+                <Row key={executor.address + index}>
+                  <Cell>
+                    <CellTxt>{executor.address}</CellTxt>
+                  </Cell>
+                  <Cell>
+                    <CellTxt>{executor.blockExplorerUrl}</CellTxt>
+                  </Cell>
+                  <Cell>
+                    <CellTxt>{executor.rpcUrl}</CellTxt>
+                  </Cell>
+                  <Cell>
+                    <CellTxt>{executor.websocketUrl}</CellTxt>
+                  </Cell>
+                </Row>
+              ))
+            ) : (
+              <Message>No executors found</Message>
             )}
-          </TitleRow>
-          <Table>
-            <Headers>
-              <Header>Address</Header>
-              <Header>Block Explorer</Header>
-              <Header>RPC</Header>
-              <Header>WebSocket</Header>
-            </Headers>
-            <Rows>
-              {rollup.executors.length ? (
-                rollup.executors.map((executor, index) => (
-                  <Row key={executor.address + index}>
-                    <Cell>
-                      <CellTxt>{executor.address}</CellTxt>
-                    </Cell>
-                    <Cell>
-                      <CellTxt>{executor.blockExplorerUrl}</CellTxt>
-                    </Cell>
-                    <Cell>
-                      <CellTxt>{executor.rpcUrl}</CellTxt>
-                    </Cell>
-                    <Cell>
-                      <CellTxt>{executor.websocketUrl}</CellTxt>
-                    </Cell>
-                  </Row>
-                ))
-              ) : (
-                <Message>No executors found</Message>
-              )}
-            </Rows>
-          </Table>
-        </Container>
+          </Rows>
+        </Table>
+      </Container>
+      {showAddExecutorModal && (
+        <AddExecutorModal toggle={toggleAddExecutorModal} rollup={rollup} />
       )}
-      {showModal && <RunModal toggle={toggleModal} rollup={rollup} />}
     </PageContainer>
   );
 };
