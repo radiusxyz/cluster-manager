@@ -35,7 +35,7 @@ import { NavLink } from "react-router-dom";
 
 const ClusterDetails = () => {
   const { clusterId } = useParams();
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const [cluster, setCluster] = useState(null);
   const [selectedRollupId, setSelectedRollupId] = useState(null);
   const [shouldGetSequencers, setShouldGetSequencers] = useState(false);
@@ -93,7 +93,9 @@ const ClusterDetails = () => {
           </BtnsContainer>
         ) : (
           <BtnsContainer>
-            <JoinBtn onClick={handleJoinLeave}>Join as sequencer</JoinBtn>
+            <JoinBtn disabled={!isConnected} onClick={handleJoinLeave}>
+              Join as sequencer
+            </JoinBtn>
           </BtnsContainer>
         )}
       </TitleJoinBtnContainer>

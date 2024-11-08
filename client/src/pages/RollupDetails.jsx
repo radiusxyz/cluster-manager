@@ -20,6 +20,8 @@ import {
   CellTxt,
   Title,
   Message,
+  AddExecutorBtn,
+  TitleRow,
 } from "./RollupDetailsStyles";
 
 import { useLocation, useParams } from "react-router";
@@ -32,7 +34,7 @@ import RunModal from "../components/RunModal";
 const RollupDetails = () => {
   console.log("here");
 
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const location = useLocation();
   const [rollup, setRollup] = useState(location.state?.rollup);
 
@@ -90,7 +92,14 @@ const RollupDetails = () => {
       </Container>
       {rollup && (
         <Container>
-          <SubTitle>Executors</SubTitle>
+          <TitleRow>
+            <SubTitle>Rollups</SubTitle>
+            {rollup.owner === address && (
+              <AddExecutorBtn disabled={!isConnected}>
+                Add executor
+              </AddExecutorBtn>
+            )}
+          </TitleRow>
           <Table>
             <Headers>
               <Header>Address</Header>

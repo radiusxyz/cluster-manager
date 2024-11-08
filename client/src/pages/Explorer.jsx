@@ -25,13 +25,14 @@ import {
   Rows,
   Table,
 } from "./TableStyles";
+import { useAccount } from "wagmi";
 
 const Explorer = () => {
   const [clusters, setClusters] = useState([]);
   const [shouldGetClusters, setShouldGetClusters] = useState(false);
   const [all, setAll] = useState(false);
   const [encrypted, setEncrypted] = useState(false);
-
+  const { isConnected } = useAccount();
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {
     setShowModal(!showModal);
@@ -80,7 +81,9 @@ const Explorer = () => {
         <Filter $active={encrypted} onClick={toggleEncrypted}>
           Encrypted Mempool
         </Filter>
-        <GenerateBtn onClick={toggleModal}>Generate Cluster</GenerateBtn>
+        <GenerateBtn disabled={!isConnected} onClick={toggleModal}>
+          Generate Cluster
+        </GenerateBtn>
       </ActionsContainer>
       <Table>
         <Headers>

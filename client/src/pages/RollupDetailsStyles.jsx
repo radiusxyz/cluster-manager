@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { StyledButton } from "../components/Button";
+import { NavLink } from "react-router-dom";
 
 export const PageContainer = styled.div`
   margin-left: auto;
@@ -51,6 +52,16 @@ export const Container = styled.div`
   border-radius: 5px;
 
   border: 1px solid #e1e1e1;
+`;
+
+export const TitleRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const AddExecutorBtn = styled(StyledButton)`
+  align-self: flex-end;
 `;
 
 export const SubTitle = styled.p`
@@ -135,4 +146,9 @@ export const Message = styled.p`
   font-size: 20px;
   font-weight: 600;
   color: #777;
+`;
+
+export const StyledNavLink = styled(NavLink)`
+  text-decoration: none;
+  color: black;
 `;
