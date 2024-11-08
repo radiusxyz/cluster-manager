@@ -152,7 +152,9 @@ const ClusterDetails = () => {
         <Container>
           <TitleRow>
             <SubTitle>Rollups</SubTitle>
-            <AddRollupBtn>Add rollup</AddRollupBtn>
+            {cluster.owner === address && (
+              <AddRollupBtn>Add rollup</AddRollupBtn>
+            )}
           </TitleRow>
 
           <Table>
