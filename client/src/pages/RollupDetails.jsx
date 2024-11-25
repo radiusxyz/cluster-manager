@@ -89,6 +89,35 @@ const RollupDetails = () => {
             </InfoItems>
           </Container>
           <Container>
+            <SubTitle>Validation Service Info</SubTitle>
+            <InfoItems>
+              <InfoItem>
+                <Property>Network</Property>
+                <Value>{rollup.rollupId}</Value>
+              </InfoItem>
+              <InfoItem>
+                <Property>Operator Registry</Property>
+                <Value>{rollup.type}</Value>
+              </InfoItem>
+              <InfoItem>
+                <Property>Operator Net Optin</Property>
+                <Value>{rollup.encryptedTransactionType}</Value>
+              </InfoItem>
+              <InfoItem>
+                <Property>Vault Registry</Property>
+                <Value>{rollup.validationInfo.platform}</Value>
+              </InfoItem>
+              <InfoItem>
+                <Property>Epoch Duration</Property>
+                <Value>{rollup.validationInfo.serviceProvider}</Value>
+              </InfoItem>
+              <InfoItem>
+                <Property>Slashing Window</Property>
+                <Value>{rollup.orderCommitmentType}</Value>
+              </InfoItem>
+            </InfoItems>
+          </Container>
+          <Container>
             <TitleRow>
               <SubTitle>Executors</SubTitle>
               {rollup.owner === address && (
