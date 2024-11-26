@@ -28,6 +28,7 @@ import Loader from "../components/Loader";
 import { useAccount } from "wagmi";
 import AddExecutorModal from "../components/AddExecutorModal";
 import { useGET } from "../hooks/useServer";
+import { formatString } from "../utils/formatStriing";
 
 const RollupDetails = () => {
   const { clusterId, rollupId } = useParams();
@@ -105,9 +106,9 @@ const RollupDetails = () => {
                 <Table>
                   <Headers>
                     <Header>Address</Header>
-                    <Header>Block Explorer</Header>
+                    {/* <Header>Block Explorer</Header>
                     <Header>RPC</Header>
-                    <Header>WebSocket</Header>
+                    <Header>WebSocket</Header> */}
                   </Headers>
                   <Rows>
                     {rollup.executors.length ? (
@@ -116,7 +117,7 @@ const RollupDetails = () => {
                           <Cell>
                             <CellTxt>{executor.address}</CellTxt>
                           </Cell>
-                          <Cell>
+                          {/* <Cell>
                             <CellTxt>{executor.blockExplorerUrl}</CellTxt>
                           </Cell>
                           <Cell>
@@ -124,7 +125,7 @@ const RollupDetails = () => {
                           </Cell>
                           <Cell>
                             <CellTxt>{executor.websocketUrl}</CellTxt>
-                          </Cell>
+                          </Cell> */}
                         </Row>
                       ))
                     ) : (
@@ -165,6 +166,29 @@ const RollupDetails = () => {
               <Container>
                 <TitleRow>
                   <SubTitle>Vaults</SubTitle>
+                </TitleRow>
+                <Table>
+                  <Headers>
+                    <Header>Address</Header>
+                  </Headers>
+                  <Rows>
+                    {rollup.executors.length ? (
+                      rollup.executors.map((executor, index) => (
+                        <Row key={executor.address + index}>
+                          <Cell>
+                            <CellTxt>{executor.address}</CellTxt>
+                          </Cell>
+                        </Row>
+                      ))
+                    ) : (
+                      <Message>No vaults found</Message>
+                    )}
+                  </Rows>
+                </Table>
+              </Container>
+              <Container>
+                <TitleRow>
+                  <SubTitle>Operators</SubTitle>
                 </TitleRow>
                 <Table>
                   <Headers>
