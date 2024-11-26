@@ -44,6 +44,12 @@ export const JoinBtn = styled(StyledButton)`
 
 export const RunBtn = styled(StyledButton)``;
 
+export const Infos = styled.div`
+  display: flex;
+  gap: 10px;
+  width: 100%;
+`;
+
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -52,6 +58,10 @@ export const Container = styled.div`
   border-radius: 5px;
 
   border: 1px solid #e1e1e1;
+`;
+
+export const InfoContainer = styled(Container)`
+  flex: 1;
 `;
 
 export const TitleRow = styled.div`
