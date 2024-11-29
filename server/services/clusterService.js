@@ -56,6 +56,7 @@ const addRollup = async ({ clusterId, rollupId, rollupOwnerAddress }) => {
       validationInfo,
       orderCommitmentType,
       executorAddresses,
+      validationServiceContractAddress,
     } = rollupInfo;
 
     const executors = executorAddresses.map((address) => ({
@@ -79,6 +80,9 @@ const addRollup = async ({ clusterId, rollupId, rollupOwnerAddress }) => {
       validationInfo: {
         platform: validationInfo.platform,
         serviceProvider: validationInfo.serviceProvider,
+        validationServiceContractAddress:
+          validationServiceContractAddress ||
+          "0x38c7AFF2b28dF9f90b8cCC3c59C480599Cf0c846",
       },
       executors,
       fileStrings: {
