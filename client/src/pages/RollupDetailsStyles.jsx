@@ -125,7 +125,10 @@ export const Rows = styled.div`
   gap: 10px;
 `;
 
-export const Row = styled.div`
+export const Row =
+  styled.div <
+  { error: boolean } >
+  `
   text-decoration: none;
   color: black;
   display: flex;
@@ -133,6 +136,7 @@ export const Row = styled.div`
   align-items: center;
   width: 100%;
   cursor: pointer;
+  background-color: ${(props) => (props.error ? "#ffcccc" : "white")};
 `;
 
 export const Cell = styled.div`
