@@ -30,6 +30,7 @@ const AddRollupModal = ({ toggle, clusterId }) => {
     useState("skde");
   const [platform, setPlatform] = useState("ethereum");
   const [serviceProvider, setServiceProvider] = useState("symbiotic");
+  const [symbioticContractAddress, setSymbioticContractAddress] = useState("");
 
   const { writeContract, data, isPending } = useWriteContract();
 
@@ -99,7 +100,7 @@ const AddRollupModal = ({ toggle, clusterId }) => {
             <InputContainer>
               <Label>Rollup Type</Label>
               <SelectBox onChange={(e) => setRollupType(e.target.value)}>
-                <option defaultValue="polygon_cdk">Polygon CDK</option>
+                <option value="polygon_cdk">Polygon CDK</option>
               </SelectBox>
             </InputContainer>{" "}
             <InputContainer>
@@ -107,8 +108,8 @@ const AddRollupModal = ({ toggle, clusterId }) => {
               <SelectBox
                 onChange={(e) => setEncryptedTransactionType(e.target.value)}
               >
-                <option defaultValue="skde">Skde</option>
-                <option value="pvde">Pvde</option>
+                <option value="skde">SKDE</option>
+                <option value="pvde">PVDE</option>
               </SelectBox>
             </InputContainer>{" "}
             <InputContainer>
@@ -116,9 +117,7 @@ const AddRollupModal = ({ toggle, clusterId }) => {
               <SelectBox
                 onChange={(e) => setOrderCommitmentType(e.target.value)}
               >
-                <option defaultValue="transaction_hash">
-                  Transaction Hash
-                </option>
+                <option value="transaction_hash">Transaction Hash</option>
                 <option value="sign">Sign</option>
               </SelectBox>
             </InputContainer>{" "}
@@ -136,16 +135,28 @@ const AddRollupModal = ({ toggle, clusterId }) => {
               <InputContainer>
                 <SubLabel>Platform</SubLabel>
                 <SelectBox onChange={(e) => setPlatform(e.target.value)}>
-                  <option defaultValue="ethereum">Ethereum</option>
+                  <option value="ethereum">Ethereum</option>
                 </SelectBox>
               </InputContainer>{" "}
               <InputContainer>
                 <SubLabel>Service provider</SubLabel>
                 <SelectBox onChange={(e) => setServiceProvider(e.target.value)}>
-                  <option defaultValue="symbiotic">Symbiotic</option>
+                  <option value="symbiotic">Symbiotic</option>
                   <option value="eigen_layer">Eigenlayer</option>
                 </SelectBox>
-              </InputContainer>
+              </InputContainer>{" "}
+              {serviceProvider === "symbiotic" && (
+                <InputContainer>
+                  <SubLabel>Contract address</SubLabel>
+                  <Input
+                    value={symbioticContractAddress}
+                    type="text"
+                    onChange={(e) => {
+                      setSymbioticContractAddress(e.target.value);
+                    }}
+                  />
+                </InputContainer>
+              )}
             </div>
           </>
         )}

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import {
   PageContainer,
   TitleJoinBtnContainer,
+  Infos,
+  InfoContainer,
   Container,
   SubTitle,
   InfoItems,
@@ -26,6 +28,7 @@ import Loader from "../components/Loader";
 import { useAccount } from "wagmi";
 import AddExecutorModal from "../components/AddExecutorModal";
 import { useGET } from "../hooks/useServer";
+import { formatString } from "../utils/formatStriing";
 
 const RollupDetails = () => {
   const { clusterId, rollupId } = useParams();
@@ -59,78 +62,155 @@ const RollupDetails = () => {
         <Loader />
       ) : (
         <>
-          <Container>
-            <SubTitle>Rollup Info</SubTitle>
-            <InfoItems>
-              <InfoItem>
-                <Property>Id</Property>
-                <Value>{rollup.rollupId}</Value>
-              </InfoItem>
-              <InfoItem>
-                <Property>Type</Property>
-                <Value>{rollup.type}</Value>
-              </InfoItem>
-              <InfoItem>
-                <Property>Encrypted Transaction Type</Property>
-                <Value>{rollup.encryptedTransactionType}</Value>
-              </InfoItem>
-              <InfoItem>
-                <Property>Platform</Property>
-                <Value>{rollup.validationInfo.platform}</Value>
-              </InfoItem>
-              <InfoItem>
-                <Property>Service Provider</Property>
-                <Value>{rollup.validationInfo.serviceProvider}</Value>
-              </InfoItem>
-              <InfoItem>
-                <Property>Order Commitment Type</Property>
-                <Value>{rollup.orderCommitmentType}</Value>
-              </InfoItem>
-            </InfoItems>
-          </Container>
-          <Container>
-            <TitleRow>
-              <SubTitle>Executors</SubTitle>
-              {rollup.owner === address && (
-                <AddExecutorBtn
-                  onClick={toggleAddExecutorModal}
-                  disabled={!isConnected}
-                >
-                  Add executor
-                </AddExecutorBtn>
-              )}
-            </TitleRow>
-            <Table>
-              <Headers>
-                <Header>Address</Header>
-                <Header>Block Explorer</Header>
-                <Header>RPC</Header>
-                <Header>WebSocket</Header>
-              </Headers>
-              <Rows>
-                {rollup.executors.length ? (
-                  rollup.executors.map((executor, index) => (
-                    <Row key={executor.address + index}>
-                      <Cell>
-                        <CellTxt>{executor.address}</CellTxt>
-                      </Cell>
-                      <Cell>
-                        <CellTxt>{executor.blockExplorerUrl}</CellTxt>
-                      </Cell>
-                      <Cell>
-                        <CellTxt>{executor.rpcUrl}</CellTxt>
-                      </Cell>
-                      <Cell>
-                        <CellTxt>{executor.websocketUrl}</CellTxt>
-                      </Cell>
-                    </Row>
-                  ))
-                ) : (
-                  <Message>No executors found</Message>
-                )}
-              </Rows>
-            </Table>
-          </Container>
+          <Infos>
+            <InfoContainer>
+              <SubTitle>Rollup Info</SubTitle>
+              <InfoItems>
+                <InfoItem>
+                  <Property>Id</Property>
+                  <Value>{rollup.rollupId}</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Property>Type</Property>
+                  <Value>{rollup.type}</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Property>Encrypted Transaction Type</Property>
+                  <Value>{rollup.encryptedTransactionType}</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Property>Platform</Property>
+                  <Value>{rollup.validationInfo.platform}</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Property>Service Provider</Property>
+                  <Value>{rollup.validationInfo.serviceProvider}</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Property>Order Commitment Type</Property>
+                  <Value>{rollup.orderCommitmentType}</Value>
+                </InfoItem>
+              </InfoItems>{" "}
+              <Container>
+                <TitleRow>
+                  <SubTitle>Executors</SubTitle>
+                  {rollup.owner === address && (
+                    <AddExecutorBtn
+                      onClick={toggleAddExecutorModal}
+                      disabled={!isConnected}
+                    >
+                      Add executor
+                    </AddExecutorBtn>
+                  )}
+                </TitleRow>
+                <Table>
+                  <Headers>
+                    <Header>Address</Header>
+                    {/* <Header>Block Explorer</Header>
+                    <Header>RPC</Header>
+                    <Header>WebSocket</Header> */}
+                  </Headers>
+                  <Rows>
+                    {rollup.executors.length ? (
+                      rollup.executors.map((executor, index) => (
+                        <Row key={executor.address + index}>
+                          <Cell>
+                            <CellTxt>{executor.address}</CellTxt>
+                          </Cell>
+                          {/* <Cell>
+                            <CellTxt>{executor.blockExplorerUrl}</CellTxt>
+                          </Cell>
+                          <Cell>
+                            <CellTxt>{executor.rpcUrl}</CellTxt>
+                          </Cell>
+                          <Cell>
+                            <CellTxt>{executor.websocketUrl}</CellTxt>
+                          </Cell> */}
+                        </Row>
+                      ))
+                    ) : (
+                      <Message>No executors found</Message>
+                    )}
+                  </Rows>
+                </Table>
+              </Container>
+            </InfoContainer>
+            <InfoContainer>
+              <SubTitle>Validation Service Info</SubTitle>
+              <InfoItems>
+                <InfoItem>
+                  <Property>Network</Property>
+                  <Value>{rollup.rollupId}</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Property>Operator Registry</Property>
+                  <Value>{rollup.type}</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Property>Operator Net Optin</Property>
+                  <Value>{rollup.encryptedTransactionType}</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Property>Vault Registry</Property>
+                  <Value>{rollup.validationInfo.platform}</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Property>Epoch Duration</Property>
+                  <Value>{rollup.validationInfo.serviceProvider}</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Property>Slashing Window</Property>
+                  <Value>{rollup.orderCommitmentType}</Value>
+                </InfoItem>
+              </InfoItems>
+              <Container>
+                <TitleRow>
+                  <SubTitle>Vaults</SubTitle>
+                </TitleRow>
+                <Table>
+                  <Headers>
+                    <Header>Address</Header>
+                  </Headers>
+                  <Rows>
+                    {rollup.executors.length ? (
+                      rollup.executors.map((executor, index) => (
+                        <Row key={executor.address + index}>
+                          <Cell>
+                            <CellTxt>{executor.address}</CellTxt>
+                          </Cell>
+                        </Row>
+                      ))
+                    ) : (
+                      <Message>No vaults found</Message>
+                    )}
+                  </Rows>
+                </Table>
+              </Container>
+              <Container>
+                <TitleRow>
+                  <SubTitle>Operators</SubTitle>
+                </TitleRow>
+                <Table>
+                  <Headers>
+                    <Header>Address</Header>
+                  </Headers>
+                  <Rows>
+                    {rollup.executors.length ? (
+                      rollup.executors.map((executor, index) => (
+                        <Row key={executor.address + index}>
+                          <Cell>
+                            <CellTxt>{executor.address}</CellTxt>
+                          </Cell>
+                        </Row>
+                      ))
+                    ) : (
+                      <Message>No vaults found</Message>
+                    )}
+                  </Rows>
+                </Table>
+              </Container>
+            </InfoContainer>
+          </Infos>
         </>
       )}
       {showAddExecutorModal && (
