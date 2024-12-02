@@ -4,6 +4,8 @@ import cors from "cors";
 import clusterRoutes from "./routes/clusterRoutes.js";
 import mongoose from "mongoose";
 import watcherService from "./services/watcherService.js";
+import Cluster from "./models/clusterModel.js";
+import BlockSync from "./models/blockSyncModel.js";
 
 dotenv.config({ path: "./.env" });
 

@@ -1,54 +1,50 @@
 import clusterService from "../services/clusterService.js";
 import { getRollupInfoList } from "./contractService.js";
 
-const handleInitializeCluster = async (logs) => {
+const handleInitializeCluster = async (log) => {
   try {
-    for (const log of logs) {
-      const clusterData = {
-        clusterId: log.args.clusterId,
-        owner: log.args.owner,
-        maxSequencerNumber: Number(log.args.maxSequencerNumber),
-      };
-      await clusterService.initializeCluster(clusterData);
-    }
+    const clusterData = {
+      clusterId: log.args.clusterId,
+      owner: log.args.owner,
+      maxSequencerNumber: Number(log.args.maxSequencerNumber),
+    };
+    await clusterService.initializeCluster(clusterData);
   } catch (error) {
     console.error("Error in handleInitializeCluster:", error.message);
   }
 };
 
-const handleAddRollup = async (logs) => {
+const handleAddRollup = async (log) => {
   try {
-    for (const log of logs) {
-      const { clusterId, rollupId, rollupOwnerAddress } = log.args;
+    const { clusterId, rollupId, rollupOwnerAddress } = log.args;
 
-      const rollupInfoList = await getRollupInfoList(clusterId);
-      const rollupInfo = rollupInfoList.find(
-        (info) => info.rollupId === rollupId
+    const rollupInfoList = await getRollupInfoList(clusterId);
+    const rollupInfo = rollupInfoList.find(
+      (info) => info.rollupId === rollupId
+    );
+
+    if (!rollupInfo) {
+      console.error(
+        `Rollup with ID ${rollupId} not found in contract for cluster ${clusterId}`
       );
+    }
 
-      if (!rollupInfo) {
-        console.error(
-          `Rollup with ID ${rollupId} not found in contract for cluster ${clusterId}`
-        );
-        continue; // Skip this iteration if the rollup info isn't found
-      }
-
-      const rollupData = {
-        clusterId,
-        rollupId,
-        rollupOwnerAddress,
-        rollupType: rollupInfo.rollupType,
-        encryptedTransactionType: rollupInfo.encryptedTransactionType,
-        validationInfo: rollupInfo.validationInfo,
-        orderCommitmentType: rollupInfo.orderCommitmentType,
-        executorAddresses: rollupInfo.executorAddresses.map((address) => ({
-          address,
-          rpcUrl: "not added",
-          websocketUrl: "not added",
-          blockExplorerUrl: "not added",
-        })),
-        fileStrings: {
-          config: `# Set sequencer rpc url
+    const rollupData = {
+      clusterId,
+      rollupId,
+      rollupOwnerAddress,
+      rollupType: rollupInfo.rollupType,
+      encryptedTransactionType: rollupInfo.encryptedTransactionType,
+      validationInfo: rollupInfo.validationInfo,
+      orderCommitmentType: rollupInfo.orderCommitmentType,
+      executorAddresses: rollupInfo.executorAddresses.map((address) => ({
+        address,
+        rpcUrl: "not added",
+        websocketUrl: "not added",
+        blockExplorerUrl: "not added",
+      })),
+      fileStrings: {
+        config: `# Set sequencer rpc url
 sequencer_rpc_url = "http://127.0.0.1:3000"
 
 # Set internal rpc url
@@ -77,40 +73,35 @@ liveness_contract_address = ""
 
 # Set using zkp
 is_using_zkp = false`,
-        },
-      };
+      },
+    };
 
-      await clusterService.addRollup(rollupData);
-    }
+    await clusterService.addRollup(rollupData);
   } catch (error) {
     console.error("Error in handleAddRollup:", error.message);
   }
 };
 
-const handleRegisterSequencer = async (logs) => {
+const handleRegisterSequencer = async (log) => {
   try {
-    for (const log of logs) {
-      const sequencerData = {
-        clusterId: log.args.clusterId,
-        sequencerAddress: log.args.sequencerAddress,
-        index: log.args.index,
-      };
-      await clusterService.registerSequencer(sequencerData);
-    }
+    const sequencerData = {
+      clusterId: log.args.clusterId,
+      sequencerAddress: log.args.sequencerAddress,
+      index: log.args.index,
+    };
+    await clusterService.registerSequencer(sequencerData);
   } catch (error) {
     console.error("Error in handleRegisterSequencer:", error.message);
   }
 };
 
-const handleDeregisterSequencer = async (logs) => {
+const handleDeregisterSequencer = async (log) => {
   try {
-    for (const log of logs) {
-      const sequencerData = {
-        clusterId: log.args.clusterId,
-        sequencerAddress: log.args.sequencerAddress,
-      };
-      await clusterService.deregisterSequencer(sequencerData);
-    }
+    const sequencerData = {
+      clusterId: log.args.clusterId,
+      sequencerAddress: log.args.sequencerAddress,
+    };
+    await clusterService.deregisterSequencer(sequencerData);
   } catch (error) {
     console.error("Error in handleDeregisterSequencer:", error.message);
   }
