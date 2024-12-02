@@ -1,6 +1,4 @@
-import e from "express";
 import Cluster from "../models/clusterModel.js";
-import { getRollupInfoList } from "./contractService.js";
 
 const getAllClusters = async () => {
   return await Cluster.find();
@@ -34,37 +32,24 @@ const initializeCluster = async ({ clusterId, owner, maxSequencerNumber }) => {
     console.log(`Cluster with ID ${clusterId} created by owner ${owner}.`);
   } catch (error) {
     console.error("Error in initializeCluster:", error.message);
+    throw new Error("Failed to initialize cluster");
   }
 };
 
-const addRollup = async ({ clusterId, rollupId, rollupOwnerAddress }) => {
+const addRollup = async (rollupData) => {
+  const {
+    clusterId,
+    rollupId,
+    rollupOwnerAddress,
+    rollupType,
+    encryptedTransactionType,
+    orderCommitmentType,
+    validationInfo,
+    executorAddresses,
+    fileStrings,
+  } = rollupData;
+
   try {
-    const rollupInfoList = await getRollupInfoList(clusterId);
-    const rollupInfo = rollupInfoList.find(
-      (info) => info.rollupId === rollupId
-    );
-
-    if (!rollupInfo) {
-      throw new Error(
-        `Rollup with ID ${rollupId} not found in contract for cluster ${clusterId}`
-      );
-    }
-
-    const {
-      rollupType,
-      encryptedTransactionType,
-      validationInfo,
-      orderCommitmentType,
-      executorAddresses,
-    } = rollupInfo;
-
-    const executors = executorAddresses.map((address) => ({
-      address,
-      rpcUrl: "not added",
-      websocketUrl: "not added",
-      blockExplorerUrl: "not added",
-    }));
-
     const cluster = await Cluster.findOne({ clusterId });
     if (!cluster) {
       throw new Error(`Cluster with ID ${clusterId} not found`);
@@ -80,38 +65,8 @@ const addRollup = async ({ clusterId, rollupId, rollupOwnerAddress }) => {
         platform: validationInfo.platform,
         serviceProvider: validationInfo.serviceProvider,
       },
-      executors,
-      fileStrings: {
-        config: `# Set sequencer rpc url
-sequencer_rpc_url = "http://127.0.0.1:3000"
-
-# Set internal rpc url
-internal_rpc_url = "http://127.0.0.1:4000"
-
-# Set cluster rpc url
-cluster_rpc_url = "http://127.0.0.1:5000"
-
-# Set seeder rpc url
-seeder_rpc_url = "http://127.0.0.1:6001"
-
-# Set key management system rpc url
-key_management_system_rpc_url = "http://127.0.0.1:7100"
-
-# Set cluster type
-cluster_type = "local"
-
-# Set liveness provider rpc url
-liveness_provider_rpc_url = "http://127.0.0.1:8545"
-
-# Set liveness provider websocket url
-liveness_provider_websocket_url = "ws://127.0.0.1:8545"
-
-# Set liveness contract address
-liveness_contract_address = ""
-
-# Set using zkp
-is_using_zkp = false`,
-      },
+      executors: executorAddresses,
+      fileStrings,
     });
 
     await cluster.save();
@@ -120,6 +75,7 @@ is_using_zkp = false`,
     );
   } catch (error) {
     console.error("Error in addRollup:", error.message);
+    throw new Error("Failed to add rollup to cluster");
   }
 };
 
@@ -145,6 +101,7 @@ const registerSequencer = async ({ clusterId, sequencerAddress, index }) => {
     }
   } catch (error) {
     console.error("Error in registerSequencer:", error.message);
+    throw new Error("Failed to register sequencer");
   }
 };
 
@@ -178,6 +135,7 @@ const deregisterSequencer = async ({ clusterId, sequencerAddress }) => {
     }
   } catch (error) {
     console.error("Error in deregisterSequencer:", error.message);
+    throw new Error("Failed to deregister sequencer");
   }
 };
 
@@ -188,12 +146,12 @@ const updateCluster = async (clusterId, updateData) => {
   try {
     const cluster = await Cluster.findOne({ clusterId });
     if (!cluster) {
-      return null;
+      throw new Error(`Cluster with ID ${clusterId} not found`);
     }
 
     const rollup = cluster.rollups.find((r) => r.rollupId === rollupId);
     if (!rollup) {
-      return null;
+      throw new Error(`Rollup with ID ${rollupId} not found`);
     }
 
     const executor = rollup.executors.find(
@@ -201,7 +159,7 @@ const updateCluster = async (clusterId, updateData) => {
     );
 
     if (!executor) {
-      return null;
+      throw new Error(`Executor with address ${executorAddress} not found`);
     }
 
     executor.rpcUrl = rpcUrl;
