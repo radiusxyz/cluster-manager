@@ -1,14 +1,20 @@
-import { defineChain } from "viem";
+import dotenv from "dotenv";
 
-export const localhost = /*#__PURE__*/ defineChain({
-  id: 31337,
-  name: "Localhost",
-  nativeCurrency: {
-    decimals: 18,
-    name: "Ether",
-    symbol: "ETH",
+import { holesky, localhost } from "viem/chains";
+
+dotenv.config({ path: "./.env" });
+
+export const chainsConfig = [
+  {
+    chain: holesky,
+    rpc: process.env.RPC_URL_INFURA_HOLESKY,
+    webSocket: process.env.WS_URL_INFURA_HOLESKY,
+    contractAddress: process.env.LIVENESS_CONTRACT_ADDRESS_HOLESKY,
   },
-  rpcUrls: {
-    default: { http: ["http://127.0.0.1:8545"] },
+  {
+    chain: localhost,
+    rpc: process.env.RPC_URL_LOCALHOST,
+    webSocket: process.env.WS_URL_LOCALHOST,
+    contractAddress: process.env.LIVENESS_CONTRACT_ADDRESS_LOCALHOST,
   },
-});
+];
