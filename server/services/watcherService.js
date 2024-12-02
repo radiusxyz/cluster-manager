@@ -2,20 +2,20 @@ import blockSyncService from "./blockSyncService.js";
 import eventService from "./eventService.js";
 import { contractAbi } from "../../common.js";
 import { chainsConfig } from "../config.js";
-import { createPublicClient, http } from "viem";
+import { createPublicClient, http, webSocket } from "viem";
 
 // Helper function to create an HTTP client for a given chain
-const createHttpClient = (chain, rpc) =>
+const createHttpClient = (chain, rpcUrl) =>
   createPublicClient({
     chain,
-    transport: http(rpc),
+    transport: http(rpcUrl),
   });
 
 // Helper function to create a WebSocket client for a given chain
-const createWebSocketClient = (chain, webSocket) => {
+const createWebSocketClient = (chain, webSocketUrl) => {
   return createPublicClient({
     chain,
-    transport: http(webSocket),
+    transport: webSocket(webSocketUrl),
   });
 };
 
@@ -42,13 +42,13 @@ const processLog = async (
   events,
   contractAddress,
   chain,
-  rpc,
-  webSocket
+  rpcUrl,
+  webSocketUrl
 ) => {
   const event = events.find((e) => e.eventName === log.eventName);
 
   if (event && event.handleEvent) {
-    await event.handleEvent(log, chain, rpc, webSocket);
+    await event.handleEvent(log, chain, rpcUrl, webSocketUrl);
 
     await blockSyncService.updateLastProcessedEvent({
       contractAddress,
@@ -62,8 +62,8 @@ const processLog = async (
 // Function to fetch missed events for a specific contract on a specific chain
 const fetchMissedEvents = async (
   chain,
-  rpc,
-  webSocket,
+  rpcUrl,
+  webSocketUrl,
   contractAddress,
   contractAbi,
   events,
@@ -71,7 +71,7 @@ const fetchMissedEvents = async (
   toBlock
 ) => {
   try {
-    const clientHttp = createHttpClient(chain, rpc);
+    const clientHttp = createHttpClient(chain, rpcUrl);
     const logs = await clientHttp.getContractEvents({
       address: contractAddress,
       abi: contractAbi,
@@ -88,7 +88,14 @@ const fetchMissedEvents = async (
     for (const log of logs) {
       if (isNewLog(log, lastProcessedEvent)) {
         console.log(`Processing missed event log on ${chain.name}:`, log);
-        await processLog(log, events, contractAddress, chain, rpc, webSocket);
+        await processLog(
+          log,
+          events,
+          contractAddress,
+          chain,
+          rpcUrl,
+          webSocketUrl
+        );
       } else {
         console.log(`Skipping already processed log on ${chain.name}:`, log);
       }
@@ -104,16 +111,16 @@ const fetchMissedEvents = async (
 // Function to watch and sync events for a specific contract on a specific chain
 const checkPastThenWatch = async (
   chain,
-  rpc,
-  webSocket,
+  rpcUrl,
+  webSocketUrl,
   contractAddress,
   contractAbi,
   events
 ) => {
   console.log("chain: ", chain.id);
   try {
-    const clientHttp = createHttpClient(chain, rpc);
-    const clientWebSocket = createWebSocketClient(chain, webSocket);
+    const clientHttp = createHttpClient(chain, rpcUrl);
+    const clientWebSocket = createWebSocketClient(chain, webSocketUrl);
 
     const lastProcessedEvent = await blockSyncService.getLastProcessedEvent(
       contractAddress
@@ -124,8 +131,8 @@ const checkPastThenWatch = async (
       const fromBlock = BigInt(lastProcessedEvent.lastBlockNumber);
       await fetchMissedEvents(
         chain,
-        rpc,
-        webSocket,
+        rpcUrl,
+        webSocketUrl,
         contractAddress,
         contractAbi,
         events,
@@ -153,8 +160,8 @@ const checkPastThenWatch = async (
                 events,
                 contractAddress,
                 chain,
-                rpc,
-                webSocket
+                rpcUrl,
+                webSocketUrl
               );
             }
           }
@@ -190,11 +197,16 @@ const startWatchers = async () => {
   ];
 
   try {
-    for (const { chain, rpc, webSocket, contractAddress } of chainsConfig) {
+    for (const {
+      chain,
+      rpcUrl,
+      webSocketUrl,
+      contractAddress,
+    } of chainsConfig) {
       await checkPastThenWatch(
         chain,
-        rpc,
-        webSocket,
+        rpcUrl,
+        webSocketUrl,
         contractAddress,
         contractAbi,
         events

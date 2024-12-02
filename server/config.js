@@ -7,14 +7,14 @@ dotenv.config({ path: "./.env" });
 export const chainsConfig = [
   {
     chain: holesky,
-    rpc: process.env.RPC_URL_INFURA_HOLESKY,
-    webSocket: process.env.WS_URL_INFURA_HOLESKY,
+    rpcUrl: process.env.RPC_URL_INFURA_HOLESKY,
+    webSocketUrl: process.env.WS_URL_INFURA_HOLESKY,
     contractAddress: process.env.LIVENESS_CONTRACT_ADDRESS_HOLESKY,
   },
-  {
-    chain: localhost,
-    rpc: process.env.RPC_URL_LOCALHOST,
-    webSocket: process.env.WS_URL_LOCALHOST,
-    contractAddress: process.env.LIVENESS_CONTRACT_ADDRESS_LOCALHOST,
-  },
+  // {
+  //   chain: localhost,
+  //   rpcUrl: process.env.RPC_URL_LOCALHOST,
+  //   webSocketUrl: process.env.WS_URL_LOCALHOST,
+  //   contractAddress: process.env.LIVENESS_CONTRACT_ADDRESS_LOCALHOST,
+  // },
 ];
