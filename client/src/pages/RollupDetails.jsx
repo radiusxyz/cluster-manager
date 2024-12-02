@@ -28,7 +28,7 @@ import Loader from "../components/Loader";
 import { useAccount, useContractRead } from "wagmi";
 import AddExecutorModal from "../components/AddExecutorModal";
 import { useGET } from "../hooks/useServer";
-import { formatString } from "../utils/formatStriing";
+
 import { contractAbi } from "../../../common";
 
 const RollupDetails = () => {
