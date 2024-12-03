@@ -34,9 +34,7 @@ import { contractAbi } from "../../../common";
 const RollupDetails = () => {
   const { clusterId, rollupId } = useParams();
   const { address, isConnected } = useAccount();
-  comst[
-    (validationServiceContractAddress, setValidationServiceContractAddress)
-  ] = useState("");
+  const [validationServiceManager, setValidationServiceManager] = useState("");
 
   const [showAddExecutorModal, setShowAddExecutorModal] = useState(false);
   const toggleAddExecutorModal = () => {
@@ -61,13 +59,11 @@ const RollupDetails = () => {
 
   useEffect(() => {
     if (!rollup) return;
-    setValidationServiceContractAddress(
-      rollup.validationInfo.validationServiceContractAddress
-    );
+    setValidationServiceManager(rollup.validationInfo.validationServiceManager);
   }, [rollup]);
 
   const contractConfig = {
-    address: validationServiceContractAddress,
+    address: validationServiceManager,
     abi: contractAbi,
   };
 

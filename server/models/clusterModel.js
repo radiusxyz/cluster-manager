@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const ValidationInfoSchema = new Schema({
   platform: { type: String, required: true },
   serviceProvider: { type: String, required: true },
-  validationServiceContractAddress: { type: String, required: true },
+  validationServiceManager: { type: String, required: true },
 });
 
 const ExecutorSchema = new Schema({
