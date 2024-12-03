@@ -52,7 +52,7 @@ const AddRollupModal = ({ toggle, clusterId }) => {
           validationInfo: {
             platform,
             serviceProvider,
-            validation: validationServiceManager,
+            validationServiceManager,
           },
           executorAddress: address,
         },

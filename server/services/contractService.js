@@ -1,14 +1,18 @@
 import { createPublicClient, http } from "viem";
-import { holesky } from "viem/chains";
-import { contractAbi, contractAddress } from "../../common.js";
+import { contractAbi } from "../../common.js";
 
-const client = createPublicClient({
-  chain: holesky,
-  transport: http(),
-});
-
-export const getRollupInfoList = async (clusterId) => {
+export const getRollupInfoList = async (
+  clusterId,
+  contractAddress,
+  chain,
+  rpcUrl
+) => {
   try {
+    const client = createPublicClient({
+      chain,
+      transport: http(rpcUrl),
+    });
+
     const data = await client.readContract({
       address: contractAddress, // Ensure you import contractAddress and contractAbi
       abi: contractAbi,
