@@ -61,10 +61,7 @@ const addRollup = async (rollupData) => {
       type: rollupType,
       encryptedTransactionType,
       orderCommitmentType,
-      validationInfo: {
-        platform: validationInfo.platform,
-        serviceProvider: validationInfo.serviceProvider,
-      },
+      validationInfo,
       executors: executorAddresses,
       fileStrings,
     });
