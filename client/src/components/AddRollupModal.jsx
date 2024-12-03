@@ -30,9 +30,11 @@ const AddRollupModal = ({ toggle, clusterId }) => {
     useState("skde");
   const [platform, setPlatform] = useState("ethereum");
   const [serviceProvider, setServiceProvider] = useState("symbiotic");
-  const [symbioticContractAddress, setSymbioticContractAddress] = useState("");
+  const [validationServiceManager, setValidationServiceManager] = useState(
+    "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB"
+  );
 
-  const { writeContract, data, isPending } = useWriteContract();
+  const { writeContract, data, isPending, error } = useWriteContract();
 
   const handleAddRollup = () => {
     writeContract({
@@ -47,13 +49,21 @@ const AddRollupModal = ({ toggle, clusterId }) => {
           encryptedTransactionType,
           owner: address,
           orderCommitmentType,
-          validationInfo: { platform, serviceProvider },
+          validationInfo: {
+            platform,
+            serviceProvider,
+            validation: validationServiceManager,
+          },
           executorAddress: address,
         },
       ],
       account: address,
     });
   };
+
+  useEffect(() => {
+    console.log("error", error);
+  }, [error]);
 
   useEffect(() => {
     if (data) {
@@ -149,10 +159,10 @@ const AddRollupModal = ({ toggle, clusterId }) => {
                 <InputContainer>
                   <SubLabel>Contract address</SubLabel>
                   <Input
-                    value={symbioticContractAddress}
+                    value={validationServiceManager}
                     type="text"
                     onChange={(e) => {
-                      setSymbioticContractAddress(e.target.value);
+                      setValidationServiceManager(e.target.value);
                     }}
                   />
                 </InputContainer>

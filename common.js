@@ -1,5 +1,5 @@
 // LivenessContract Address
-const contractAddress = "0x38c7AFF2b28dF9f90b8cCC3c59C480599Cf0c846";
+const contractAddress = "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB";
 const contractAbi = [
   {
     inputs: [],

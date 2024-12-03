@@ -125,10 +125,7 @@ export const Rows = styled.div`
   gap: 10px;
 `;
 
-export const Row =
-  styled.div <
-  { error: boolean } >
-  `
+export const Row = styled.div`
   text-decoration: none;
   color: black;
   display: flex;

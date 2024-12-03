@@ -16,9 +16,9 @@ export const localhost = /*#__PURE__*/ defineChain({
 });
 
 export const config = createConfig({
-  chains: [holesky],
+  chains: [localhost],
   transports: {
-    [holesky.id]: http(),
+    [localhost.id]: http(),
   },
   connectors: [injected()],
 });
