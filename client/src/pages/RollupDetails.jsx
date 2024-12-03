@@ -25,7 +25,7 @@ import {
 
 import { useParams } from "react-router";
 import Loader from "../components/Loader";
-import { useAccount, useContractRead } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import AddExecutorModal from "../components/AddExecutorModal";
 import { useGET } from "../hooks/useServer";
 
@@ -34,7 +34,8 @@ import { contractAbi } from "../../../common";
 const RollupDetails = () => {
   const { clusterId, rollupId } = useParams();
   const { address, isConnected } = useAccount();
-  const [validationServiceManager, setValidationServiceManager] = useState("");
+  const [validationServiceManager, setValidationServiceManager] =
+    useState(null);
 
   const [showAddExecutorModal, setShowAddExecutorModal] = useState(false);
   const toggleAddExecutorModal = () => {
@@ -59,46 +60,59 @@ const RollupDetails = () => {
 
   useEffect(() => {
     if (!rollup) return;
-    setValidationServiceManager(rollup.validationInfo.validationServiceManager);
+    if (rollup?.validationInfo?.validationServiceManager) {
+      setValidationServiceManager(
+        rollup.validationInfo.validationServiceManager
+      );
+    }
   }, [rollup]);
 
-  const contractConfig = {
-    address: validationServiceManager,
-    abi: contractAbi,
-  };
+  const contractConfig = validationServiceManager
+    ? {
+        address: validationServiceManager,
+        abi: contractAbi,
+      }
+    : null;
 
-  const { data: network } = useContractRead({
+  const { data: network } = useReadContract({
     ...contractConfig,
+    enabled: !!contractConfig,
     functionName: "NETWORK",
   });
 
-  const { data: operatorNetOptIn } = useContractRead({
+  const { data: operatorNetOptIn } = useReadContract({
     ...contractConfig,
+    enabled: !!contractConfig,
     functionName: "OPERATOR_NET_OPT_IN",
   });
 
-  const { data: vaultFactory } = useContractRead({
+  const { data: vaultFactory } = useReadContract({
     ...contractConfig,
+    enabled: !!contractConfig,
     functionName: "VAULT_FACTORY",
   });
 
-  const { data: epochDuration } = useContractRead({
+  const { data: epochDuration } = useReadContract({
     ...contractConfig,
+    enabled: !!contractConfig,
     functionName: "EPOCH_DURATION",
   });
 
-  const { data: slashingWindow } = useContractRead({
+  const { data: slashingWindow } = useReadContract({
     ...contractConfig,
+    enabled: !!contractConfig,
     functionName: "SLASHING_WINDOW",
   });
 
-  const { data: currentOperatorInfos } = useContractRead({
+  const { data: currentOperatorInfos } = useReadContract({
     ...contractConfig,
+    enabled: !!contractConfig,
     functionName: "getCurrentOperatorInfos",
   });
 
-  const { data: vaults } = useContractRead({
+  const { data: vaults } = useReadContract({
     ...contractConfig,
+    enabled: !!contractConfig,
     functionName: "getCurrentVaults",
   });
 
@@ -217,7 +231,7 @@ const RollupDetails = () => {
                     <Header>Address</Header>
                   </Headers>
                   <Rows>
-                    {vaults.length ? (
+                    {vaults?.length ? (
                       vaults.map((vaultAddress, index) => (
                         <Row key={vaultAddress + index}>
                           <Cell>
@@ -241,7 +255,7 @@ const RollupDetails = () => {
                     <Header>Stake</Header>
                   </Headers>
                   <Rows>
-                    {currentOperatorInfos.length ? (
+                    {currentOperatorInfos?.length ? (
                       currentOperatorInfos.map((operator, index) => (
                         <Row
                           error={!cluster.sequencers.includes(operator.address)}
