@@ -1,13 +1,13 @@
 import BlockSync from "../models/blockSyncModel.js";
 
-// Update to include logIndex
 const updateLastProcessedEvent = async ({
+  contractAddress,
   blockNumber,
   transactionHash,
   logIndex,
 }) => {
   await BlockSync.findOneAndUpdate(
-    {},
+    { contractAddress },
     {
       lastBlockNumber: blockNumber,
       lastTransactionHash: transactionHash,
@@ -17,8 +17,8 @@ const updateLastProcessedEvent = async ({
   );
 };
 
-const getLastProcessedEvent = async () => {
-  const record = await BlockSync.findOne();
+const getLastProcessedEvent = async (contractAddress) => {
+  const record = await BlockSync.findOne({ contractAddress });
   if (record) {
     return {
       lastBlockNumber: record.lastBlockNumber,

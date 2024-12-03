@@ -1,11 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import startEventListeners from "./listeners/eventListeners.js";
 import clusterRoutes from "./routes/clusterRoutes.js";
 import mongoose from "mongoose";
+import watcherService from "./services/watcherService.js";
 import Cluster from "./models/clusterModel.js";
 import BlockSync from "./models/blockSyncModel.js";
+
 dotenv.config({ path: "./.env" });
 
 const app = express();
@@ -27,7 +28,7 @@ mongoose
     // await Cluster.deleteMany({});
     // await BlockSync.deleteMany({});
     // console.log("Cluster collection cleared");
-    await startEventListeners();
+    await watcherService.startWatchers();
   })
   .catch((error) => {
     console.error("DB connection failed:", error.message);
