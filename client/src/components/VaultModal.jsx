@@ -10,9 +10,30 @@ import {
   Title,
 } from "./ModalStyles";
 import Button from "./Button";
+import { vaultAbi } from "../../../common";
+import { useReadContract } from "wagmi";
 
 const VaultModal = ({ toggle, vault }) => {
   const handleClose = () => toggle();
+  console.log(vault);
+
+  const contractConfig = vault
+    ? {
+        address: vault,
+        abi: vaultAbi,
+      }
+    : null;
+
+  const { data: isInitialized } = useReadContract({
+    ...contractConfig,
+    enabled: !!contractConfig,
+    functionName: "isInitialized",
+  });
+  const { data: totalStake } = useReadContract({
+    ...contractConfig,
+    enabled: !!contractConfig,
+    functionName: "totalStake",
+  });
 
   return (
     <Overlay onClick={toggle}>
@@ -24,7 +45,7 @@ const VaultModal = ({ toggle, vault }) => {
         <Title>
           <span>Vault Details</span>
         </Title>
-        <InputContainer>
+        {/* <InputContainer>
           <Label>Address</Label>
           <Input readOnly value={vault.address} type="text" />
         </InputContainer>{" "}
@@ -43,6 +64,14 @@ const VaultModal = ({ toggle, vault }) => {
         <InputContainer>
           <Label>Epoch Duration</Label>
           <Input readOnly value={vault.epochDuration} type="text" />
+        </InputContainer>{" "} */}
+        <InputContainer>
+          <Label>Is Initialized</Label>
+          <Input readOnly value={isInitialized || ""} type="text" />
+        </InputContainer>{" "}
+        <InputContainer>
+          <Label>Total Stake</Label>
+          <Input readOnly value={String(totalStake) || ""} type="text" />
         </InputContainer>{" "}
         <Buttons>
           <SubmitBtnContainer>
