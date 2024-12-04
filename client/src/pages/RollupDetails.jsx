@@ -202,7 +202,7 @@ const RollupDetails = () => {
                       onClick={toggleAddExecutorModal}
                       disabled={!isConnected}
                     >
-                      Add executor
+                      Add URLs
                     </AddExecutorBtn>
                   )}
                 </TitleRow>
