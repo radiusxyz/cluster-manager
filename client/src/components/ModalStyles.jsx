@@ -81,6 +81,17 @@ export const Input = styled.input`
   border-radius: 5px;
   border: 1px solid #ccc;
   width: 100%;
+
+  &:focus:read-only {
+    outline: none;
+    border-color: inherit;
+    box-shadow: none;
+  }
+
+  &:read-only {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+  }
 `;
 
 export const SelectBox = styled.select`

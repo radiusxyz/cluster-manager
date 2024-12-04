@@ -31,6 +31,8 @@ import { useGET } from "../hooks/useServer";
 
 import { validationServiceManagerAbi } from "../../../common";
 import { formatAddress } from "../utils/formatAddress";
+import ExecutorModal from "../components/ExecutorModal";
+import VaultModal from "../components/VaultModal";
 
 const RollupDetails = () => {
   const { clusterId, rollupId } = useParams();
@@ -41,6 +43,19 @@ const RollupDetails = () => {
   const [showAddExecutorModal, setShowAddExecutorModal] = useState(false);
   const toggleAddExecutorModal = () => {
     setShowAddExecutorModal(!showAddExecutorModal);
+  };
+
+  const [selectedExecutor, setSelectedExecutor] = useState(null);
+
+  const [showExecutorModal, setShowExecutorModal] = useState(false);
+  const toggleExecutorModal = () => {
+    setShowExecutorModal(!showExecutorModal);
+  };
+
+  const [selectedVault, setSelectedVault] = useState(null);
+  const [showVaultModal, setShowVaultModal] = useState(false);
+  const toggleVaultModal = () => {
+    setShowVaultModal(!showVaultModal);
   };
 
   const { data: rollup } = useGET(
@@ -200,7 +215,13 @@ const RollupDetails = () => {
                   <Rows>
                     {rollup.executors.length ? (
                       rollup.executors.map((executor, index) => (
-                        <Row key={executor.address + index}>
+                        <Row
+                          key={executor.address + index}
+                          onClick={() => {
+                            setSelectedExecutor(executor);
+                            toggleExecutorModal();
+                          }}
+                        >
                           <Cell>
                             <CellTxt>{executor.address}</CellTxt>
                           </Cell>
@@ -257,7 +278,13 @@ const RollupDetails = () => {
                   <Rows>
                     {vaults?.length ? (
                       vaults.map((vaultAddress, index) => (
-                        <Row key={vaultAddress + index}>
+                        <Row
+                          key={vaultAddress + index}
+                          onClick={() => {
+                            setSelectedVault(vaultAddress);
+                            toggleVaultModal();
+                          }}
+                        >
                           <Cell>
                             <CellTxt>{vaultAddress}</CellTxt>
                           </Cell>
@@ -275,8 +302,8 @@ const RollupDetails = () => {
                 </TitleRow>
                 <Table>
                   <Headers>
-                    <Header>Address</Header>
-                    <Header>Stake</Header>
+                    <Header>Operating Address</Header>
+                    <Header>Combined Stake</Header>
                   </Headers>
                   <Rows>
                     {currentOperatorInfos?.length ? (
@@ -313,6 +340,15 @@ const RollupDetails = () => {
           clusterId={clusterId}
           rollupId={rollup.rollupId}
         />
+      )}
+      {showExecutorModal && selectedExecutor && (
+        <ExecutorModal
+          toggle={toggleExecutorModal}
+          executor={selectedExecutor}
+        />
+      )}
+      {showVaultModal && selectedVault && (
+        <VaultModal toggle={toggleVaultModal} vault={selectedVault} />
       )}
     </PageContainer>
   );
