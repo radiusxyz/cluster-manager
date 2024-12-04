@@ -19,21 +19,23 @@ import {
   CellTxt,
   Title,
   Message,
-  AddExecutorBtn,
+  RegisterExecutorBtn,
   TitleRow,
 } from "./RollupDetailsStyles";
 
 import { useParams } from "react-router";
 import Loader from "../components/Loader";
 import { useAccount, useReadContract } from "wagmi";
-import AddExecutorModal from "../components/AddExecutorModal";
+
 import { useGET } from "../hooks/useServer";
 
 import { validationServiceManagerAbi } from "../../../common";
 import { formatAddress } from "../utils/formatAddress";
-import ExecutorModal from "../components/ExecutorModal";
+
 import VaultModal from "../components/VaultModal";
 import { StyledNavLink } from "./OperatorDetailsStyles";
+import RegisterExecutorModal from "../components/RegisterExecutorModal";
+import UpdateExecutorDetailsModal from "../components/UpdateExecutorDetailsModal";
 
 const RollupDetails = () => {
   const { clusterId, rollupId } = useParams();
@@ -41,16 +43,19 @@ const RollupDetails = () => {
   const [validationServiceManager, setValidationServiceManager] =
     useState(null);
 
-  const [showAddExecutorModal, setShowAddExecutorModal] = useState(false);
-  const toggleAddExecutorModal = () => {
-    setShowAddExecutorModal(!showAddExecutorModal);
+  const [showRegisterExecutorModal, setShowRegisterExecutorModal] =
+    useState(false);
+
+  const toggleRegisterExecutorModal = () => {
+    setShowRegisterExecutorModal(!showRegisterExecutorModal);
   };
 
   const [selectedExecutor, setSelectedExecutor] = useState(null);
 
-  const [showExecutorModal, setShowExecutorModal] = useState(false);
-  const toggleExecutorModal = () => {
-    setShowExecutorModal(!showExecutorModal);
+  const [showUpdateExecutorDetailsModal, setShowUpdateExecutorDetailsModal] =
+    useState(false);
+  const toggleUpdateExecutorDetailsModal = () => {
+    setShowUpdateExecutorDetailsModal(!showUpdateExecutorDetailsModal);
   };
 
   const [selectedVault, setSelectedVault] = useState(null);
@@ -198,12 +203,12 @@ const RollupDetails = () => {
                 <TitleRow>
                   <SubTitle>Executors</SubTitle>
                   {rollup.owner === address && (
-                    <AddExecutorBtn
-                      onClick={toggleAddExecutorModal}
+                    <RegisterExecutorBtn
+                      onClick={toggleRegisterExecutorModal}
                       disabled={!isConnected}
                     >
-                      Add URLs
-                    </AddExecutorBtn>
+                      Register Executor
+                    </RegisterExecutorBtn>
                   )}
                 </TitleRow>
                 <Table>
@@ -220,21 +225,12 @@ const RollupDetails = () => {
                           key={executor.address + index}
                           onClick={() => {
                             setSelectedExecutor(executor);
-                            toggleExecutorModal();
+                            toggleUpdateExecutorDetailsModal();
                           }}
                         >
                           <Cell>
                             <CellTxt>{executor.address}</CellTxt>
                           </Cell>
-                          {/* <Cell>
-                            <CellTxt>{executor.blockExplorerUrl}</CellTxt>
-                          </Cell>
-                          <Cell>
-                            <CellTxt>{executor.rpcUrl}</CellTxt>
-                          </Cell>
-                          <Cell>
-                            <CellTxt>{executor.websocketUrl}</CellTxt>
-                          </Cell> */}
                         </Row>
                       ))
                     ) : (
@@ -343,17 +339,19 @@ const RollupDetails = () => {
           </Infos>
         </>
       )}
-      {showAddExecutorModal && (
-        <AddExecutorModal
-          toggle={toggleAddExecutorModal}
+      {showRegisterExecutorModal && (
+        <RegisterExecutorModal
+          toggle={toggleRegisterExecutorModal}
           clusterId={clusterId}
           rollupId={rollup.rollupId}
         />
       )}
-      {showExecutorModal && selectedExecutor && (
-        <ExecutorModal
-          toggle={toggleExecutorModal}
+      {showUpdateExecutorDetailsModal && selectedExecutor && (
+        <UpdateExecutorDetailsModal
+          toggle={toggleUpdateExecutorDetailsModal}
           executor={selectedExecutor}
+          clusterId={clusterId}
+          rollupId={rollup.rollupId}
         />
       )}
       {showVaultModal && selectedVault && (

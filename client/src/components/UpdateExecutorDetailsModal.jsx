@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "./Button";
 import { useAccount } from "wagmi";
 import Loader from "./Loader";
@@ -16,13 +16,23 @@ import {
 } from "./ModalStyles";
 import { usePATCH } from "../hooks/useServer";
 
-const AddExecutorModal = ({ toggle, clusterId, rollupId }) => {
+const UpdateExecutorDetailsModal = ({
+  toggle,
+  clusterId,
+  rollupId,
+  executor,
+}) => {
   const { address } = useAccount();
+  console.log("executor", executor);
 
-  const [rpcUrl, setRpcUrl] = useState("https://www.google.ru/");
-  const [webSocketUrl, setWebSocketUrl] = useState("https://www.naver.com/");
+  const [rpcUrl, setRpcUrl] = useState(
+    executor.rpcUrl || "https://www.google.ru/"
+  );
+  const [webSocketUrl, setWebSocketUrl] = useState(
+    executor.websocketUrl || "https://www.naver.com/"
+  );
   const [blockExplorerUrl, setBlockExplorerUrl] = useState(
-    "https://www.hello-world.com/"
+    executor.blockExplorerUrl || "https://www.hello-world.com/"
   );
 
   const {
@@ -42,7 +52,7 @@ const AddExecutorModal = ({ toggle, clusterId, rollupId }) => {
     },
   });
 
-  const handleAddServerData = () => {
+  const handleUpdateExecutorDetails = () => {
     const data = {
       rollupId,
       executorAddress: address,
@@ -62,13 +72,17 @@ const AddExecutorModal = ({ toggle, clusterId, rollupId }) => {
         }}
       >
         <Title>
-          <span>Add URLs</span>
+          <span>Update Executor Details</span>
         </Title>
 
         {isPatchLoading ? (
           <Loader />
         ) : (
           <>
+            <InputContainer>
+              <Label>Address</Label>
+              <Input value={executor.address} readOnly type="text" />
+            </InputContainer>
             <InputContainer>
               <Label>RPC URL</Label>
               <Input
@@ -103,7 +117,7 @@ const AddExecutorModal = ({ toggle, clusterId, rollupId }) => {
         )}
         <Buttons>
           <SubmitBtnContainer>
-            <Button onClick={handleAddServerData}>Store Server Data</Button>
+            <Button onClick={handleUpdateExecutorDetails}>Update</Button>
           </SubmitBtnContainer>
         </Buttons>
       </ModalContainer>
@@ -111,4 +125,4 @@ const AddExecutorModal = ({ toggle, clusterId, rollupId }) => {
   );
 };
 
-export default AddExecutorModal;
+export default UpdateExecutorDetailsModal;
