@@ -31,7 +31,7 @@ const AddRollupModal = ({ toggle, clusterId }) => {
   const [platform, setPlatform] = useState("ethereum");
   const [serviceProvider, setServiceProvider] = useState("symbiotic");
   const [validationServiceManager, setValidationServiceManager] = useState(
-    "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB"
+    "0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690"
   );
 
   const { writeContract, data, isPending, error } = useWriteContract();

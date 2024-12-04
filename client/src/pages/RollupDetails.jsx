@@ -29,7 +29,8 @@ import { useAccount, useReadContract } from "wagmi";
 import AddExecutorModal from "../components/AddExecutorModal";
 import { useGET } from "../hooks/useServer";
 
-import { contractAbi } from "../../../common";
+import { validationServiceManagerAbi } from "../../../common";
+import { formatAddress } from "../utils/formatAddress";
 
 const RollupDetails = () => {
   const { clusterId, rollupId } = useParams();
@@ -50,7 +51,7 @@ const RollupDetails = () => {
   );
 
   const { data: cluster } = useGET(
-    ["rollup", rollupId],
+    ["cluster", clusterId],
     `http://localhost:3333/api/v1/clusters/${clusterId}`,
     true,
     3000
@@ -70,7 +71,7 @@ const RollupDetails = () => {
   const contractConfig = validationServiceManager
     ? {
         address: validationServiceManager,
-        abi: contractAbi,
+        abi: validationServiceManagerAbi,
       }
     : null;
 
@@ -116,6 +117,29 @@ const RollupDetails = () => {
     functionName: "getCurrentVaults",
   });
 
+  useEffect(() => {
+    console.log("cluster", cluster);
+  }, [cluster]);
+
+  useEffect(() => {
+    console.log("validationServiceManager", validationServiceManager);
+    console.log("currentOperatorInfos", currentOperatorInfos);
+    console.log("vaults", vaults);
+    console.log("network", network);
+    console.log("operatorNetOptIn", operatorNetOptIn);
+    console.log("vaultFactory", vaultFactory);
+    console.log("epochDuration", epochDuration);
+    console.log("slashingWindow", slashingWindow);
+  }, [
+    currentOperatorInfos,
+    vaults,
+    network,
+    operatorNetOptIn,
+    vaultFactory,
+    epochDuration,
+    slashingWindow,
+    validationServiceManager,
+  ]);
   return (
     <PageContainer>
       <TitleJoinBtnContainer>
@@ -258,37 +282,23 @@ const RollupDetails = () => {
                     {currentOperatorInfos?.length ? (
                       currentOperatorInfos.map((operator, index) => (
                         <Row
-                          error={!cluster.sequencers.includes(operator.address)}
+                          $error={
+                            !cluster.sequencers.includes(operator.address)
+                          }
                           key={operator.address + index}
                         >
                           <Cell>
-                            <CellTxt>{operator.address}</CellTxt>
+                            <CellTxt>
+                              {formatAddress(operator.operatingAddress)}
+                            </CellTxt>
                           </Cell>
                           <Cell>
-                            <CellTxt>{operator.stake}</CellTxt>
+                            <CellTxt>{String(operator.stake)}</CellTxt>
                           </Cell>
                         </Row>
                       ))
                     ) : (
                       <Message>No operators found</Message>
-                    )}
-                  </Rows>
-                </Table>
-                <Table>
-                  <Headers>
-                    <Header>Address</Header>
-                  </Headers>
-                  <Rows>
-                    {rollup.executors.length ? (
-                      rollup.executors.map((executor, index) => (
-                        <Row key={executor.address + index}>
-                          <Cell>
-                            <CellTxt>{executor.address}</CellTxt>
-                          </Cell>
-                        </Row>
-                      ))
-                    ) : (
-                      <Message>No vaults found</Message>
                     )}
                   </Rows>
                 </Table>
