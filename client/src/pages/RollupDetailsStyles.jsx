@@ -70,7 +70,7 @@ export const TitleRow = styled.div`
   align-items: center;
 `;
 
-export const AddExecutorBtn = styled(StyledButton)`
+export const RegisterExecutorBtn = styled(StyledButton)`
   align-self: flex-end;
 `;
 
