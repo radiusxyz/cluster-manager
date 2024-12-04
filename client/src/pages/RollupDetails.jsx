@@ -33,6 +33,7 @@ import { validationServiceManagerAbi } from "../../../common";
 import { formatAddress } from "../utils/formatAddress";
 import ExecutorModal from "../components/ExecutorModal";
 import VaultModal from "../components/VaultModal";
+import { StyledNavLink } from "./OperatorDetailsStyles";
 
 const RollupDetails = () => {
   const { clusterId, rollupId } = useParams();
@@ -308,21 +309,29 @@ const RollupDetails = () => {
                   <Rows>
                     {currentOperatorInfos?.length ? (
                       currentOperatorInfos.map((operator, index) => (
-                        <Row
-                          $error={
-                            !cluster.sequencers.includes(operator.address)
-                          }
-                          key={operator.address + index}
+                        <StyledNavLink
+                          to={`operator/${operator.operatingAddress}`}
+                          key={operator.operatingAddress + index}
+                          state={{
+                            operator,
+                          }}
                         >
-                          <Cell>
-                            <CellTxt>
-                              {formatAddress(operator.operatingAddress)}
-                            </CellTxt>
-                          </Cell>
-                          <Cell>
-                            <CellTxt>{String(operator.stake)}</CellTxt>
-                          </Cell>
-                        </Row>
+                          <Row
+                            $error={
+                              !cluster.sequencers.includes(operator.address)
+                            }
+                            key={operator.address + index}
+                          >
+                            <Cell>
+                              <CellTxt>
+                                {formatAddress(operator.operatingAddress)}
+                              </CellTxt>
+                            </Cell>
+                            <Cell>
+                              <CellTxt>{String(operator.stake)}</CellTxt>
+                            </Cell>
+                          </Row>
+                        </StyledNavLink>
                       ))
                     ) : (
                       <Message>No operators found</Message>

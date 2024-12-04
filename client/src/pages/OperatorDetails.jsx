@@ -25,69 +25,29 @@ import {
   TitleRow,
 } from "./OperatorDetailsStyles";
 
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { useGET } from "../hooks/useServer";
 import Loader from "../components/Loader";
 import useWrite from "../hooks/useContract";
 import { useAccount } from "wagmi";
 import RunModal from "../components/RunModal";
 import AddRollupModal from "../components/AddRollupModal";
+import { formatAddress } from "../utils/formatAddress";
 
 const OperatorDetails = () => {
-  const { clusterId } = useParams();
-  const { address, isConnected } = useAccount();
-  const [cluster, setCluster] = useState(null);
-  const [selectedRollupId, setSelectedRollupId] = useState(null);
-  const [shouldGetSequencers, setShouldGetSequencers] = useState(false);
-  const [showAddRollupModal, setShowAddRollupModal] = useState(false);
-  const navigate = useNavigate();
-
-  const toggleAddRollupModal = () => {
-    setShowAddRollupModal(!showAddRollupModal);
-  };
-
-  const [showRunModal, setShowRunModal] = useState(false);
-  const toggleRunModal = () => {
-    setShowRunModal(!showRunModal);
-  };
-
-  const { write, hash, isHashPending } = useWrite();
-
-  const {
-    isPending,
-    error,
-    data,
-    refetch: refetchSequencers,
-  } = useGET(
-    ["cluster", clusterId],
-    `http://localhost:3333/api/v1/clusters/${clusterId}`,
-    true,
-    3000
-  );
-
-  const handleJoinLeave = () => {
-    if (cluster.sequencers.includes(address)) {
-      write("deregisterSequencer", [clusterId]);
-    } else {
-      write("registerSequencer", [clusterId]);
-    }
-  };
-
-  const handleRun = () => {
-    toggleRunModal();
-  };
+  const location = useLocation();
+  const { operator } = location.state || {};
 
   useEffect(() => {
-    if (data) {
-      console.log("cluster: ", data);
-      setCluster(data);
+    if (operator) {
+      console.log("operator: ", operator);
     }
-  }, [data]);
+  }, [operator]);
 
   return (
     <PageContainer>
       <Container>
-        <SubTitle>Opertor Info</SubTitle>
+        <SubTitle>Operator Info</SubTitle>
         {(!operator && <Loader />) || (
           <InfoItems>
             <InfoItem>
@@ -100,7 +60,7 @@ const OperatorDetails = () => {
             </InfoItem>
             <InfoItem>
               <Property>Total Stake</Property>
-              <Value>{operator.stake}</Value>{" "}
+              <Value>{String(operator.stake)}</Value>{" "}
             </InfoItem>
           </InfoItems>
         )}
@@ -120,19 +80,21 @@ const OperatorDetails = () => {
 
             <Rows>
               {operator.stakes.map((stake, index) => (
-                <Row>
+                <Row key={stake.token}>
                   <Cell>
                     <CellTxt>{"None"}</CellTxt>
                   </Cell>
                   <Cell>
-                    <CellTxt>{stake.token}</CellTxt>
+                    <CellTxt>{formatAddress(stake.token)}</CellTxt>
                   </Cell>
                   <Cell>
-                    <CellTxt>{stake.stake}</CellTxt>
+                    <CellTxt>{String(stake.stake)}</CellTxt>
                   </Cell>
                   <Cell>
                     <CellTxt>
-                      {Math.floor(stake.stake / stake.share) * 100}
+                      {operator.stake
+                        ? Math.floor(stake.stake / operator.stake) * 100
+                        : String(stake.stake)}
                     </CellTxt>
                   </Cell>
                 </Row>
