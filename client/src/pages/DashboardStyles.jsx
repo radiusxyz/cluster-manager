@@ -4,7 +4,7 @@ import Button, { StyledButton } from "../components/Button";
 export const PageContainer = styled.div`
   margin-left: auto;
   margin-right: auto;
-  margin-top: 50px;
+  margin: 50px;
   max-width: 1700px;
   width: 100%;
   max-height: 840px;

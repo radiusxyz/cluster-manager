@@ -64,6 +64,7 @@ export const StatsContainer = styled(NavBarLinksContainer)``;
 export const OutletContainer = styled.div`
   display: flex;
   flex: 1;
+  justify-content: center;
 `;
 
 export const FooterLinksContainer = styled.div`

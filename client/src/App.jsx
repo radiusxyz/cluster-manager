@@ -5,6 +5,7 @@ import Explorer from "./pages/Explorer";
 import Dashboard from "./pages/Dashboard";
 import ClusterDetails from "./pages/ClusterDetails";
 import RollupDetails from "./pages/RollupDetails";
+import OperatorDetails from "./pages/OperatorDetails";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,14 @@ const router = createBrowserRouter([
       {
         path: ":clusterId/details/rollup/:rollupId",
         element: <RollupDetails />,
+        loader: () => {
+          window.scrollTo(0, 0);
+          return null;
+        },
+      },
+      {
+        path: ":clusterId/details/rollup/:rollupId/operator/:operatingAddress",
+        element: <OperatorDetails />,
         loader: () => {
           window.scrollTo(0, 0);
           return null;
