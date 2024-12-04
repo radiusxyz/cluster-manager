@@ -1,943 +1,1360 @@
 // LivenessContract Address
-const contractAddress = "0x38c7AFF2b28dF9f90b8cCC3c59C480599Cf0c846";
+const contractAddress = "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB";
 const contractAbi = [
+  { type: "constructor", inputs: [], stateMutability: "nonpayable" },
   {
-    inputs: [],
-    stateMutability: "nonpayable",
-    type: "constructor",
-  },
-  {
-    inputs: [],
-    name: "AccessControlBadConfirmation",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-      {
-        internalType: "bytes32",
-        name: "neededRole",
-        type: "bytes32",
-      },
-    ],
-    name: "AccessControlUnauthorizedAccount",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "InvalidInitialization",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "NotInitializing",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "owner",
-        type: "address",
-      },
-    ],
-    name: "OwnableInvalidOwner",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-    ],
-    name: "OwnableUnauthorizedAccount",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "ReentrancyGuardReentrantCall",
-    type: "error",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "string",
-        name: "clusterId",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "rollupId",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "rollupOwnerAddress",
-        type: "address",
-      },
-    ],
-    name: "AddRollup",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "string",
-        name: "clusterId",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "sequencerAddress",
-        type: "address",
-      },
-    ],
-    name: "DeregisterSequencer",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "string",
-        name: "clusterId",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "owner",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "maxSequencerNumber",
-        type: "uint256",
-      },
-    ],
-    name: "InitializeCluster",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "uint64",
-        name: "version",
-        type: "uint64",
-      },
-    ],
-    name: "Initialized",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "previousOwner",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "newOwner",
-        type: "address",
-      },
-    ],
-    name: "OwnershipTransferred",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "string",
-        name: "clusterId",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "rollupId",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "executorAddress",
-        type: "address",
-      },
-    ],
-    name: "RegisterRollupExecutor",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "string",
-        name: "clusterId",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "sequencerAddress",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "index",
-        type: "uint256",
-      },
-    ],
-    name: "RegisterSequencer",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "bytes32",
-        name: "role",
-        type: "bytes32",
-      },
-      {
-        indexed: true,
-        internalType: "bytes32",
-        name: "previousAdminRole",
-        type: "bytes32",
-      },
-      {
-        indexed: true,
-        internalType: "bytes32",
-        name: "newAdminRole",
-        type: "bytes32",
-      },
-    ],
-    name: "RoleAdminChanged",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "bytes32",
-        name: "role",
-        type: "bytes32",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "sender",
-        type: "address",
-      },
-    ],
-    name: "RoleGranted",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "bytes32",
-        name: "role",
-        type: "bytes32",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "sender",
-        type: "address",
-      },
-    ],
-    name: "RoleRevoked",
-    type: "event",
-  },
-  {
-    inputs: [],
+    type: "function",
     name: "BLOCK_MARGIN",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [],
-    name: "DEFAULT_ADMIN_ROLE",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
     stateMutability: "view",
-    type: "function",
   },
   {
+    type: "function",
+    name: "addRollup",
     inputs: [
+      { name: "clusterId", type: "string", internalType: "string" },
       {
-        internalType: "string",
-        name: "clusterId",
-        type: "string",
-      },
-      {
-        components: [
-          {
-            internalType: "string",
-            name: "rollupId",
-            type: "string",
-          },
-          {
-            internalType: "address",
-            name: "owner",
-            type: "address",
-          },
-          {
-            internalType: "string",
-            name: "rollupType",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "encryptedTransactionType",
-            type: "string",
-          },
-          {
-            components: [
-              {
-                internalType: "string",
-                name: "platform",
-                type: "string",
-              },
-              {
-                internalType: "string",
-                name: "serviceProvider",
-                type: "string",
-              },
-            ],
-            internalType: "struct ILivenessRadius.ValidationInfo",
-            name: "validationInfo",
-            type: "tuple",
-          },
-          {
-            internalType: "string",
-            name: "orderCommitmentType",
-            type: "string",
-          },
-          {
-            internalType: "address",
-            name: "executorAddress",
-            type: "address",
-          },
-        ],
-        internalType: "struct ILivenessRadius.AddRollupInfo",
         name: "rollupInfo",
         type: "tuple",
-      },
-    ],
-    name: "addRollup",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "clusterId",
-        type: "string",
-      },
-    ],
-    name: "deregisterSequencer",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "getAllClusterIds",
-    outputs: [
-      {
-        internalType: "string[]",
-        name: "",
-        type: "string[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "owner",
-        type: "address",
-      },
-    ],
-    name: "getClustersByOwner",
-    outputs: [
-      {
-        internalType: "string[]",
-        name: "",
-        type: "string[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "sequencer",
-        type: "address",
-      },
-    ],
-    name: "getClustersBySequencer",
-    outputs: [
-      {
-        internalType: "string[]",
-        name: "",
-        type: "string[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "clusterId",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "rollupId",
-        type: "string",
-      },
-    ],
-    name: "getExecutorList",
-    outputs: [
-      {
-        internalType: "address[]",
-        name: "",
-        type: "address[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "clusterId",
-        type: "string",
-      },
-    ],
-    name: "getMaxSequencerNumber",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "bytes32",
-        name: "role",
-        type: "bytes32",
-      },
-    ],
-    name: "getRoleAdmin",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "clusterId",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "rollupId",
-        type: "string",
-      },
-    ],
-    name: "getRollupInfo",
-    outputs: [
-      {
+        internalType: "struct ILivenessRadius.AddRollupInfo",
         components: [
+          { name: "rollupId", type: "string", internalType: "string" },
+          { name: "owner", type: "address", internalType: "address" },
           {
-            internalType: "string",
-            name: "rollupId",
-            type: "string",
-          },
-          {
-            internalType: "address",
-            name: "owner",
-            type: "address",
-          },
-          {
-            internalType: "string",
             name: "rollupType",
             type: "string",
+            internalType: "string",
           },
           {
-            internalType: "string",
             name: "encryptedTransactionType",
             type: "string",
-          },
-          {
-            components: [
-              {
-                internalType: "string",
-                name: "platform",
-                type: "string",
-              },
-              {
-                internalType: "string",
-                name: "serviceProvider",
-                type: "string",
-              },
-            ],
-            internalType: "struct ILivenessRadius.ValidationInfo",
-            name: "validationInfo",
-            type: "tuple",
-          },
-          {
             internalType: "string",
+          },
+          {
             name: "orderCommitmentType",
             type: "string",
+            internalType: "string",
           },
           {
-            internalType: "address[]",
-            name: "executorAddresses",
-            type: "address[]",
+            name: "executorAddress",
+            type: "address",
+            internalType: "address",
+          },
+          {
+            name: "validationInfo",
+            type: "tuple",
+            internalType: "struct ILivenessRadius.ValidationInfo",
+            components: [
+              {
+                name: "platform",
+                type: "string",
+                internalType: "string",
+              },
+              {
+                name: "serviceProvider",
+                type: "string",
+                internalType: "string",
+              },
+              {
+                name: "validationServiceManager",
+                type: "address",
+                internalType: "address",
+              },
+            ],
           },
         ],
-        internalType: "struct ILivenessRadius.RollupInfo",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "deregisterSequencer",
+    inputs: [{ name: "clusterId", type: "string", internalType: "string" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "getAllClusterIds",
+    inputs: [],
+    outputs: [{ name: "", type: "string[]", internalType: "string[]" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getClustersByOwner",
+    inputs: [{ name: "owner", type: "address", internalType: "address" }],
+    outputs: [{ name: "", type: "string[]", internalType: "string[]" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getClustersBySequencer",
+    inputs: [{ name: "sequencer", type: "address", internalType: "address" }],
+    outputs: [{ name: "", type: "string[]", internalType: "string[]" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getExecutorList",
+    inputs: [
+      { name: "clusterId", type: "string", internalType: "string" },
+      { name: "rollupId", type: "string", internalType: "string" },
+    ],
+    outputs: [{ name: "", type: "address[]", internalType: "address[]" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getMaxSequencerNumber",
+    inputs: [{ name: "clusterId", type: "string", internalType: "string" }],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getRollupInfo",
+    inputs: [
+      { name: "clusterId", type: "string", internalType: "string" },
+      { name: "rollupId", type: "string", internalType: "string" },
+    ],
+    outputs: [
+      {
         name: "",
         type: "tuple",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "clusterId",
-        type: "string",
-      },
-    ],
-    name: "getRollupInfoList",
-    outputs: [
-      {
+        internalType: "struct ILivenessRadius.RollupInfo",
         components: [
+          { name: "rollupId", type: "string", internalType: "string" },
+          { name: "owner", type: "address", internalType: "address" },
           {
-            internalType: "string",
-            name: "rollupId",
-            type: "string",
-          },
-          {
-            internalType: "address",
-            name: "owner",
-            type: "address",
-          },
-          {
-            internalType: "string",
             name: "rollupType",
             type: "string",
+            internalType: "string",
           },
           {
-            internalType: "string",
             name: "encryptedTransactionType",
             type: "string",
-          },
-          {
-            components: [
-              {
-                internalType: "string",
-                name: "platform",
-                type: "string",
-              },
-              {
-                internalType: "string",
-                name: "serviceProvider",
-                type: "string",
-              },
-            ],
-            internalType: "struct ILivenessRadius.ValidationInfo",
-            name: "validationInfo",
-            type: "tuple",
-          },
-          {
             internalType: "string",
+          },
+          {
             name: "orderCommitmentType",
             type: "string",
+            internalType: "string",
           },
           {
-            internalType: "address[]",
             name: "executorAddresses",
             type: "address[]",
+            internalType: "address[]",
+          },
+          {
+            name: "validationInfo",
+            type: "tuple",
+            internalType: "struct ILivenessRadius.ValidationInfo",
+            components: [
+              {
+                name: "platform",
+                type: "string",
+                internalType: "string",
+              },
+              {
+                name: "serviceProvider",
+                type: "string",
+                internalType: "string",
+              },
+              {
+                name: "validationServiceManager",
+                type: "address",
+                internalType: "address",
+              },
+            ],
           },
         ],
-        internalType: "struct ILivenessRadius.RollupInfo[]",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getRollupInfoList",
+    inputs: [{ name: "clusterId", type: "string", internalType: "string" }],
+    outputs: [
+      {
         name: "",
         type: "tuple[]",
+        internalType: "struct ILivenessRadius.RollupInfo[]",
+        components: [
+          { name: "rollupId", type: "string", internalType: "string" },
+          { name: "owner", type: "address", internalType: "address" },
+          {
+            name: "rollupType",
+            type: "string",
+            internalType: "string",
+          },
+          {
+            name: "encryptedTransactionType",
+            type: "string",
+            internalType: "string",
+          },
+          {
+            name: "orderCommitmentType",
+            type: "string",
+            internalType: "string",
+          },
+          {
+            name: "executorAddresses",
+            type: "address[]",
+            internalType: "address[]",
+          },
+          {
+            name: "validationInfo",
+            type: "tuple",
+            internalType: "struct ILivenessRadius.ValidationInfo",
+            components: [
+              {
+                name: "platform",
+                type: "string",
+                internalType: "string",
+              },
+              {
+                name: "serviceProvider",
+                type: "string",
+                internalType: "string",
+              },
+              {
+                name: "validationServiceManager",
+                type: "address",
+                internalType: "address",
+              },
+            ],
+          },
+        ],
       },
     ],
     stateMutability: "view",
-    type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "string",
-        name: "clusterId",
-        type: "string",
-      },
-    ],
+    type: "function",
     name: "getSequencerList",
-    outputs: [
-      {
-        internalType: "address[]",
-        name: "",
-        type: "address[]",
-      },
-    ],
+    inputs: [{ name: "clusterId", type: "string", internalType: "string" }],
+    outputs: [{ name: "", type: "address[]", internalType: "address[]" }],
     stateMutability: "view",
-    type: "function",
   },
   {
+    type: "function",
+    name: "initializeCluster",
     inputs: [
+      { name: "clusterId", type: "string", internalType: "string" },
       {
-        internalType: "bytes32",
-        name: "role",
-        type: "bytes32",
-      },
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-    ],
-    name: "grantRole",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "bytes32",
-        name: "role",
-        type: "bytes32",
-      },
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-    ],
-    name: "hasRole",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "initialize",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "clusterId",
-        type: "string",
-      },
-      {
-        internalType: "uint256",
         name: "maxSequencerNumber",
         type: "uint256",
+        internalType: "uint256",
       },
     ],
-    name: "initializeCluster",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "string",
-        name: "clusterId",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "rollupId",
-        type: "string",
-      },
-    ],
+    type: "function",
     name: "isAddedRollup",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
+    inputs: [
+      { name: "clusterId", type: "string", internalType: "string" },
+      { name: "rollupId", type: "string", internalType: "string" },
     ],
+    outputs: [{ name: "", type: "bool", internalType: "bool" }],
     stateMutability: "view",
-    type: "function",
   },
   {
+    type: "function",
+    name: "isRegisteredRollupExecutor",
     inputs: [
+      { name: "clusterId", type: "string", internalType: "string" },
+      { name: "rollupId", type: "string", internalType: "string" },
       {
-        internalType: "string",
-        name: "clusterId",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "rollupId",
-        type: "string",
-      },
-      {
-        internalType: "address",
         name: "executorAddress",
         type: "address",
+        internalType: "address",
       },
     ],
-    name: "isRegisteredRollupExecutor",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
+    outputs: [{ name: "", type: "bool", internalType: "bool" }],
     stateMutability: "view",
-    type: "function",
   },
   {
+    type: "function",
+    name: "isRegisteredSequencer",
     inputs: [
+      { name: "clusterId", type: "string", internalType: "string" },
       {
-        internalType: "string",
-        name: "clusterId",
-        type: "string",
-      },
-      {
-        internalType: "address",
         name: "sequencerAddress",
         type: "address",
+        internalType: "address",
       },
     ],
-    name: "isRegisteredSequencer",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
+    outputs: [{ name: "", type: "bool", internalType: "bool" }],
     stateMutability: "view",
-    type: "function",
   },
   {
-    inputs: [],
+    type: "function",
     name: "owner",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
+    inputs: [],
+    outputs: [{ name: "", type: "address", internalType: "address" }],
     stateMutability: "view",
-    type: "function",
   },
   {
+    type: "function",
+    name: "registerRollupExecutor",
     inputs: [
+      { name: "clusterId", type: "string", internalType: "string" },
+      { name: "rollupId", type: "string", internalType: "string" },
       {
-        internalType: "string",
-        name: "clusterId",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "rollupId",
-        type: "string",
-      },
-      {
-        internalType: "address",
         name: "executorAddress",
         type: "address",
+        internalType: "address",
       },
     ],
-    name: "registerRollupExecutor",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
   },
   {
+    type: "function",
+    name: "registerSequencer",
+    inputs: [{ name: "clusterId", type: "string", internalType: "string" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "renounceOwnership",
+    inputs: [],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "transferOwnership",
+    inputs: [{ name: "newOwner", type: "address", internalType: "address" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "event",
+    name: "AddRollup",
     inputs: [
       {
-        internalType: "string",
         name: "clusterId",
         type: "string",
-      },
-    ],
-    name: "registerSequencer",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "renounceOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "bytes32",
-        name: "role",
-        type: "bytes32",
+        indexed: false,
+        internalType: "string",
       },
       {
-        internalType: "address",
-        name: "callerConfirmation",
+        name: "rollupId",
+        type: "string",
+        indexed: false,
+        internalType: "string",
+      },
+      {
+        name: "rollupOwnerAddress",
         type: "address",
+        indexed: false,
+        internalType: "address",
       },
     ],
-    name: "renounceRole",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    anonymous: false,
   },
   {
+    type: "event",
+    name: "DeregisterSequencer",
     inputs: [
       {
-        internalType: "bytes32",
-        name: "role",
-        type: "bytes32",
+        name: "clusterId",
+        type: "string",
+        indexed: false,
+        internalType: "string",
       },
       {
-        internalType: "address",
-        name: "account",
+        name: "sequencerAddress",
         type: "address",
-      },
-    ],
-    name: "revokeRole",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "bytes4",
-        name: "interfaceId",
-        type: "bytes4",
-      },
-    ],
-    name: "supportsInterface",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
+        indexed: false,
         internalType: "address",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "InitializeCluster",
+    inputs: [
+      {
+        name: "clusterId",
+        type: "string",
+        indexed: false,
+        internalType: "string",
+      },
+      {
+        name: "owner",
+        type: "address",
+        indexed: false,
+        internalType: "address",
+      },
+      {
+        name: "maxSequencerNumber",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "OwnershipTransferred",
+    inputs: [
+      {
+        name: "previousOwner",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
         name: "newOwner",
         type: "address",
+        indexed: true,
+        internalType: "address",
       },
     ],
-    name: "transferOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "RegisterRollupExecutor",
+    inputs: [
+      {
+        name: "clusterId",
+        type: "string",
+        indexed: false,
+        internalType: "string",
+      },
+      {
+        name: "rollupId",
+        type: "string",
+        indexed: false,
+        internalType: "string",
+      },
+      {
+        name: "executorAddress",
+        type: "address",
+        indexed: false,
+        internalType: "address",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "RegisterSequencer",
+    inputs: [
+      {
+        name: "clusterId",
+        type: "string",
+        indexed: false,
+        internalType: "string",
+      },
+      {
+        name: "sequencerAddress",
+        type: "address",
+        indexed: false,
+        internalType: "address",
+      },
+      {
+        name: "index",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "error",
+    name: "OwnableInvalidOwner",
+    inputs: [{ name: "owner", type: "address", internalType: "address" }],
+  },
+  {
+    type: "error",
+    name: "OwnableUnauthorizedAccount",
+    inputs: [{ name: "account", type: "address", internalType: "address" }],
   },
 ];
 
+const validationServiceManagerAbi = [
+  {
+    type: "constructor",
+    inputs: [
+      { name: "_network", type: "address", internalType: "address" },
+      {
+        name: "_vaultFactory",
+        type: "address",
+        internalType: "address",
+      },
+      {
+        name: "_operatorNetOptIn",
+        type: "address",
+        internalType: "address",
+      },
+      {
+        name: "_epochDuration",
+        type: "uint48",
+        internalType: "uint48",
+      },
+      {
+        name: "_slashingWindow",
+        type: "uint48",
+        internalType: "uint48",
+      },
+    ],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "EPOCH_DURATION",
+    inputs: [],
+    outputs: [{ name: "", type: "uint48", internalType: "uint48" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "NETWORK",
+    inputs: [],
+    outputs: [{ name: "", type: "address", internalType: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "OPERATOR_NET_OPT_IN",
+    inputs: [],
+    outputs: [{ name: "", type: "address", internalType: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "SLASHING_WINDOW",
+    inputs: [],
+    outputs: [{ name: "", type: "uint48", internalType: "uint48" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "START_TIME",
+    inputs: [],
+    outputs: [{ name: "", type: "uint48", internalType: "uint48" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "VAULT_FACTORY",
+    inputs: [],
+    outputs: [{ name: "", type: "address", internalType: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "calcAndCacheStakes",
+    inputs: [{ name: "epoch", type: "uint48", internalType: "uint48" }],
+    outputs: [{ name: "totalStake", type: "uint256", internalType: "uint256" }],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "createNewTask",
+    inputs: [
+      { name: "_clusterId", type: "string", internalType: "string" },
+      { name: "_rollupId", type: "string", internalType: "string" },
+      {
+        name: "_blockNumber",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "_blockCommitment",
+        type: "bytes32",
+        internalType: "bytes32",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "getCurrentEpoch",
+    inputs: [],
+    outputs: [{ name: "epoch", type: "uint48", internalType: "uint48" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getCurrentOperatorEachTokenStake",
+    inputs: [{ name: "operator", type: "address", internalType: "address" }],
+    outputs: [
+      {
+        name: "",
+        type: "tuple[]",
+        internalType: "struct IValidationServiceManager.TokenStake[]",
+        components: [
+          { name: "token", type: "address", internalType: "address" },
+          { name: "stake", type: "uint256", internalType: "uint256" },
+        ],
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getCurrentOperatorInfos",
+    inputs: [],
+    outputs: [
+      {
+        name: "operatorInfos",
+        type: "tuple[]",
+        internalType: "struct IValidationServiceManager.OperatorInfo[]",
+        components: [
+          {
+            name: "operatorAddress",
+            type: "address",
+            internalType: "address",
+          },
+          {
+            name: "operatingAddress",
+            type: "address",
+            internalType: "address",
+          },
+          {
+            name: "stakes",
+            type: "tuple[]",
+            internalType: "struct IValidationServiceManager.TokenStake[]",
+            components: [
+              {
+                name: "token",
+                type: "address",
+                internalType: "address",
+              },
+              {
+                name: "stake",
+                type: "uint256",
+                internalType: "uint256",
+              },
+            ],
+          },
+          { name: "stake", type: "uint256", internalType: "uint256" },
+        ],
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getCurrentOperatorOperatingAddress",
+    inputs: [{ name: "operator", type: "address", internalType: "address" }],
+    outputs: [{ name: "", type: "address", internalType: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getCurrentOperatorStake",
+    inputs: [{ name: "operator", type: "address", internalType: "address" }],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getCurrentOperatorTokenStake",
+    inputs: [
+      { name: "operator", type: "address", internalType: "address" },
+      { name: "token", type: "address", internalType: "address" },
+    ],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getCurrentTokenTotalStake",
+    inputs: [{ name: "token", type: "address", internalType: "address" }],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getCurrentTotalStake",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getCurrentVaults",
+    inputs: [],
+    outputs: [{ name: "", type: "address[]", internalType: "address[]" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getEpochAtTs",
+    inputs: [{ name: "timestamp", type: "uint48", internalType: "uint48" }],
+    outputs: [{ name: "epoch", type: "uint48", internalType: "uint48" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getEpochStartTs",
+    inputs: [{ name: "epoch", type: "uint48", internalType: "uint48" }],
+    outputs: [{ name: "timestamp", type: "uint48", internalType: "uint48" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getOperatorByOperatingAddress",
+    inputs: [
+      {
+        name: "operatingAddress",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [{ name: "", type: "address", internalType: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getOperatorEachTokenStake",
+    inputs: [
+      { name: "operator", type: "address", internalType: "address" },
+      { name: "epoch", type: "uint48", internalType: "uint48" },
+    ],
+    outputs: [
+      {
+        name: "tokenStakes",
+        type: "tuple[]",
+        internalType: "struct IValidationServiceManager.TokenStake[]",
+        components: [
+          { name: "token", type: "address", internalType: "address" },
+          { name: "stake", type: "uint256", internalType: "uint256" },
+        ],
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getOperatorInfos",
+    inputs: [{ name: "epoch", type: "uint48", internalType: "uint48" }],
+    outputs: [
+      {
+        name: "operatorInfos",
+        type: "tuple[]",
+        internalType: "struct IValidationServiceManager.OperatorInfo[]",
+        components: [
+          {
+            name: "operatorAddress",
+            type: "address",
+            internalType: "address",
+          },
+          {
+            name: "operatingAddress",
+            type: "address",
+            internalType: "address",
+          },
+          {
+            name: "stakes",
+            type: "tuple[]",
+            internalType: "struct IValidationServiceManager.TokenStake[]",
+            components: [
+              {
+                name: "token",
+                type: "address",
+                internalType: "address",
+              },
+              {
+                name: "stake",
+                type: "uint256",
+                internalType: "uint256",
+              },
+            ],
+          },
+          { name: "stake", type: "uint256", internalType: "uint256" },
+        ],
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getOperatorOperatingAddressAt",
+    inputs: [
+      { name: "operator", type: "address", internalType: "address" },
+      { name: "timestamp", type: "uint48", internalType: "uint48" },
+    ],
+    outputs: [{ name: "", type: "address", internalType: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getOperatorStake",
+    inputs: [
+      { name: "operator", type: "address", internalType: "address" },
+      { name: "epoch", type: "uint48", internalType: "uint48" },
+    ],
+    outputs: [{ name: "stake", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getOperatorTokenStake",
+    inputs: [
+      { name: "operator", type: "address", internalType: "address" },
+      { name: "token", type: "address", internalType: "address" },
+      { name: "epoch", type: "uint48", internalType: "uint48" },
+    ],
+    outputs: [{ name: "stake", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getSubnetwork",
+    inputs: [{ name: "index", type: "uint96", internalType: "uint96" }],
+    outputs: [{ name: "", type: "bytes32", internalType: "bytes32" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getTokenAddress",
+    inputs: [
+      {
+        name: "collateralOrToken",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [{ name: "", type: "address", internalType: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getTokenTotalStake",
+    inputs: [
+      { name: "token", type: "address", internalType: "address" },
+      { name: "epoch", type: "uint48", internalType: "uint48" },
+    ],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getTotalStake",
+    inputs: [{ name: "epoch", type: "uint48", internalType: "uint48" }],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getVaults",
+    inputs: [{ name: "epoch", type: "uint48", internalType: "uint48" }],
+    outputs: [{ name: "", type: "address[]", internalType: "address[]" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "isActiveVault",
+    inputs: [{ name: "vault", type: "address", internalType: "address" }],
+    outputs: [{ name: "", type: "bool", internalType: "bool" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "operatorStakeCache",
+    inputs: [
+      { name: "", type: "uint48", internalType: "uint48" },
+      { name: "", type: "address", internalType: "address" },
+    ],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "operatorTokenStakeCache",
+    inputs: [
+      { name: "", type: "uint48", internalType: "uint48" },
+      { name: "", type: "address", internalType: "address" },
+      { name: "", type: "address", internalType: "address" },
+    ],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "owner",
+    inputs: [],
+    outputs: [{ name: "", type: "address", internalType: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "pauseOperator",
+    inputs: [{ name: "operator", type: "address", internalType: "address" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "pauseToken",
+    inputs: [{ name: "token", type: "address", internalType: "address" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "pauseVault",
+    inputs: [{ name: "vault", type: "address", internalType: "address" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "registerOperator",
+    inputs: [
+      { name: "operator", type: "address", internalType: "address" },
+      {
+        name: "operatingAddress",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "registerToken",
+    inputs: [{ name: "token", type: "address", internalType: "address" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "registerVault",
+    inputs: [{ name: "vault", type: "address", internalType: "address" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "renounceOwnership",
+    inputs: [],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "respondToTask",
+    inputs: [
+      { name: "clusterId", type: "string", internalType: "string" },
+      { name: "rollupId", type: "string", internalType: "string" },
+      {
+        name: "referenceTaskIndex",
+        type: "uint32",
+        internalType: "uint32",
+      },
+      { name: "response", type: "bool", internalType: "bool" },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "rollupTaskInfos",
+    inputs: [{ name: "", type: "string", internalType: "string" }],
+    outputs: [
+      {
+        name: "latestTaskNumber",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "setSubnetworksCnt",
+    inputs: [
+      {
+        name: "_subnetworksCnt",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "slash",
+    inputs: [
+      { name: "epoch", type: "uint48", internalType: "uint48" },
+      { name: "operator", type: "address", internalType: "address" },
+      { name: "amount", type: "uint256", internalType: "uint256" },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "subnetworksCnt",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "tokenTotalStakeCache",
+    inputs: [
+      { name: "", type: "uint48", internalType: "uint48" },
+      { name: "", type: "address", internalType: "address" },
+    ],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "totalStakeCache",
+    inputs: [{ name: "", type: "uint48", internalType: "uint48" }],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "totalStakeCached",
+    inputs: [{ name: "", type: "uint48", internalType: "uint48" }],
+    outputs: [{ name: "", type: "bool", internalType: "bool" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "transferOwnership",
+    inputs: [{ name: "newOwner", type: "address", internalType: "address" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "unpauseOperator",
+    inputs: [{ name: "operator", type: "address", internalType: "address" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "unpauseToken",
+    inputs: [{ name: "token", type: "address", internalType: "address" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "unpauseVault",
+    inputs: [{ name: "vault", type: "address", internalType: "address" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "unregisterOperator",
+    inputs: [{ name: "operator", type: "address", internalType: "address" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "unregisterToken",
+    inputs: [{ name: "token", type: "address", internalType: "address" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "unregisterVault",
+    inputs: [{ name: "vault", type: "address", internalType: "address" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "updateOperatingAddress",
+    inputs: [
+      { name: "operator", type: "address", internalType: "address" },
+      {
+        name: "operatingAddress",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "verify",
+    inputs: [
+      { name: "rollupId", type: "string", internalType: "string" },
+      { name: "blockNumber", type: "uint64", internalType: "uint64" },
+      { name: "order", type: "uint256", internalType: "uint256" },
+      { name: "proof", type: "bytes32[]", internalType: "bytes32[]" },
+      { name: "leaf", type: "bytes32", internalType: "bytes32" },
+    ],
+    outputs: [{ name: "", type: "bool", internalType: "bool" }],
+    stateMutability: "view",
+  },
+  {
+    type: "event",
+    name: "NewTaskCreated",
+    inputs: [
+      {
+        name: "clusterId",
+        type: "string",
+        indexed: false,
+        internalType: "string",
+      },
+      {
+        name: "rollupId",
+        type: "string",
+        indexed: false,
+        internalType: "string",
+      },
+      {
+        name: "referenceTaskIndex",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "blockNumber",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "blockCommitment",
+        type: "bytes32",
+        indexed: false,
+        internalType: "bytes32",
+      },
+      {
+        name: "taskCreatedBlock",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "OwnershipTransferred",
+    inputs: [
+      {
+        name: "previousOwner",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "newOwner",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "RegisterOperator",
+    inputs: [
+      {
+        name: "operator",
+        type: "address",
+        indexed: false,
+        internalType: "address",
+      },
+      {
+        name: "operatingAddress",
+        type: "address",
+        indexed: false,
+        internalType: "address",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "RegisterToken",
+    inputs: [
+      {
+        name: "token",
+        type: "address",
+        indexed: false,
+        internalType: "address",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "RegisterVault",
+    inputs: [
+      {
+        name: "vault",
+        type: "address",
+        indexed: false,
+        internalType: "address",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "TaskResponded",
+    inputs: [
+      {
+        name: "clusterId",
+        type: "string",
+        indexed: false,
+        internalType: "string",
+      },
+      {
+        name: "rollupId",
+        type: "string",
+        indexed: false,
+        internalType: "string",
+      },
+      {
+        name: "referenceTaskIndex",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "response",
+        type: "bool",
+        indexed: false,
+        internalType: "bool",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "UnregisterOperator",
+    inputs: [
+      {
+        name: "operator",
+        type: "address",
+        indexed: false,
+        internalType: "address",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "UnregisterToken",
+    inputs: [
+      {
+        name: "token",
+        type: "address",
+        indexed: false,
+        internalType: "address",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "UnregisterVault",
+    inputs: [
+      {
+        name: "vault",
+        type: "address",
+        indexed: false,
+        internalType: "address",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "UpdateOperating",
+    inputs: [
+      {
+        name: "operator",
+        type: "address",
+        indexed: false,
+        internalType: "address",
+      },
+      {
+        name: "operatingAddress",
+        type: "address",
+        indexed: false,
+        internalType: "address",
+      },
+    ],
+    anonymous: false,
+  },
+  { type: "error", name: "AlreadyAdded", inputs: [] },
+  { type: "error", name: "AlreadyEnabled", inputs: [] },
+  { type: "error", name: "CheckpointUnorderedInsertion", inputs: [] },
+  { type: "error", name: "DuplicateOperatingAddress", inputs: [] },
+  {
+    type: "error",
+    name: "EnumerableMapNonexistentKey",
+    inputs: [{ name: "key", type: "bytes32", internalType: "bytes32" }],
+  },
+  { type: "error", name: "InvalidEpoch", inputs: [] },
+  { type: "error", name: "InvalidSubnetworksCnt", inputs: [] },
+  { type: "error", name: "NotEnabled", inputs: [] },
+  { type: "error", name: "OperatorAlreadyRegistered", inputs: [] },
+  { type: "error", name: "OperatorGracePeriodNotPassed", inputs: [] },
+  { type: "error", name: "OperatorNotActive", inputs: [] },
+  { type: "error", name: "OperatorNotOptedIn", inputs: [] },
+  { type: "error", name: "OperatorNotRegistered", inputs: [] },
+  {
+    type: "error",
+    name: "OwnableInvalidOwner",
+    inputs: [{ name: "owner", type: "address", internalType: "address" }],
+  },
+  {
+    type: "error",
+    name: "OwnableUnauthorizedAccount",
+    inputs: [{ name: "account", type: "address", internalType: "address" }],
+  },
+  {
+    type: "error",
+    name: "SafeCastOverflowedUintDowncast",
+    inputs: [
+      { name: "bits", type: "uint8", internalType: "uint8" },
+      { name: "value", type: "uint256", internalType: "uint256" },
+    ],
+  },
+  { type: "error", name: "SlashingWindowTooShort", inputs: [] },
+  { type: "error", name: "TokenAlreadyRegistered", inputs: [] },
+  { type: "error", name: "TokenGracePeriodNotPassed", inputs: [] },
+  { type: "error", name: "TokenNotWhitelisted", inputs: [] },
+  { type: "error", name: "TooBigSlashAmount", inputs: [] },
+  { type: "error", name: "TooOldEpoch", inputs: [] },
+  { type: "error", name: "UnknownSlasherType", inputs: [] },
+  { type: "error", name: "VaultAlreadyRegistered", inputs: [] },
+  { type: "error", name: "VaultEpochTooShort", inputs: [] },
+  { type: "error", name: "VaultGracePeriodNotPassed", inputs: [] },
+  { type: "error", name: "VaultNotRegisteredInSymbiotic", inputs: [] },
+];
 // ES6 export for frontend (browser)
-export { contractAddress, contractAbi };
+export { contractAddress, contractAbi, validationServiceManagerAbi };

@@ -133,7 +133,7 @@ export const Row = styled.div`
   align-items: center;
   width: 100%;
   cursor: pointer;
-  background-color: ${(props) => (props.error ? "#ffcccc" : "white")};
+  background-color: ${(props) => (props.$error ? "#ffcccc" : "white")};
 `;
 
 export const Cell = styled.div`

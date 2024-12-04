@@ -14,11 +14,22 @@ const handleInitializeCluster = async (log) => {
   }
 };
 
-const handleAddRollup = async (log) => {
+const handleAddRollup = async (
+  log,
+  contractAddress,
+  chain,
+  rpcUrl,
+  webSocketUrl
+) => {
   try {
     const { clusterId, rollupId, rollupOwnerAddress } = log.args;
 
-    const rollupInfoList = await getRollupInfoList(clusterId);
+    const rollupInfoList = await getRollupInfoList(
+      clusterId,
+      contractAddress,
+      chain,
+      rpcUrl
+    );
     const rollupInfo = rollupInfoList.find(
       (info) => info.rollupId === rollupId
     );

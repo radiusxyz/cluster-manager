@@ -48,7 +48,7 @@ const processLog = async (
   const event = events.find((e) => e.eventName === log.eventName);
 
   if (event && event.handleEvent) {
-    await event.handleEvent(log, chain, rpcUrl, webSocketUrl);
+    await event.handleEvent(log, contractAddress, chain, rpcUrl, webSocketUrl);
 
     await blockSyncService.updateLastProcessedEvent({
       contractAddress,

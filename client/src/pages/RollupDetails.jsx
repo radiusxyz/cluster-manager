@@ -25,16 +25,18 @@ import {
 
 import { useParams } from "react-router";
 import Loader from "../components/Loader";
-import { useAccount, useContractRead } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import AddExecutorModal from "../components/AddExecutorModal";
 import { useGET } from "../hooks/useServer";
 
-import { contractAbi } from "../../../common";
+import { validationServiceManagerAbi } from "../../../common";
+import { formatAddress } from "../utils/formatAddress";
 
 const RollupDetails = () => {
   const { clusterId, rollupId } = useParams();
   const { address, isConnected } = useAccount();
-  const [validationServiceManager, setValidationServiceManager] = useState("");
+  const [validationServiceManager, setValidationServiceManager] =
+    useState(null);
 
   const [showAddExecutorModal, setShowAddExecutorModal] = useState(false);
   const toggleAddExecutorModal = () => {
@@ -49,7 +51,7 @@ const RollupDetails = () => {
   );
 
   const { data: cluster } = useGET(
-    ["rollup", rollupId],
+    ["cluster", clusterId],
     `http://localhost:3333/api/v1/clusters/${clusterId}`,
     true,
     3000
@@ -59,49 +61,85 @@ const RollupDetails = () => {
 
   useEffect(() => {
     if (!rollup) return;
-    setValidationServiceManager(rollup.validationInfo.validationServiceManager);
+    if (rollup?.validationInfo?.validationServiceManager) {
+      setValidationServiceManager(
+        rollup.validationInfo.validationServiceManager
+      );
+    }
   }, [rollup]);
 
-  const contractConfig = {
-    address: validationServiceManager,
-    abi: contractAbi,
-  };
+  const contractConfig = validationServiceManager
+    ? {
+        address: validationServiceManager,
+        abi: validationServiceManagerAbi,
+      }
+    : null;
 
-  const { data: network } = useContractRead({
+  const { data: network } = useReadContract({
     ...contractConfig,
+    enabled: !!contractConfig,
     functionName: "NETWORK",
   });
 
-  const { data: operatorNetOptIn } = useContractRead({
+  const { data: operatorNetOptIn } = useReadContract({
     ...contractConfig,
+    enabled: !!contractConfig,
     functionName: "OPERATOR_NET_OPT_IN",
   });
 
-  const { data: vaultFactory } = useContractRead({
+  const { data: vaultFactory } = useReadContract({
     ...contractConfig,
+    enabled: !!contractConfig,
     functionName: "VAULT_FACTORY",
   });
 
-  const { data: epochDuration } = useContractRead({
+  const { data: epochDuration } = useReadContract({
     ...contractConfig,
+    enabled: !!contractConfig,
     functionName: "EPOCH_DURATION",
   });
 
-  const { data: slashingWindow } = useContractRead({
+  const { data: slashingWindow } = useReadContract({
     ...contractConfig,
+    enabled: !!contractConfig,
     functionName: "SLASHING_WINDOW",
   });
 
-  const { data: currentOperatorInfos } = useContractRead({
+  const { data: currentOperatorInfos } = useReadContract({
     ...contractConfig,
+    enabled: !!contractConfig,
     functionName: "getCurrentOperatorInfos",
   });
 
-  const { data: vaults } = useContractRead({
+  const { data: vaults } = useReadContract({
     ...contractConfig,
+    enabled: !!contractConfig,
     functionName: "getCurrentVaults",
   });
 
+  useEffect(() => {
+    console.log("cluster", cluster);
+  }, [cluster]);
+
+  useEffect(() => {
+    console.log("validationServiceManager", validationServiceManager);
+    console.log("currentOperatorInfos", currentOperatorInfos);
+    console.log("vaults", vaults);
+    console.log("network", network);
+    console.log("operatorNetOptIn", operatorNetOptIn);
+    console.log("vaultFactory", vaultFactory);
+    console.log("epochDuration", epochDuration);
+    console.log("slashingWindow", slashingWindow);
+  }, [
+    currentOperatorInfos,
+    vaults,
+    network,
+    operatorNetOptIn,
+    vaultFactory,
+    epochDuration,
+    slashingWindow,
+    validationServiceManager,
+  ]);
   return (
     <PageContainer>
       <TitleJoinBtnContainer>
@@ -217,7 +255,7 @@ const RollupDetails = () => {
                     <Header>Address</Header>
                   </Headers>
                   <Rows>
-                    {vaults.length ? (
+                    {vaults?.length ? (
                       vaults.map((vaultAddress, index) => (
                         <Row key={vaultAddress + index}>
                           <Cell>
@@ -241,40 +279,26 @@ const RollupDetails = () => {
                     <Header>Stake</Header>
                   </Headers>
                   <Rows>
-                    {currentOperatorInfos.length ? (
+                    {currentOperatorInfos?.length ? (
                       currentOperatorInfos.map((operator, index) => (
                         <Row
-                          error={!cluster.sequencers.includes(operator.address)}
+                          $error={
+                            !cluster.sequencers.includes(operator.address)
+                          }
                           key={operator.address + index}
                         >
                           <Cell>
-                            <CellTxt>{operator.address}</CellTxt>
+                            <CellTxt>
+                              {formatAddress(operator.operatingAddress)}
+                            </CellTxt>
                           </Cell>
                           <Cell>
-                            <CellTxt>{operator.stake}</CellTxt>
+                            <CellTxt>{String(operator.stake)}</CellTxt>
                           </Cell>
                         </Row>
                       ))
                     ) : (
                       <Message>No operators found</Message>
-                    )}
-                  </Rows>
-                </Table>
-                <Table>
-                  <Headers>
-                    <Header>Address</Header>
-                  </Headers>
-                  <Rows>
-                    {rollup.executors.length ? (
-                      rollup.executors.map((executor, index) => (
-                        <Row key={executor.address + index}>
-                          <Cell>
-                            <CellTxt>{executor.address}</CellTxt>
-                          </Cell>
-                        </Row>
-                      ))
-                    ) : (
-                      <Message>No vaults found</Message>
                     )}
                   </Rows>
                 </Table>
