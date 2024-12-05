@@ -10,7 +10,7 @@ const ValidationInfoSchema = new Schema({
 const ExecutorSchema = new Schema({
   address: { type: String, required: true },
   rpcUrl: { type: String, required: true },
-  websocketUrl: { type: String, required: true },
+  webSocketUrl: { type: String, required: true },
   blockExplorerUrl: { type: String, required: true },
 });
 

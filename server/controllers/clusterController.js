@@ -50,11 +50,11 @@ const getCluster = async (req, res) => {
   }
 };
 
-const updateCluster = async (req, res) => {
+const updateRollupExecutorDetails = async (req, res) => {
   try {
     const { clusterId } = req.params;
     const updateData = req.body;
-    const updatedCluster = await clusterService.updateCluster(
+    const updatedCluster = await clusterService.updateRollupExecutorDetails(
       clusterId,
       updateData
     );
@@ -125,7 +125,7 @@ const clusterController = {
   getGeneratedClusters,
   getJoinedClusters,
   getCluster,
-  updateCluster,
+  updateRollupExecutorDetails,
   downloadSequencer,
   getRollupsOfCluster,
   getRollupById,

@@ -13,7 +13,10 @@ router.get(
   clusterController.getJoinedClusters
 );
 router.get("/clusters/:clusterId", clusterController.getCluster);
-router.patch("/clusters/:clusterId", clusterController.updateCluster);
+router.patch(
+  "/clusters/:clusterId",
+  clusterController.updateRollupExecutorDetails
+);
 router.get(
   "/clusters/:clusterId/rollups",
   clusterController.getRollupsOfCluster
