@@ -218,9 +218,6 @@ const RollupDetails = () => {
                 <Table>
                   <Headers>
                     <Header>Address</Header>
-                    {/* <Header>Block Explorer</Header>
-                    <Header>RPC</Header>
-                    <Header>WebSocket</Header> */}
                   </Headers>
                   <Rows>
                     {rollup.executors.length ? (
@@ -314,10 +311,11 @@ const RollupDetails = () => {
                     {currentOperatorInfos?.length ? (
                       currentOperatorInfos.map((operator, index) => (
                         <StyledNavLink
-                          to={`operator/${operator.operatingAddress}`}
-                          key={operator.operatingAddress + index}
+                          to={`operator/${operator.operatorAddress}`}
+                          key={operator.operatorAddress + index}
                           state={{
-                            operator,
+                            operatorAddress: operator.operatorAddress,
+                            validationServiceManager,
                           }}
                         >
                           <Row
