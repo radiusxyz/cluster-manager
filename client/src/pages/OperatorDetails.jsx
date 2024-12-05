@@ -47,25 +47,22 @@ const OperatorDetails = () => {
     ...contractConfig,
     enabled: !!contractConfig,
     functionName: "getCurrentOperatorOperatingAddress",
+    args: [operatorAddress],
   });
 
   const { data: operatorStake } = useReadContract({
     ...contractConfig,
     enabled: !!contractConfig,
     functionName: "getCurrentOperatorStake",
+    args: [operatorAddress],
   });
 
   const { data: operatorEachTokenStake } = useReadContract({
     ...contractConfig,
     enabled: !!contractConfig,
     functionName: "getCurrentOperatorEachTokenStake",
+    args: [operatorAddress],
   });
-
-  // useEffect(() => {
-  //   if (operator) {
-  //     console.log("operator: ", operator);
-  //   }
-  // }, [operator]);
 
   return (
     <PageContainer>
