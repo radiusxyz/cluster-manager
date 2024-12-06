@@ -11,6 +11,14 @@ import {
   InfoItem,
   Property,
   Value,
+  Title,
+  Message,
+  StyledNavLink,
+  AddRollupBtn,
+  TitleRow,
+} from "./ClusterDetailsStyles";
+
+import {
   Table,
   Headers,
   Header,
@@ -18,12 +26,7 @@ import {
   Row,
   Cell,
   CellTxt,
-  Title,
-  Message,
-  StyledNavLink,
-  AddRollupBtn,
-  TitleRow,
-} from "./ClusterDetailsStyles";
+} from "./TableStyles";
 
 import { useNavigate, useParams } from "react-router";
 import { useGET } from "../hooks/useServer";
@@ -176,33 +179,29 @@ const ClusterDetails = () => {
             <Rows>
               {(cluster.rollups.length &&
                 cluster.rollups.map((rollup, index) => (
-                  <StyledNavLink
+                  <Row
                     to={`rollup/${rollup.rollupId}`}
                     key={rollup.rollupId + index}
                   >
-                    <Row>
-                      <Cell>
-                        <CellTxt>{rollup.rollupId}</CellTxt>
-                      </Cell>
-                      <Cell>
-                        <CellTxt>{rollup.type}</CellTxt>
-                      </Cell>
-                      <Cell>
-                        <CellTxt>{rollup.encryptedTransactionType}</CellTxt>
-                      </Cell>
-                      <Cell>
-                        <CellTxt>{rollup.validationInfo.platform}</CellTxt>
-                      </Cell>
-                      <Cell>
-                        <CellTxt>
-                          {rollup.validationInfo.serviceProvider}
-                        </CellTxt>
-                      </Cell>
-                      <Cell>
-                        <CellTxt>{rollup.orderCommitmentType}</CellTxt>
-                      </Cell>
-                    </Row>
-                  </StyledNavLink>
+                    <Cell>
+                      <CellTxt>{rollup.rollupId}</CellTxt>
+                    </Cell>
+                    <Cell>
+                      <CellTxt>{rollup.type}</CellTxt>
+                    </Cell>
+                    <Cell>
+                      <CellTxt>{rollup.encryptedTransactionType}</CellTxt>
+                    </Cell>
+                    <Cell>
+                      <CellTxt>{rollup.validationInfo.platform}</CellTxt>
+                    </Cell>
+                    <Cell>
+                      <CellTxt>{rollup.validationInfo.serviceProvider}</CellTxt>
+                    </Cell>
+                    <Cell>
+                      <CellTxt>{rollup.orderCommitmentType}</CellTxt>
+                    </Cell>
+                  </Row>
                 ))) || <Message>No rollups added</Message>}
             </Rows>
           </Table>

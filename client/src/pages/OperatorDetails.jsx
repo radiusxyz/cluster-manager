@@ -7,6 +7,11 @@ import {
   InfoItem,
   Property,
   Value,
+  Message,
+  TitleRow,
+} from "./OperatorDetailsStyles";
+
+import {
   Table,
   Headers,
   Header,
@@ -14,9 +19,7 @@ import {
   Row,
   Cell,
   CellTxt,
-  Message,
-  TitleRow,
-} from "./OperatorDetailsStyles";
+} from "./TableStyles";
 
 import { useLocation } from "react-router";
 import Loader from "../components/Loader";

@@ -10,6 +10,13 @@ import {
   InfoItem,
   Property,
   Value,
+  Title,
+  Message,
+  RegisterExecutorBtn,
+  TitleRow,
+} from "./RollupDetailsStyles";
+
+import {
   Table,
   Headers,
   Header,
@@ -17,11 +24,7 @@ import {
   Row,
   Cell,
   CellTxt,
-  Title,
-  Message,
-  RegisterExecutorBtn,
-  TitleRow,
-} from "./RollupDetailsStyles";
+} from "./TableStyles";
 
 import { useParams } from "react-router";
 import Loader from "../components/Loader";
@@ -310,32 +313,28 @@ const RollupDetails = () => {
                   <Rows>
                     {currentOperatorInfos?.length ? (
                       currentOperatorInfos.map((operator, index) => (
-                        <StyledNavLink
+                        <Row
                           to={`operator/${operator.operatorAddress}`}
                           key={operator.operatorAddress + index}
                           state={{
                             operatorAddress: operator.operatorAddress,
                             validationServiceManager,
                           }}
+                          $error={
+                            !cluster.sequencers.includes(
+                              operator.operatingAddress
+                            )
+                          }
                         >
-                          <Row
-                            $error={
-                              !cluster.sequencers.includes(
-                                operator.operatingAddress
-                              )
-                            }
-                            key={operator.address + index}
-                          >
-                            <Cell>
-                              <CellTxt>
-                                {formatAddress(operator.operatingAddress)}
-                              </CellTxt>
-                            </Cell>
-                            <Cell>
-                              <CellTxt>{String(operator.stake)}</CellTxt>
-                            </Cell>
-                          </Row>
-                        </StyledNavLink>
+                          <Cell>
+                            <CellTxt>
+                              {formatAddress(operator.operatingAddress)}
+                            </CellTxt>
+                          </Cell>
+                          <Cell>
+                            <CellTxt>{String(operator.stake)}</CellTxt>
+                          </Cell>
+                        </Row>
                       ))
                     ) : (
                       <Message>No operators found</Message>
