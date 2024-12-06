@@ -1,10 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   PageContainer,
-  TitleJoinBtnContainer,
-  BtnsContainer,
-  RunBtn,
-  JoinBtn,
   Container,
   SubTitle,
   InfoItems,
@@ -18,91 +14,118 @@ import {
   Row,
   Cell,
   CellTxt,
-  Title,
   Message,
-  StyledNavLink,
-  AddRollupBtn,
   TitleRow,
 } from "./OperatorDetailsStyles";
 
-import { useLocation, useNavigate, useParams } from "react-router";
-import { useGET } from "../hooks/useServer";
+import { useLocation } from "react-router";
 import Loader from "../components/Loader";
-import useWrite from "../hooks/useContract";
-import { useAccount } from "wagmi";
-import RunModal from "../components/RunModal";
-import AddRollupModal from "../components/AddRollupModal";
+
 import { formatAddress } from "../utils/formatAddress";
+import { validationServiceManagerAbi } from "../../../common";
+import { useReadContract } from "wagmi";
 
 const OperatorDetails = () => {
   const location = useLocation();
-  const { operator } = location.state || {};
 
-  useEffect(() => {
-    if (operator) {
-      console.log("operator: ", operator);
-    }
-  }, [operator]);
+  const { operatorAddress, validationServiceManager } = location.state || {};
+
+  const contractConfig = validationServiceManager
+    ? {
+        address: validationServiceManager,
+        abi: validationServiceManagerAbi,
+      }
+    : null;
+
+  const { data: currentEpoch } = useReadContract({
+    ...contractConfig,
+    enabled: !!contractConfig,
+    functionName: "getCurrentEpoch",
+  });
+
+  const { data: operatingAddress } = useReadContract({
+    ...contractConfig,
+    enabled: !!contractConfig,
+    functionName: "getCurrentOperatorOperatingAddress",
+    args: [operatorAddress],
+  });
+
+  const { data: operatorStake } = useReadContract({
+    ...contractConfig,
+    enabled: !!contractConfig,
+    functionName: "getCurrentOperatorStake",
+    args: [operatorAddress],
+  });
+
+  const { data: operatorEachTokenStake } = useReadContract({
+    ...contractConfig,
+    enabled: !!contractConfig,
+    functionName: "getCurrentOperatorEachTokenStake",
+    args: [operatorAddress],
+  });
 
   return (
     <PageContainer>
       <Container>
         <SubTitle>Operator Info</SubTitle>
-        {(!operator && <Loader />) || (
+        {((!currentEpoch || !currentEpoch) && <Loader />) || (
           <InfoItems>
             <InfoItem>
-              <Property>Idle Address</Property>
-              <Value>{operator.operatorAddress}</Value>
+              <Property>Non-Operating Address</Property>
+              <Value>{operatorAddress}</Value>
             </InfoItem>
             <InfoItem>
               <Property>Operating Address</Property>
-              <Value>{operator.operatingAddress}</Value>
+              <Value>{operatingAddress}</Value>
             </InfoItem>
             <InfoItem>
               <Property>Total Stake</Property>
-              <Value>{String(operator.stake)}</Value>{" "}
+              <Value>{String(operatorStake)}</Value>{" "}
+            </InfoItem>
+            <InfoItem>
+              <Property>Current Epoch</Property>
+              <Value>{String(currentEpoch)}</Value>{" "}
             </InfoItem>
           </InfoItems>
         )}
       </Container>
-      {operator && (
-        <Container>
-          <TitleRow>
-            <SubTitle>Stakes</SubTitle>
-          </TitleRow>
-          <Table>
-            <Headers>
-              <Header> Symbol</Header>
-              <Header> Address</Header>
-              <Header> Amount</Header>
-              <Header>Share (%)</Header>
-            </Headers>
 
-            <Rows>
-              {operator.stakes.map((stake, index) => (
-                <Row key={stake.token}>
-                  <Cell>
-                    <CellTxt>{"None"}</CellTxt>
-                  </Cell>
-                  <Cell>
-                    <CellTxt>{formatAddress(stake.token)}</CellTxt>
-                  </Cell>
-                  <Cell>
-                    <CellTxt>{String(stake.stake)}</CellTxt>
-                  </Cell>
-                  <Cell>
-                    <CellTxt>
-                      {operator.stake
-                        ? Math.floor(stake.stake / operator.stake) * 100
-                        : String(stake.stake)}
-                    </CellTxt>
-                  </Cell>
-                </Row>
-              )) || <Message>No stakes added</Message>}
-            </Rows>
-          </Table>
-        </Container>
-      )}
+      <Container>
+        <TitleRow>
+          <SubTitle>Stakes</SubTitle>
+        </TitleRow>
+        <Table>
+          <Headers>
+            <Header> Symbol</Header>
+            <Header> Address</Header>
+            <Header> Amount</Header>
+            <Header>Share (%)</Header>
+          </Headers>
+
+          <Rows>
+            {operatorEachTokenStake?.map((tokenStake, index) => (
+              <Row key={tokenStake.token}>
+                <Cell>
+                  <CellTxt>{"None"}</CellTxt>
+                </Cell>
+                <Cell>
+                  <CellTxt>{formatAddress(tokenStake.token)}</CellTxt>
+                </Cell>
+                <Cell>
+                  <CellTxt>{String(tokenStake.stake)}</CellTxt>
+                </Cell>
+                <Cell>
+                  <CellTxt>
+                    {tokenStake.stake > 0
+                      ? Math.floor(tokenStake.stake / operatorStake) * 100
+                      : String(tokenStake.stake)}
+                  </CellTxt>
+                </Cell>
+              </Row>
+            )) || <Message>No stakes added</Message>}
+          </Rows>
+        </Table>
+      </Container>
     </PageContainer>
   );
 };

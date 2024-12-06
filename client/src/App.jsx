@@ -45,7 +45,7 @@ const router = createBrowserRouter([
         },
       },
       {
-        path: ":clusterId/details/rollup/:rollupId/operator/:operatingAddress",
+        path: ":clusterId/details/rollup/:rollupId/operator/:operatorAddress",
         element: <OperatorDetails />,
         loader: () => {
           window.scrollTo(0, 0);

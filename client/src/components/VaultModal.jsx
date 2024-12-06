@@ -35,6 +35,30 @@ const VaultModal = ({ toggle, vault }) => {
     functionName: "totalStake",
   });
 
+  const { data: owner } = useReadContract({
+    ...contractConfig,
+    enabled: !!contractConfig,
+    functionName: "owner",
+  });
+
+  const { data: collateral } = useReadContract({
+    ...contractConfig,
+    enabled: !!contractConfig,
+    functionName: "collateral",
+  });
+
+  const { data: epochDuration } = useReadContract({
+    ...contractConfig,
+    enabled: !!contractConfig,
+    functionName: "epochDuration",
+  });
+
+  const { data: burner } = useReadContract({
+    ...contractConfig,
+    enabled: !!contractConfig,
+    functionName: "burner",
+  });
+
   return (
     <Overlay onClick={toggle}>
       <ModalContainer
@@ -45,34 +69,34 @@ const VaultModal = ({ toggle, vault }) => {
         <Title>
           <span>Vault Details</span>
         </Title>
-        {/* <InputContainer>
+        <InputContainer>
           <Label>Address</Label>
-          <Input readOnly value={vault.address} type="text" />
-        </InputContainer>{" "}
-        <InputContainer>
-          <Label>Owner</Label>
-          <Input readOnly value={vault.owner} type="text" />
-        </InputContainer>{" "}
-        <InputContainer>
-          <Label>Collateral</Label>
-          <Input readOnly value={vault.collateral} type="text" />
-        </InputContainer>{" "}
-        <InputContainer>
-          <Label>Burner</Label>
-          <Input readOnly value={vault.burner} type="text" />
-        </InputContainer>{" "}
-        <InputContainer>
-          <Label>Epoch Duration</Label>
-          <Input readOnly value={vault.epochDuration} type="text" />
-        </InputContainer>{" "} */}
+          <Input readOnly value={vault} type="text" />
+        </InputContainer>
         <InputContainer>
           <Label>Is Initialized</Label>
           <Input readOnly value={isInitialized || ""} type="text" />
-        </InputContainer>{" "}
+        </InputContainer>
         <InputContainer>
           <Label>Total Stake</Label>
           <Input readOnly value={String(totalStake) || ""} type="text" />
-        </InputContainer>{" "}
+        </InputContainer>
+        <InputContainer>
+          <Label>Owner</Label>
+          <Input readOnly value={owner || ""} type="text" />
+        </InputContainer>
+        <InputContainer>
+          <Label>Collateral</Label>
+          <Input readOnly value={collateral || ""} type="text" />
+        </InputContainer>
+        <InputContainer>
+          <Label>Epoch Duration</Label>
+          <Input readOnly value={epochDuration || ""} type="text" />
+        </InputContainer>
+        <InputContainer>
+          <Label>Burner</Label>
+          <Input readOnly value={burner || ""} type="text" />
+        </InputContainer>
         <Buttons>
           <SubmitBtnContainer>
             <Button onClick={handleClose}>Close</Button>
