@@ -134,6 +134,10 @@ export const Row = styled.div`
   width: 100%;
   cursor: pointer;
   background-color: ${(props) => (props.$error ? "#ffcccc" : "white")};
+  &:hover {
+    background-color: #000;
+    color: #fff;
+  }
 `;
 
 export const Cell = styled.div`
