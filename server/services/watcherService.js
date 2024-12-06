@@ -1,6 +1,6 @@
 import blockSyncService from "./blockSyncService.js";
 import eventService from "./eventService.js";
-import { contractAbi } from "../../common.js";
+import { livenessRadiusAbi } from "../../common.js";
 import { chainsConfig } from "../config.js";
 import { createPublicClient, http, webSocket } from "viem";
 
@@ -212,7 +212,7 @@ const startWatchers = async () => {
         rpcUrl,
         webSocketUrl,
         contractAddress,
-        contractAbi,
+        livenessRadiusAbi,
         events
       );
     }

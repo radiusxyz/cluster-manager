@@ -1,6 +1,6 @@
 // LivenessContract Address
-const contractAddress = "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB";
-const contractAbi = [
+const livenessRadius = "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB";
+const livenessRadiusAbi = [
   { type: "constructor", inputs: [], stateMutability: "nonpayable" },
   {
     type: "function",
@@ -2357,4 +2357,9 @@ const vaultAbi = [
   { type: "error", name: "TooMuchWithdraw", inputs: [] },
 ];
 // ES6 export for frontend (browser)
-export { contractAddress, contractAbi, validationServiceManagerAbi, vaultAbi };
+export {
+  livenessRadius,
+  livenessRadiusAbi,
+  validationServiceManagerAbi,
+  vaultAbi,
+};

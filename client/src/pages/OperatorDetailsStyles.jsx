@@ -123,6 +123,10 @@ export const Row = styled.div`
   align-items: center;
   width: 100%;
   cursor: pointer;
+  &:hover {
+    background-color: #000;
+    color: #fff;
+  }
 `;
 
 export const Cell = styled.div`

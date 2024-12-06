@@ -1,5 +1,5 @@
 import { createPublicClient, http } from "viem";
-import { contractAbi } from "../../common.js";
+import { livenessRadiusAbi } from "../../common.js";
 
 export const getRollupInfoList = async (
   clusterId,
@@ -14,8 +14,8 @@ export const getRollupInfoList = async (
     });
 
     const data = await client.readContract({
-      address: contractAddress, // Ensure you import contractAddress and contractAbi
-      abi: contractAbi,
+      address: contractAddress, // Ensure you import contractAddress and livenessRadiusAbi
+      abi: livenessRadiusAbi,
       functionName: "getRollupInfoList",
       args: [clusterId],
     });

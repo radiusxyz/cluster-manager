@@ -16,7 +16,7 @@ import {
   SubmitBtnContainer,
   Title,
 } from "./ModalStyles";
-import { contractAbi, contractAddress } from "../../../common";
+import { livenessRadiusAbi, livenessRadius } from "../../../common";
 
 const AddRollupModal = ({ toggle, clusterId }) => {
   const { address } = useAccount();
@@ -38,8 +38,8 @@ const AddRollupModal = ({ toggle, clusterId }) => {
 
   const handleAddRollup = () => {
     writeContract({
-      abi: contractAbi,
-      address: contractAddress,
+      abi: livenessRadiusAbi,
+      address: livenessRadius,
       functionName: "addRollup",
       args: [
         clusterId,
