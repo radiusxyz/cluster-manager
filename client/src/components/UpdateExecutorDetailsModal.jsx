@@ -54,8 +54,9 @@ const UpdateExecutorDetailsModal = ({
 
   const handleUpdateExecutorDetails = () => {
     const data = {
+      from: address,
       rollupId,
-      executorAddress: address,
+      executorAddress: executor.address,
       rpcUrl,
       blockExplorerUrl,
       webSocketUrl: webSocketUrl,
