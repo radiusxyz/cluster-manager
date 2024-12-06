@@ -123,6 +123,7 @@ export const Row = styled.div`
   align-items: center;
   width: 100%;
   cursor: pointer;
+  padding: 5px 10px;
   &:hover {
     background-color: #000;
     color: #fff;

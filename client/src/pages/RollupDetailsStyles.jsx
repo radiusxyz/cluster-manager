@@ -133,6 +133,7 @@ export const Row = styled.div`
   align-items: center;
   width: 100%;
   cursor: pointer;
+  padding: 5px 10px;
   background-color: ${(props) => (props.$error ? "#ffcccc" : "white")};
   &:hover {
     background-color: #000;
