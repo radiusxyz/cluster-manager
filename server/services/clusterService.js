@@ -137,6 +137,7 @@ const deregisterSequencer = async ({ clusterId, sequencerAddress }) => {
 };
 
 const registerRollupExecutor = async ({
+  from,
   clusterId,
   rollupId,
   executorAddress,
@@ -150,6 +151,10 @@ const registerRollupExecutor = async ({
     const rollup = cluster.rollups.find((r) => r.rollupId === rollupId);
     if (!rollup) {
       throw new Error(`Rollup with ID ${rollupId} not found`);
+    }
+
+    if (rollup.owner !== from) {
+      throw new Error("Only the rollup owner can register an executor");
     }
 
     const executor = rollup.executors.find(
