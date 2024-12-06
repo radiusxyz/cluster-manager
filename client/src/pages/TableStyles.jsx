@@ -26,14 +26,14 @@ export const Rows = styled.div`
 
 export const Row = styled(Link)`
   text-decoration: none;
-  color: black;
+  color: ${(props) => (props.$error ? "white" : "black")};
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   cursor: pointer;
   padding: 5px 10px;
-  background-color: ${(props) => (props.$error ? "#ffcccc" : "white")};
+  background-color: ${(props) => (props.$error ? "red" : "white")};
   &:hover {
     background-color: #000;
     color: #fff;

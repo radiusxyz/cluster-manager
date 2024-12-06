@@ -46,7 +46,7 @@ const Joined = ({ address }) => {
           <Loader />
         ) : (
           clustersJoined.map((cluster) => (
-            <Row key={cluster.clusterId}>
+            <Row to={`/${cluster.clusterId}/details`} key={cluster.clusterId}>
               <Cell>
                 <CellTxt>{(cluster.active && "Active") || "Inactive"}</CellTxt>
               </Cell>
