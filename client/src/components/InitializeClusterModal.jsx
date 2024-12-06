@@ -14,7 +14,7 @@ import {
   SubmitBtnContainer,
   Title,
 } from "./ModalStyles";
-import { contractAbi, contractAddress } from "../../../common";
+import { livenessRadiusAbi, livenessRadius } from "../../../common";
 
 const InitializeClusterModal = ({ toggle }) => {
   const { address } = useAccount();
@@ -26,8 +26,8 @@ const InitializeClusterModal = ({ toggle }) => {
 
   const handleInitializeCluster = () => {
     writeContract({
-      abi: contractAbi,
-      address: contractAddress,
+      abi: livenessRadiusAbi,
+      address: livenessRadius,
       functionName: "initializeCluster",
       args: [clusterId, maxSequencerNumber],
       account: address,

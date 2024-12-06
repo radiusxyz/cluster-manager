@@ -1,5 +1,5 @@
 import { useAccount } from "wagmi";
-import { contractAddress, contractAbi } from "../../../common";
+import { livenessRadius, livenessRadiusAbi } from "../../../common";
 import { useWriteContract } from "wagmi";
 
 const useWrite = () => {
@@ -12,8 +12,8 @@ const useWrite = () => {
 
   const write = (functionName, args) => {
     writeContract({
-      abi: contractAbi,
-      address: contractAddress,
+      abi: livenessRadiusAbi,
+      address: livenessRadius,
       functionName,
       args,
       account: address,

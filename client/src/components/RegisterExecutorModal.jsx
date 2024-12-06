@@ -13,7 +13,7 @@ import {
   SubmitBtnContainer,
   Title,
 } from "./ModalStyles";
-import { contractAbi, contractAddress } from "../../../common";
+import { livenessRadiusAbi, livenessRadius } from "../../../common";
 
 const RegisterExecutorModal = ({ clusterId, rollupId, toggle }) => {
   const { address } = useAccount();
@@ -23,8 +23,8 @@ const RegisterExecutorModal = ({ clusterId, rollupId, toggle }) => {
 
   const handleRegisterExecutor = () => {
     writeContract({
-      abi: contractAbi,
-      address: contractAddress,
+      abi: livenessRadiusAbi,
+      address: livenessRadius,
       functionName: "registerRollupExecutor",
       args: [clusterId, rollupId, executorAddress],
       account: address,
