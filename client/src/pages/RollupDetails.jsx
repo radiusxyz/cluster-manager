@@ -320,7 +320,9 @@ const RollupDetails = () => {
                         >
                           <Row
                             $error={
-                              !cluster.sequencers.includes(operator.address)
+                              !cluster.sequencers.includes(
+                                operator.operatingAddress
+                              )
                             }
                             key={operator.address + index}
                           >
