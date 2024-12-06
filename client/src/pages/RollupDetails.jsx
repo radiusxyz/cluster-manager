@@ -26,12 +26,10 @@ import {
 import { useParams } from "react-router";
 import Loader from "../components/Loader";
 import { useAccount, useReadContract } from "wagmi";
-
 import { useGET } from "../hooks/useServer";
 
 import { validationServiceManagerAbi } from "../../../common";
 import { formatAddress } from "../utils/formatAddress";
-
 import VaultModal from "../components/VaultModal";
 import { StyledNavLink } from "./OperatorDetailsStyles";
 import RegisterExecutorModal from "../components/RegisterExecutorModal";
@@ -124,6 +122,12 @@ const RollupDetails = () => {
     ...contractConfig,
     enabled: !!contractConfig,
     functionName: "SLASHING_WINDOW",
+  });
+
+  const { data: currentEpoch } = useReadContract({
+    ...contractConfig,
+    enabled: !!contractConfig,
+    functionName: "getCurrentEpoch",
   });
 
   const { data: currentOperatorInfos } = useReadContract({
@@ -262,6 +266,10 @@ const RollupDetails = () => {
                 <InfoItem>
                   <Property>Slashing Window</Property>
                   <Value>{slashingWindow}</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Property>Current Epoch</Property>
+                  <Value>{currentEpoch}</Value>
                 </InfoItem>
               </InfoItems>
               <Container>
