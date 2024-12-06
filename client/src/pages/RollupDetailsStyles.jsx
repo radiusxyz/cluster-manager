@@ -17,7 +17,6 @@ export const PageContainer = styled.div`
 export const TitleJoinBtnContainer = styled.div`
   display: flex;
   align-items: center;
-
   margin-bottom: 10px;
 `;
 
@@ -28,6 +27,7 @@ export const Title = styled.p`
   line-height: 43.2px;
   letter-spacing: -0.02em;
   text-align: left;
+  margin-bottom: 10px;
 `;
 
 export const BtnsContainer = styled.div`

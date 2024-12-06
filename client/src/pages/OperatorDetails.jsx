@@ -9,6 +9,7 @@ import {
   Value,
   Message,
   TitleRow,
+  Title,
 } from "./OperatorDetailsStyles";
 
 import {
@@ -69,6 +70,7 @@ const OperatorDetails = () => {
 
   return (
     <PageContainer>
+      <Title>Operator details</Title>
       <Container>
         <SubTitle>Operator Info</SubTitle>
         {((!currentEpoch || !currentEpoch) && <Loader />) || (

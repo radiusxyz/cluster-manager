@@ -170,9 +170,7 @@ const RollupDetails = () => {
   ]);
   return (
     <PageContainer>
-      <TitleJoinBtnContainer>
-        <Title>Rollup details</Title>
-      </TitleJoinBtnContainer>
+      <Title>Rollup details</Title>
       {!rollup ? (
         <Loader />
       ) : (

@@ -89,21 +89,7 @@ const ClusterDetails = () => {
 
   return (
     <PageContainer>
-      <TitleJoinBtnContainer>
-        <Title>Cluster details</Title>
-        {address && cluster && cluster.sequencers.includes(address) ? (
-          <BtnsContainer>
-            <RunBtn onClick={handleRun}>Run</RunBtn>
-            <JoinBtn onClick={handleJoinLeave}>Leave</JoinBtn>
-          </BtnsContainer>
-        ) : (
-          <BtnsContainer>
-            <JoinBtn disabled={!isConnected} onClick={handleJoinLeave}>
-              Join as sequencer
-            </JoinBtn>
-          </BtnsContainer>
-        )}
-      </TitleJoinBtnContainer>
+      <Title>Cluster details</Title>
       <Container>
         <SubTitle>Cluster Info</SubTitle>
         {(!cluster && <Loader />) || (
@@ -133,7 +119,21 @@ const ClusterDetails = () => {
       </Container>
       {cluster && (
         <Container>
-          <SubTitle>Sequencers</SubTitle>
+          <TitleRow>
+            <SubTitle>Sequencers</SubTitle>
+            {address && cluster && cluster.sequencers.includes(address) ? (
+              <BtnsContainer>
+                <RunBtn onClick={handleRun}>Run</RunBtn>
+                <JoinBtn onClick={handleJoinLeave}>Leave</JoinBtn>
+              </BtnsContainer>
+            ) : (
+              <BtnsContainer>
+                <JoinBtn disabled={!isConnected} onClick={handleJoinLeave}>
+                  Join as sequencer
+                </JoinBtn>
+              </BtnsContainer>
+            )}
+          </TitleRow>
           <Table>
             <Headers>
               <Header>Address</Header>
