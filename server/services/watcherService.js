@@ -194,6 +194,10 @@ const startWatchers = async () => {
       eventName: "DeregisterSequencer",
       handleEvent: eventService.handleDeregisterSequencer,
     },
+    {
+      eventName: "RegisterRollupExecutor",
+      handleEvent: eventService.handleRegisterRollupExecutor,
+    },
   ];
 
   try {

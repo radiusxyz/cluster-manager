@@ -136,8 +136,52 @@ const deregisterSequencer = async ({ clusterId, sequencerAddress }) => {
   }
 };
 
-const updateCluster = async (clusterId, updateData) => {
-  const { rollupId, executorAddress, rpcUrl, blockExplorerUrl, websocketUrl } =
+const registerRollupExecutor = async ({
+  clusterId,
+  rollupId,
+  executorAddress,
+}) => {
+  try {
+    const cluster = await Cluster.findOne({ clusterId });
+    if (!cluster) {
+      throw new Error(`Cluster with ID ${clusterId} not found`);
+    }
+
+    const rollup = cluster.rollups.find((r) => r.rollupId === rollupId);
+    if (!rollup) {
+      throw new Error(`Rollup with ID ${rollupId} not found`);
+    }
+
+    const executor = rollup.executors.find(
+      (executor) => executor.address === executorAddress
+    );
+
+    if (!executor) {
+      const newExecutor = {
+        address: executorAddress,
+        rpcUrl: "not added",
+        blockExplorerUrl: "not added",
+        webSocketUrl: "not added",
+      };
+
+      rollup.executors.push(newExecutor);
+      await cluster.save();
+      console.log(
+        `Executor ${executorAddress} added to Rollup ${rollupId} in Cluster ${clusterId}.`
+      );
+    } else {
+      console.log(
+        `Executor ${executorAddress} already exists in Rollup ${rollupId} in Cluster ${clusterId}.`
+      );
+    }
+  } catch (error) {
+    console.error("Error in registerRollupExecutor:", error.message);
+    throw new Error("Failed to register rollup executor");
+  }
+};
+
+const updateRollupExecutorDetails = async (clusterId, updateData) => {
+  const { rollupId, executorAddress, rpcUrl, blockExplorerUrl, webSocketUrl } =
     updateData;
 
   try {
@@ -161,12 +205,12 @@ const updateCluster = async (clusterId, updateData) => {
 
     executor.rpcUrl = rpcUrl;
     executor.blockExplorerUrl = blockExplorerUrl;
-    executor.websocketUrl = websocketUrl;
+    executor.webSocketUrl = webSocketUrl;
 
     const updatedCluster = await cluster.save();
     return updatedCluster;
   } catch (error) {
-    console.error("Error in updateCluster:", error.message);
+    console.error("Error in updateRollupExecutorDetails:", error.message);
     throw new Error("Failed to update cluster");
   }
 };
@@ -204,10 +248,11 @@ const clusterService = {
   getAllClusters,
   getGeneratedClusters,
   getJoinedClusters,
-  getCluster,
-  updateCluster,
+  updateRollupExecutorDetails,
   initializeCluster,
   addRollup,
+  getCluster,
+  registerRollupExecutor,
   registerSequencer,
   deregisterSequencer,
   getRollupsByCluster,

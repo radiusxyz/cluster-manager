@@ -29,7 +29,7 @@ const UpdateExecutorDetailsModal = ({
     executor.rpcUrl || "https://www.google.ru/"
   );
   const [webSocketUrl, setWebSocketUrl] = useState(
-    executor.websocketUrl || "https://www.naver.com/"
+    executor.webSocketUrl || "https://www.naver.com/"
   );
   const [blockExplorerUrl, setBlockExplorerUrl] = useState(
     executor.blockExplorerUrl || "https://www.hello-world.com/"
@@ -58,7 +58,7 @@ const UpdateExecutorDetailsModal = ({
       executorAddress: address,
       rpcUrl,
       blockExplorerUrl,
-      websocketUrl: webSocketUrl,
+      webSocketUrl: webSocketUrl,
     };
     patchData(data);
     console.log("data", data);

@@ -90,7 +90,7 @@ const Modal = ({ toggle }) => {
       executorAddress: address,
       rpcUrl,
       blockExplorerUrl,
-      websocketUrl: webSocketUrl,
+      webSocketUrl: webSocketUrl,
     };
     patchData(data);
     console.log("data", data);

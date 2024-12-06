@@ -51,7 +51,7 @@ const handleAddRollup = async (
       executorAddresses: rollupInfo.executorAddresses.map((address) => ({
         address,
         rpcUrl: "not added",
-        websocketUrl: "not added",
+        webSocketUrl: "not added",
         blockExplorerUrl: "not added",
       })),
       fileStrings: {
@@ -118,11 +118,25 @@ const handleDeregisterSequencer = async (log) => {
   }
 };
 
+const handleRegisterRollupExecutor = async (log) => {
+  try {
+    const rollupExecutorData = {
+      clusterId: log.args.clusterId,
+      rollupId: log.args.rollupId,
+      executorAddress: log.args.executorAddress,
+    };
+    await clusterService.registerRollupExecutor(rollupExecutorData);
+  } catch (error) {
+    console.error("Error in handleRegisterRollupExecutor:", error.message);
+  }
+};
+
 const eventService = {
   handleInitializeCluster,
   handleAddRollup,
   handleRegisterSequencer,
   handleDeregisterSequencer,
+  handleRegisterRollupExecutor,
 };
 
 export default eventService;
