@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   PageContainer,
-  TitleJoinBtnContainer,
   Infos,
   InfoContainer,
   Container,
@@ -10,6 +9,12 @@ import {
   InfoItem,
   Property,
   Value,
+  Title,
+  Message,
+  TitleRow,
+} from "./PageStyles";
+
+import {
   Table,
   Headers,
   Header,
@@ -17,11 +22,7 @@ import {
   Row,
   Cell,
   CellTxt,
-  Title,
-  Message,
-  RegisterExecutorBtn,
-  TitleRow,
-} from "./RollupDetailsStyles";
+} from "./TableStyles";
 
 import { useParams } from "react-router";
 import Loader from "../components/Loader";
@@ -31,9 +32,10 @@ import { useGET } from "../hooks/useServer";
 import { validationServiceManagerAbi } from "../../../common";
 import { formatAddress } from "../utils/formatAddress";
 import VaultModal from "../components/VaultModal";
-import { StyledNavLink } from "./OperatorDetailsStyles";
+
 import RegisterExecutorModal from "../components/RegisterExecutorModal";
 import UpdateExecutorDetailsModal from "../components/UpdateExecutorDetailsModal";
+import Button from "../components/Button";
 
 const RollupDetails = () => {
   const { clusterId, rollupId } = useParams();
@@ -167,185 +169,177 @@ const RollupDetails = () => {
   ]);
   return (
     <PageContainer>
-      <TitleJoinBtnContainer>
-        <Title>Rollup details</Title>
-      </TitleJoinBtnContainer>
+      <Title>Rollup details</Title>
       {!rollup ? (
         <Loader />
       ) : (
-        <>
-          <Infos>
-            <InfoContainer>
-              <SubTitle>Rollup Info</SubTitle>
-              <InfoItems>
-                <InfoItem>
-                  <Property>Id</Property>
-                  <Value>{rollup.rollupId}</Value>
-                </InfoItem>
-                <InfoItem>
-                  <Property>Type</Property>
-                  <Value>{rollup.type}</Value>
-                </InfoItem>
-                <InfoItem>
-                  <Property>Encrypted Transaction Type</Property>
-                  <Value>{rollup.encryptedTransactionType}</Value>
-                </InfoItem>
-                <InfoItem>
-                  <Property>Platform</Property>
-                  <Value>{rollup.validationInfo.platform}</Value>
-                </InfoItem>
-                <InfoItem>
-                  <Property>Service Provider</Property>
-                  <Value>{rollup.validationInfo.serviceProvider}</Value>
-                </InfoItem>
-                <InfoItem>
-                  <Property>Order Commitment Type</Property>
-                  <Value>{rollup.orderCommitmentType}</Value>
-                </InfoItem>
-              </InfoItems>{" "}
-              <Container>
-                <TitleRow>
-                  <SubTitle>Executors</SubTitle>
-                  {rollup.owner === address && (
-                    <RegisterExecutorBtn
-                      onClick={toggleRegisterExecutorModal}
-                      disabled={!isConnected}
-                    >
-                      Register Executor
-                    </RegisterExecutorBtn>
+        <Infos>
+          <InfoContainer>
+            <SubTitle>Rollup Info</SubTitle>
+            <InfoItems>
+              <InfoItem>
+                <Property>Id</Property>
+                <Value>{rollup.rollupId}</Value>
+              </InfoItem>
+              <InfoItem>
+                <Property>Type</Property>
+                <Value>{rollup.type}</Value>
+              </InfoItem>
+              <InfoItem>
+                <Property>Encrypted Transaction Type</Property>
+                <Value>{rollup.encryptedTransactionType}</Value>
+              </InfoItem>
+              <InfoItem>
+                <Property>Platform</Property>
+                <Value>{rollup.validationInfo.platform}</Value>
+              </InfoItem>
+              <InfoItem>
+                <Property>Service Provider</Property>
+                <Value>{rollup.validationInfo.serviceProvider}</Value>
+              </InfoItem>
+              <InfoItem>
+                <Property>Order Commitment Type</Property>
+                <Value>{rollup.orderCommitmentType}</Value>
+              </InfoItem>
+            </InfoItems>{" "}
+            <Container>
+              <TitleRow>
+                <SubTitle>Executors</SubTitle>
+                {rollup.owner === address && (
+                  <Button
+                    onClick={toggleRegisterExecutorModal}
+                    disabled={!isConnected}
+                  >
+                    Register Executor
+                  </Button>
+                )}
+              </TitleRow>
+              <Table>
+                <Headers>
+                  <Header>Address</Header>
+                </Headers>
+                <Rows>
+                  {rollup.executors.length ? (
+                    rollup.executors.map((executor, index) => (
+                      <Row
+                        key={executor.address + index}
+                        onClick={() => {
+                          setSelectedExecutor(executor);
+                          toggleUpdateExecutorDetailsModal();
+                        }}
+                      >
+                        <Cell>
+                          <CellTxt>{executor.address}</CellTxt>
+                        </Cell>
+                      </Row>
+                    ))
+                  ) : (
+                    <Message>No executors found</Message>
                   )}
-                </TitleRow>
-                <Table>
-                  <Headers>
-                    <Header>Address</Header>
-                  </Headers>
-                  <Rows>
-                    {rollup.executors.length ? (
-                      rollup.executors.map((executor, index) => (
-                        <Row
-                          key={executor.address + index}
-                          onClick={() => {
-                            setSelectedExecutor(executor);
-                            toggleUpdateExecutorDetailsModal();
-                          }}
-                        >
-                          <Cell>
-                            <CellTxt>{executor.address}</CellTxt>
-                          </Cell>
-                        </Row>
-                      ))
-                    ) : (
-                      <Message>No executors found</Message>
-                    )}
-                  </Rows>
-                </Table>
-              </Container>
-            </InfoContainer>
-            <InfoContainer>
-              <SubTitle>Validation Service Info</SubTitle>
-              <InfoItems>
-                <InfoItem>
-                  <Property>Network</Property>
-                  <Value>{network}</Value>
-                </InfoItem>
-                <InfoItem>
-                  <Property>Operator Net Optin</Property>
-                  <Value>{operatorNetOptIn}</Value>
-                </InfoItem>
-                <InfoItem>
-                  <Property>Vault Factory</Property>
-                  <Value>{vaultFactory}</Value>
-                </InfoItem>
-                <InfoItem>
-                  <Property>Epoch Duration</Property>
-                  <Value>{epochDuration}</Value>
-                </InfoItem>
-                <InfoItem>
-                  <Property>Slashing Window</Property>
-                  <Value>{slashingWindow}</Value>
-                </InfoItem>
-                <InfoItem>
-                  <Property>Current Epoch</Property>
-                  <Value>{currentEpoch}</Value>
-                </InfoItem>
-              </InfoItems>
-              <Container>
-                <TitleRow>
-                  <SubTitle>Vaults</SubTitle>
-                </TitleRow>
-                <Table>
-                  <Headers>
-                    <Header>Address</Header>
-                  </Headers>
-                  <Rows>
-                    {vaults?.length ? (
-                      vaults.map((vaultAddress, index) => (
-                        <Row
-                          key={vaultAddress + index}
-                          onClick={() => {
-                            setSelectedVault(vaultAddress);
-                            toggleVaultModal();
-                          }}
-                        >
-                          <Cell>
-                            <CellTxt>{vaultAddress}</CellTxt>
-                          </Cell>
-                        </Row>
-                      ))
-                    ) : (
-                      <Message>No vaults found</Message>
-                    )}
-                  </Rows>
-                </Table>
-              </Container>
-              <Container>
-                <TitleRow>
-                  <SubTitle>Operators</SubTitle>
-                </TitleRow>
-                <Table>
-                  <Headers>
-                    <Header>Operating Address</Header>
-                    <Header>Combined Stake</Header>
-                  </Headers>
-                  <Rows>
-                    {currentOperatorInfos?.length ? (
-                      currentOperatorInfos.map((operator, index) => (
-                        <StyledNavLink
-                          to={`operator/${operator.operatorAddress}`}
-                          key={operator.operatorAddress + index}
-                          state={{
-                            operatorAddress: operator.operatorAddress,
-                            validationServiceManager,
-                          }}
-                        >
-                          <Row
-                            $error={
-                              !cluster.sequencers.includes(
-                                operator.operatingAddress
-                              )
-                            }
-                            key={operator.address + index}
-                          >
-                            <Cell>
-                              <CellTxt>
-                                {formatAddress(operator.operatingAddress)}
-                              </CellTxt>
-                            </Cell>
-                            <Cell>
-                              <CellTxt>{String(operator.stake)}</CellTxt>
-                            </Cell>
-                          </Row>
-                        </StyledNavLink>
-                      ))
-                    ) : (
-                      <Message>No operators found</Message>
-                    )}
-                  </Rows>
-                </Table>
-              </Container>
-            </InfoContainer>
-          </Infos>
-        </>
+                </Rows>
+              </Table>
+            </Container>
+          </InfoContainer>
+          <InfoContainer>
+            <SubTitle>Validation Service Info</SubTitle>
+            <InfoItems>
+              <InfoItem>
+                <Property>Network</Property>
+                <Value>{network}</Value>
+              </InfoItem>
+              <InfoItem>
+                <Property>Operator Net Optin</Property>
+                <Value>{operatorNetOptIn}</Value>
+              </InfoItem>
+              <InfoItem>
+                <Property>Vault Factory</Property>
+                <Value>{vaultFactory}</Value>
+              </InfoItem>
+              <InfoItem>
+                <Property>Epoch Duration</Property>
+                <Value>{epochDuration}</Value>
+              </InfoItem>
+              <InfoItem>
+                <Property>Slashing Window</Property>
+                <Value>{slashingWindow}</Value>
+              </InfoItem>
+              <InfoItem>
+                <Property>Current Epoch</Property>
+                <Value>{currentEpoch}</Value>
+              </InfoItem>
+            </InfoItems>
+            <Container>
+              <TitleRow>
+                <SubTitle>Vaults</SubTitle>
+              </TitleRow>
+              <Table>
+                <Headers>
+                  <Header>Address</Header>
+                </Headers>
+                <Rows>
+                  {vaults?.length ? (
+                    vaults.map((vaultAddress, index) => (
+                      <Row
+                        key={vaultAddress + index}
+                        onClick={() => {
+                          setSelectedVault(vaultAddress);
+                          toggleVaultModal();
+                        }}
+                      >
+                        <Cell>
+                          <CellTxt>{vaultAddress}</CellTxt>
+                        </Cell>
+                      </Row>
+                    ))
+                  ) : (
+                    <Message>No vaults found</Message>
+                  )}
+                </Rows>
+              </Table>
+            </Container>
+            <Container>
+              <TitleRow>
+                <SubTitle>Operators</SubTitle>
+              </TitleRow>
+              <Table>
+                <Headers>
+                  <Header>Operating Address</Header>
+                  <Header>Combined Stake</Header>
+                </Headers>
+                <Rows>
+                  {currentOperatorInfos?.length ? (
+                    currentOperatorInfos.map((operator, index) => (
+                      <Row
+                        to={`operator/${operator.operatorAddress}`}
+                        key={operator.operatorAddress + index}
+                        state={{
+                          operatorAddress: operator.operatorAddress,
+                          validationServiceManager,
+                        }}
+                        $error={
+                          !cluster.sequencers.includes(
+                            operator.operatingAddress
+                          )
+                        }
+                      >
+                        <Cell>
+                          <CellTxt>
+                            {formatAddress(operator.operatingAddress)}
+                          </CellTxt>
+                        </Cell>
+                        <Cell>
+                          <CellTxt>{String(operator.stake)}</CellTxt>
+                        </Cell>
+                      </Row>
+                    ))
+                  ) : (
+                    <Message>No operators found</Message>
+                  )}
+                </Rows>
+              </Table>
+            </Container>
+          </InfoContainer>
+        </Infos>
       )}
       {showRegisterExecutorModal && (
         <RegisterExecutorModal

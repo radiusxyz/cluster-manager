@@ -2,7 +2,7 @@ import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Root from "./pages/Root";
 import Explorer from "./pages/Explorer";
-import Dashboard from "./pages/Dashboard";
+
 import ClusterDetails from "./pages/ClusterDetails";
 import RollupDetails from "./pages/RollupDetails";
 import OperatorDetails from "./pages/OperatorDetails";
@@ -15,14 +15,6 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Explorer />,
-        loader: () => {
-          window.scrollTo(0, 0);
-          return null;
-        },
-      },
-      {
-        path: "dashboard", // No index: true here
-        element: <Dashboard />,
         loader: () => {
           window.scrollTo(0, 0);
           return null;

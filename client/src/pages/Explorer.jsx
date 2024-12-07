@@ -17,6 +17,8 @@ import {
   SubTitle,
   Title,
   TypeSelectBox,
+  TabsWrapper,
+  Tab,
   TitleRow,
 } from "./ExplorerStyles";
 import {
@@ -33,9 +35,8 @@ import InitializeClusterModal from "../components/InitializeClusterModal";
 
 const Explorer = () => {
   const [clusters, setClusters] = useState([]);
+  const { address } = useAccount();
   const [shouldGetClusters, setShouldGetClusters] = useState(false);
-  const [all, setAll] = useState(false);
-  const [encrypted, setEncrypted] = useState(false);
   const { isConnected } = useAccount();
   const [showInitializeClusterModal, setShowInitializeClusterModal] =
     useState(false);
@@ -43,13 +44,16 @@ const Explorer = () => {
     setShowInitializeClusterModal(!showInitializeClusterModal);
   };
 
+  const [key, setKey] = useState(["clusters"]);
+  const [url, setUrl] = useState("http://localhost:3333/api/v1/clusters");
+
   const {
     isPending: isPendingClusters,
     error: errorClusters,
     data: dataClusters,
     refetch: refetchClusters,
     isFetching: isFetchingClusters,
-  } = useGET(["clusters"], "http://localhost:3333/api/v1/clusters", true, 3000);
+  } = useGET(key, url, true, 3000);
 
   useEffect(() => {
     if (dataClusters) {
@@ -58,16 +62,42 @@ const Explorer = () => {
     }
   }, [dataClusters]);
 
-  const toggleAll = () => {
-    setAll((prevState) => !prevState);
+  const [activeTab, setActiveTab] = useState("all");
+
+  const toggleTab = (event) => {
+    setActiveTab(event.target.innerText.toLowerCase());
   };
-  const toggleEncrypted = () => {
-    setEncrypted((prevState) => !prevState);
-  };
+
+  useEffect(() => {
+    if (activeTab === "all") {
+      setKey(["clusters"]);
+      setUrl("http://localhost:3333/api/v1/clusters");
+    } else if (activeTab === "joined") {
+      setKey(["clustersJoined", address]);
+      setUrl(
+        `http://localhost:3333/api/v1/addresses/${address}/clusters/joined`
+      );
+    } else if (activeTab === "generated") {
+      setKey(["clustersGenerated", address]);
+      setUrl(
+        `http://localhost:3333/api/v1/addresses/${address}/clusters/generated`
+      );
+    }
+  }, [activeTab, address]);
   return (
     <PageContainer>
       <TitleRow>
-        <Title>All Clusters</Title>
+        <TabsWrapper>
+          <Tab $active={activeTab === "all" ? 1 : 0} onClick={toggleTab}>
+            All
+          </Tab>
+          <Tab $active={activeTab === "generated" ? 1 : 0} onClick={toggleTab}>
+            Generated
+          </Tab>
+          <Tab $active={activeTab === "joined" ? 1 : 0} onClick={toggleTab}>
+            Joined
+          </Tab>
+        </TabsWrapper>
         <InitializeClusterBtn
           onClick={toggleInitializeClusterModal}
           disabled={!isConnected}

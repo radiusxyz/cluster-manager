@@ -25,9 +25,6 @@ const Root = () => {
     <LayoutContainer>
       <NavBarContainer>
         <NavBarLinksContainer>
-          <NavBarLink $disabled={!isConnected} to="dashboard">
-            Dashboard
-          </NavBarLink>
           <NavBarLink to="/">Explorer</NavBarLink>
         </NavBarLinksContainer>
         <StatsContainer>

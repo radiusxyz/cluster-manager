@@ -7,6 +7,12 @@ import {
   InfoItem,
   Property,
   Value,
+  Message,
+  TitleRow,
+  Title,
+} from "./PageStyles";
+
+import {
   Table,
   Headers,
   Header,
@@ -14,9 +20,7 @@ import {
   Row,
   Cell,
   CellTxt,
-  Message,
-  TitleRow,
-} from "./OperatorDetailsStyles";
+} from "./TableStyles";
 
 import { useLocation } from "react-router";
 import Loader from "../components/Loader";
@@ -66,6 +70,7 @@ const OperatorDetails = () => {
 
   return (
     <PageContainer>
+      <Title>Operator details</Title>
       <Container>
         <SubTitle>Operator Info</SubTitle>
         {((!currentEpoch || !currentEpoch) && <Loader />) || (
