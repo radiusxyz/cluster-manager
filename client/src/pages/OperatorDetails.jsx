@@ -10,7 +10,7 @@ import {
   Message,
   TitleRow,
   Title,
-} from "./OperatorDetailsStyles";
+} from "./PageStyles";
 
 import {
   Table,

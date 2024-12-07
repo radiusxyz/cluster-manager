@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   PageContainer,
-  TitleJoinBtnContainer,
   Infos,
   InfoContainer,
   Container,
@@ -12,9 +11,8 @@ import {
   Value,
   Title,
   Message,
-  RegisterExecutorBtn,
   TitleRow,
-} from "./RollupDetailsStyles";
+} from "./PageStyles";
 
 import {
   Table,
@@ -34,9 +32,10 @@ import { useGET } from "../hooks/useServer";
 import { validationServiceManagerAbi } from "../../../common";
 import { formatAddress } from "../utils/formatAddress";
 import VaultModal from "../components/VaultModal";
-import { StyledNavLink } from "./OperatorDetailsStyles";
+
 import RegisterExecutorModal from "../components/RegisterExecutorModal";
 import UpdateExecutorDetailsModal from "../components/UpdateExecutorDetailsModal";
+import Button from "../components/Button";
 
 const RollupDetails = () => {
   const { clusterId, rollupId } = useParams();
@@ -208,12 +207,12 @@ const RollupDetails = () => {
                 <TitleRow>
                   <SubTitle>Executors</SubTitle>
                   {rollup.owner === address && (
-                    <RegisterExecutorBtn
+                    <Button
                       onClick={toggleRegisterExecutorModal}
                       disabled={!isConnected}
                     >
                       Register Executor
-                    </RegisterExecutorBtn>
+                    </Button>
                   )}
                 </TitleRow>
                 <Table>

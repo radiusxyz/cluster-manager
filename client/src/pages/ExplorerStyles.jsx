@@ -62,13 +62,6 @@ export const GenerateBtn = styled(StyledButton)`
   margin-left: auto;
 `;
 
-export const TitleJoinBtnContainer = styled.div`
-  display: flex;
-  align-items: center;
-
-  margin-bottom: 10px;
-`;
-
 export const TitleRow = styled.div`
   display: flex;
   justify-content: space-between;

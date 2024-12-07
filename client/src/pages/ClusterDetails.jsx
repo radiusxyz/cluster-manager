@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   PageContainer,
-  TitleJoinBtnContainer,
   BtnsContainer,
-  RunBtn,
-  JoinBtn,
   Container,
   SubTitle,
   InfoItems,
@@ -13,10 +10,8 @@ import {
   Value,
   Title,
   Message,
-  StyledNavLink,
-  AddRollupBtn,
   TitleRow,
-} from "./ClusterDetailsStyles";
+} from "./PageStyles";
 
 import {
   Table,
@@ -35,6 +30,7 @@ import useWrite from "../hooks/useContract";
 import { useAccount } from "wagmi";
 import RunModal from "../components/RunModal";
 import AddRollupModal from "../components/AddRollupModal";
+import Button from "../components/Button";
 
 const ClusterDetails = () => {
   const { clusterId } = useParams();
@@ -123,14 +119,14 @@ const ClusterDetails = () => {
             <SubTitle>Sequencers</SubTitle>
             {address && cluster && cluster.sequencers.includes(address) ? (
               <BtnsContainer>
-                <RunBtn onClick={handleRun}>Run</RunBtn>
-                <JoinBtn onClick={handleJoinLeave}>Leave</JoinBtn>
+                <Button onClick={handleRun}>Run</Button>
+                <Button onClick={handleJoinLeave}>Leave</Button>
               </BtnsContainer>
             ) : (
               <BtnsContainer>
-                <JoinBtn disabled={!isConnected} onClick={handleJoinLeave}>
+                <Button disabled={!isConnected} onClick={handleJoinLeave}>
                   Join as sequencer
-                </JoinBtn>
+                </Button>
               </BtnsContainer>
             )}
           </TitleRow>
@@ -160,9 +156,7 @@ const ClusterDetails = () => {
           <TitleRow>
             <SubTitle>Rollups</SubTitle>
             {cluster.owner === address && (
-              <AddRollupBtn onClick={toggleAddRollupModal}>
-                Add rollup
-              </AddRollupBtn>
+              <Button onClick={toggleAddRollupModal}>Add rollup</Button>
             )}
           </TitleRow>
 
