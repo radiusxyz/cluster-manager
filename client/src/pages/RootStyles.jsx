@@ -78,10 +78,6 @@ export const FooterLinksContainer = styled.div`
 
 export const FooterLink = styled.a`
   color: #000;
-
-  font-family: var(--sds-typography-body-font-family);
-  font-size: var(--sds-typography-body-size-medium);
   font-style: normal;
-  font-weight: var(--sds-typography-body-font-weight-strong);
   line-height: 140%; /* 22.4px */
 `;

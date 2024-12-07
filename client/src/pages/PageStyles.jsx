@@ -15,7 +15,6 @@ export const PageContainer = styled.div`
 `;
 
 export const Title = styled.p`
-  font-family: var(--sds-typography-heading-font-family);
   font-size: 36px;
   font-weight: 600;
   line-height: 43.2px;
