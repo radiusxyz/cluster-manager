@@ -33,6 +33,7 @@ import { useAccount } from "wagmi";
 import RunModal from "../components/RunModal";
 import AddRollupModal from "../components/AddRollupModal";
 import Button from "../components/Button";
+import { formatAddress } from "../utils/formatAddress";
 
 const ClusterDetails = () => {
   const { clusterId } = useParams();
@@ -94,12 +95,12 @@ const ClusterDetails = () => {
           {(!cluster && <Loader />) || (
             <InfoItems>
               <InfoItem>
-                <Property>Status</Property>
-                <Value>{(cluster.active && "Active") || "Inactive"}</Value>
-              </InfoItem>
-              <InfoItem>
                 <Property>Id</Property>
                 <Value>{cluster.clusterId}</Value>
+              </InfoItem>
+              <InfoItem>
+                <Property>Owner</Property>
+                <Value>{formatAddress(cluster.owner)}</Value>
               </InfoItem>
               <InfoItem>
                 <Property>Quota</Property>
@@ -113,6 +114,10 @@ const ClusterDetails = () => {
                   }
                   /{cluster.sequencers.length}
                 </Value>{" "}
+              </InfoItem>
+              <InfoItem>
+                <Property>Status</Property>
+                <Value>{(cluster.active && "Active") || "Inactive"}</Value>
               </InfoItem>
             </InfoItems>
           )}

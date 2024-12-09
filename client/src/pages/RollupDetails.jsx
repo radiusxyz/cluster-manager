@@ -182,6 +182,10 @@ const RollupDetails = () => {
                 <Value>{rollup.rollupId}</Value>
               </InfoItem>
               <InfoItem>
+                <Property>Owner</Property>
+                <Value>{formatAddress(rollup.owner)}</Value>
+              </InfoItem>
+              <InfoItem>
                 <Property>Type</Property>
                 <Value>{rollup.type}</Value>
               </InfoItem>
