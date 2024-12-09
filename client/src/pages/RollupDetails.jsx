@@ -26,7 +26,12 @@ import {
 
 import { useParams } from "react-router";
 import Loader from "../components/Loader";
-import { useAccount, useReadContract } from "wagmi";
+import {
+  useAccount,
+  useBlockNumber,
+  useReadContract,
+  useReadContracts,
+} from "wagmi";
 import { useGET } from "../hooks/useServer";
 
 import { validationServiceManagerAbi } from "../../../common";
@@ -40,6 +45,7 @@ import Button from "../components/Button";
 const RollupDetails = () => {
   const { clusterId, rollupId } = useParams();
   const { address, isConnected } = useAccount();
+  const { statefulData, setStatefulData } = useState([]);
   const [validationServiceManager, setValidationServiceManager] =
     useState(null);
 
@@ -96,77 +102,78 @@ const RollupDetails = () => {
       }
     : null;
 
-  const { data: network } = useReadContract({
-    ...contractConfig,
+  const { data, refetch } = useReadContracts({
     enabled: !!contractConfig,
-    functionName: "NETWORK",
+    contracts: [
+      {
+        ...contractConfig,
+        functionName: "NETWORK",
+      },
+      {
+        ...contractConfig,
+        functionName: "OPERATOR_NET_OPT_IN",
+      },
+      {
+        ...contractConfig,
+        functionName: "VAULT_FACTORY",
+      },
+      {
+        ...contractConfig,
+        functionName: "EPOCH_DURATION",
+      },
+      {
+        ...contractConfig,
+        functionName: "SLASHING_WINDOW",
+      },
+      {
+        ...contractConfig,
+
+        functionName: "getCurrentEpoch",
+      },
+      {
+        ...contractConfig,
+        functionName: "getCurrentOperatorInfos",
+      },
+      {
+        ...contractConfig,
+        functionName: "getCurrentVaults",
+      },
+    ],
   });
+  const { data: blockNumber } = useBlockNumber({ watch: true });
 
-  const { data: operatorNetOptIn } = useReadContract({
-    ...contractConfig,
-    enabled: !!contractConfig,
-    functionName: "OPERATOR_NET_OPT_IN",
-  });
+  // const [
+  //   { result: network },
+  //   { result: operatorNetOptIn },
+  //   { result: vaultFactory },
+  //   { result: epochDuration },
+  //   { result: slashingWindow },
+  //   { result: currentEpoch },
+  //   { result: currentOperatorInfos },
+  //   { result: vaults },
+  // ] = data || [];
 
-  const { data: vaultFactory } = useReadContract({
-    ...contractConfig,
-    enabled: !!contractConfig,
-    functionName: "VAULT_FACTORY",
-  });
-
-  const { data: epochDuration } = useReadContract({
-    ...contractConfig,
-    enabled: !!contractConfig,
-    functionName: "EPOCH_DURATION",
-  });
-
-  const { data: slashingWindow } = useReadContract({
-    ...contractConfig,
-    enabled: !!contractConfig,
-    functionName: "SLASHING_WINDOW",
-  });
-
-  const { data: currentEpoch } = useReadContract({
-    ...contractConfig,
-    enabled: !!contractConfig,
-    functionName: "getCurrentEpoch",
-  });
-
-  const { data: currentOperatorInfos } = useReadContract({
-    ...contractConfig,
-    enabled: !!contractConfig,
-    functionName: "getCurrentOperatorInfos",
-  });
-
-  const { data: vaults } = useReadContract({
-    ...contractConfig,
-    enabled: !!contractConfig,
-    functionName: "getCurrentVaults",
-  });
-
-  useEffect(() => {
-    console.log("cluster", cluster);
-  }, [cluster]);
-
-  useEffect(() => {
-    console.log("validationServiceManager", validationServiceManager);
-    console.log("currentOperatorInfos", currentOperatorInfos);
-    console.log("vaults", vaults);
-    console.log("network", network);
-    console.log("operatorNetOptIn", operatorNetOptIn);
-    console.log("vaultFactory", vaultFactory);
-    console.log("epochDuration", epochDuration);
-    console.log("slashingWindow", slashingWindow);
-  }, [
-    currentOperatorInfos,
-    vaults,
+  const [
     network,
     operatorNetOptIn,
     vaultFactory,
     epochDuration,
     slashingWindow,
-    validationServiceManager,
-  ]);
+    currentEpoch,
+    currentOperatorInfos,
+    vaults,
+  ] = data || [];
+
+  useEffect(() => {
+    // want to refetch every `n` block instead? use the modulo operator!
+    // if (blockNumber % 5 === 0) refetch() // refetch every 5 blocks
+    refetch();
+  }, [blockNumber]);
+
+  useEffect(() => {
+    console.log("cluster", cluster);
+  }, [cluster]);
+
   return (
     <PageContainer>
       <Title>Rollup details</Title>
@@ -249,27 +256,27 @@ const RollupDetails = () => {
             <InfoItems>
               <InfoItem>
                 <Property>Network</Property>
-                <Value>{network}</Value>
+                <Value>{network?.result || "Loading..."}</Value>
               </InfoItem>
               <InfoItem>
                 <Property>Operator Net Optin</Property>
-                <Value>{operatorNetOptIn}</Value>
+                <Value>{operatorNetOptIn?.result || "Loading..."}</Value>
               </InfoItem>
               <InfoItem>
                 <Property>Vault Factory</Property>
-                <Value>{vaultFactory}</Value>
+                <Value>{vaultFactory?.result || "Loading..."}</Value>
               </InfoItem>
               <InfoItem>
                 <Property>Epoch Duration</Property>
-                <Value>{epochDuration}</Value>
+                <Value>{epochDuration?.result || "Loading..."}</Value>
               </InfoItem>
               <InfoItem>
                 <Property>Slashing Window</Property>
-                <Value>{slashingWindow}</Value>
+                <Value>{slashingWindow?.result || "Loading..."}</Value>
               </InfoItem>
               <InfoItem>
                 <Property>Current Epoch</Property>
-                <Value>{currentEpoch}</Value>
+                <Value>{currentEpoch?.result || "Loading..."}</Value>
               </InfoItem>
             </InfoItems>
             <Container>
@@ -281,8 +288,8 @@ const RollupDetails = () => {
                   <Header>Address</Header>
                 </Headers>
                 <Rows>
-                  {vaults?.length ? (
-                    vaults.map((vaultAddress, index) => (
+                  {vaults?.result ? (
+                    vaults.result.map((vaultAddress, index) => (
                       <Row
                         key={vaultAddress + index}
                         onClick={() => {
@@ -311,8 +318,8 @@ const RollupDetails = () => {
                   <Header>Combined Stake</Header>
                 </Headers>
                 <Rows>
-                  {currentOperatorInfos?.length ? (
-                    currentOperatorInfos.map((operator, index) => (
+                  {currentOperatorInfos?.result ? (
+                    currentOperatorInfos.result.map((operator, index) => (
                       <Row
                         to={`operator/${operator.operatorAddress}`}
                         key={operator.operatorAddress + index}
