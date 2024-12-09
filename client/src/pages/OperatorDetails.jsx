@@ -125,7 +125,12 @@ const OperatorDetails = () => {
 
           <Rows>
             {operatorEachTokenStake?.result.map((tokenStake, index) => (
-              <Row key={tokenStake.token}>
+              <Row
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent default behavior
+                }}
+                key={tokenStake.token}
+              >
                 <Cell>
                   <CellTxt>{"None"}</CellTxt>
                 </Cell>

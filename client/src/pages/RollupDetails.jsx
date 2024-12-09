@@ -245,15 +245,27 @@ const RollupDetails = () => {
             <InfoItems>
               <InfoItem>
                 <Property>Network</Property>
-                <Value>{network?.result || "Loading..."}</Value>
+                <Value>
+                  {network?.result
+                    ? formatAddress(network?.result)
+                    : "Loading..."}
+                </Value>
               </InfoItem>
               <InfoItem>
                 <Property>Operator Net Optin</Property>
-                <Value>{operatorNetOptIn?.result || "Loading..."}</Value>
+                <Value>
+                  {operatorNetOptIn?.result
+                    ? formatAddress(operatorNetOptIn?.result)
+                    : "Loading..."}
+                </Value>
               </InfoItem>
               <InfoItem>
                 <Property>Vault Factory</Property>
-                <Value>{vaultFactory?.result || "Loading..."}</Value>
+                <Value>
+                  {vaultFactory?.result
+                    ? formatAddress(vaultFactory?.result)
+                    : "Loading..."}
+                </Value>
               </InfoItem>
               <InfoItem>
                 <Property>Epoch Duration</Property>
