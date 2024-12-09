@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Buttons,
   Input,
@@ -11,7 +11,7 @@ import {
 } from "./ModalStyles";
 import Button from "./Button";
 import { vaultAbi } from "../../../common";
-import { useReadContract } from "wagmi";
+import { useBlockNumber, useReadContracts } from "wagmi";
 
 const VaultModal = ({ toggle, vault }) => {
   const handleClose = () => toggle();
@@ -24,40 +24,50 @@ const VaultModal = ({ toggle, vault }) => {
       }
     : null;
 
-  const { data: isInitialized } = useReadContract({
-    ...contractConfig,
+  const { data, refetch } = useReadContracts({
+    contracts: [
+      {
+        ...contractConfig,
+        functionName: "isInitialized",
+      },
+      {
+        ...contractConfig,
+        functionName: "totalStake",
+      },
+
+      {
+        ...contractConfig,
+        functionName: "owner",
+      },
+
+      {
+        ...contractConfig,
+        functionName: "collateral",
+      },
+
+      {
+        ...contractConfig,
+        functionName: "epochDuration",
+      },
+
+      {
+        ...contractConfig,
+        functionName: "burner",
+      },
+    ],
     enabled: !!contractConfig,
-    functionName: "isInitialized",
-  });
-  const { data: totalStake } = useReadContract({
-    ...contractConfig,
-    enabled: !!contractConfig,
-    functionName: "totalStake",
   });
 
-  const { data: owner } = useReadContract({
-    ...contractConfig,
-    enabled: !!contractConfig,
-    functionName: "owner",
-  });
+  const { data: blockNumber } = useBlockNumber({ watch: true });
 
-  const { data: collateral } = useReadContract({
-    ...contractConfig,
-    enabled: !!contractConfig,
-    functionName: "collateral",
-  });
+  const [isInitialized, totalStake, owner, collateral, epochDuration, burner] =
+    data || [];
 
-  const { data: epochDuration } = useReadContract({
-    ...contractConfig,
-    enabled: !!contractConfig,
-    functionName: "epochDuration",
-  });
-
-  const { data: burner } = useReadContract({
-    ...contractConfig,
-    enabled: !!contractConfig,
-    functionName: "burner",
-  });
+  useEffect(() => {
+    // want to refetch every `n` block instead? use the modulo operator!
+    // if (blockNumber % 5 === 0) refetch() // refetch every 5 blocks
+    refetch();
+  }, [blockNumber]);
 
   return (
     <Overlay onClick={toggle}>
@@ -75,27 +85,31 @@ const VaultModal = ({ toggle, vault }) => {
         </InputContainer>
         <InputContainer>
           <Label>Is Initialized</Label>
-          <Input readOnly value={isInitialized || ""} type="text" />
+          <Input readOnly value={isInitialized?.result || ""} type="text" />
         </InputContainer>
         <InputContainer>
           <Label>Total Stake</Label>
-          <Input readOnly value={String(totalStake) || ""} type="text" />
+          <Input
+            readOnly
+            value={String(totalStake?.result) || ""}
+            type="text"
+          />
         </InputContainer>
         <InputContainer>
           <Label>Owner</Label>
-          <Input readOnly value={owner || ""} type="text" />
+          <Input readOnly value={owner?.result || ""} type="text" />
         </InputContainer>
         <InputContainer>
           <Label>Collateral</Label>
-          <Input readOnly value={collateral || ""} type="text" />
+          <Input readOnly value={collateral?.result || ""} type="text" />
         </InputContainer>
         <InputContainer>
           <Label>Epoch Duration</Label>
-          <Input readOnly value={epochDuration || ""} type="text" />
+          <Input readOnly value={epochDuration?.result || ""} type="text" />
         </InputContainer>
         <InputContainer>
           <Label>Burner</Label>
-          <Input readOnly value={burner || ""} type="text" />
+          <Input readOnly value={burner?.result || ""} type="text" />
         </InputContainer>
         <Buttons>
           <SubmitBtnContainer>

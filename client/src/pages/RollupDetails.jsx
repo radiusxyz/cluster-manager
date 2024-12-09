@@ -142,17 +142,6 @@ const RollupDetails = () => {
   });
   const { data: blockNumber } = useBlockNumber({ watch: true });
 
-  // const [
-  //   { result: network },
-  //   { result: operatorNetOptIn },
-  //   { result: vaultFactory },
-  //   { result: epochDuration },
-  //   { result: slashingWindow },
-  //   { result: currentEpoch },
-  //   { result: currentOperatorInfos },
-  //   { result: vaults },
-  // ] = data || [];
-
   const [
     network,
     operatorNetOptIn,

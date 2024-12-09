@@ -27,7 +27,7 @@ import Loader from "../components/Loader";
 
 import { formatAddress } from "../utils/formatAddress";
 import { validationServiceManagerAbi } from "../../../common";
-import { useReadContract } from "wagmi";
+import { useBlockNumber, useReadContracts } from "wagmi";
 
 const OperatorDetails = () => {
   const location = useLocation();
@@ -41,32 +41,48 @@ const OperatorDetails = () => {
       }
     : null;
 
-  const { data: currentEpoch } = useReadContract({
-    ...contractConfig,
+  const { data, refetch } = useReadContracts({
+    contracts: [
+      {
+        ...contractConfig,
+        functionName: "getCurrentEpoch",
+      },
+
+      {
+        ...contractConfig,
+        functionName: "getCurrentOperatorOperatingAddress",
+        args: [operatorAddress],
+      },
+
+      {
+        ...contractConfig,
+        functionName: "getCurrentOperatorStake",
+        args: [operatorAddress],
+      },
+
+      {
+        ...contractConfig,
+        functionName: "getCurrentOperatorEachTokenStake",
+        args: [operatorAddress],
+      },
+    ],
     enabled: !!contractConfig,
-    functionName: "getCurrentEpoch",
   });
 
-  const { data: operatingAddress } = useReadContract({
-    ...contractConfig,
-    enabled: !!contractConfig,
-    functionName: "getCurrentOperatorOperatingAddress",
-    args: [operatorAddress],
-  });
+  const { data: blockNumber } = useBlockNumber({ watch: true });
 
-  const { data: operatorStake } = useReadContract({
-    ...contractConfig,
-    enabled: !!contractConfig,
-    functionName: "getCurrentOperatorStake",
-    args: [operatorAddress],
-  });
+  const [
+    currentEpoch,
+    operatingAddress,
+    operatorStake,
+    operatorEachTokenStake,
+  ] = data || [];
 
-  const { data: operatorEachTokenStake } = useReadContract({
-    ...contractConfig,
-    enabled: !!contractConfig,
-    functionName: "getCurrentOperatorEachTokenStake",
-    args: [operatorAddress],
-  });
+  useEffect(() => {
+    // want to refetch every `n` block instead? use the modulo operator!
+    // if (blockNumber % 5 === 0) refetch() // refetch every 5 blocks
+    refetch();
+  }, [blockNumber]);
 
   return (
     <PageContainer>
@@ -81,15 +97,15 @@ const OperatorDetails = () => {
             </InfoItem>
             <InfoItem>
               <Property>Operating Address</Property>
-              <Value>{operatingAddress}</Value>
+              <Value>{operatingAddress?.result}</Value>
             </InfoItem>
             <InfoItem>
               <Property>Total Stake</Property>
-              <Value>{String(operatorStake)}</Value>{" "}
+              <Value>{String(operatorStake?.result)}</Value>{" "}
             </InfoItem>
             <InfoItem>
               <Property>Current Epoch</Property>
-              <Value>{String(currentEpoch)}</Value>{" "}
+              <Value>{String(currentEpoch?.result)}</Value>{" "}
             </InfoItem>
           </InfoItems>
         )}
@@ -108,7 +124,7 @@ const OperatorDetails = () => {
           </Headers>
 
           <Rows>
-            {operatorEachTokenStake?.map((tokenStake, index) => (
+            {operatorEachTokenStake?.result.map((tokenStake, index) => (
               <Row key={tokenStake.token}>
                 <Cell>
                   <CellTxt>{"None"}</CellTxt>
