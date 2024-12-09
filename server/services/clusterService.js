@@ -1,3 +1,4 @@
+import { verifyMessage } from "viem";
 import Cluster from "../models/clusterModel.js";
 
 const getAllClusters = async () => {
@@ -192,6 +193,20 @@ const updateRollupExecutorDetails = async (clusterId, updateData) => {
   } = updateData;
 
   try {
+    const { signature, ...dataToVerify } = updateData;
+
+    const isValidSignature = await verifyMessage({
+      address: from,
+      message: JSON.stringify(dataToVerify),
+      signature,
+    });
+
+    console.log("isValidSignature", isValidSignature);
+
+    if (!isValidSignature) {
+      throw new Error("Invalid signature");
+    }
+
     const cluster = await Cluster.findOne({ clusterId });
     if (!cluster) {
       throw new Error(`Cluster with ID ${clusterId} not found`);
