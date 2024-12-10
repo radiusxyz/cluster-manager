@@ -18,6 +18,7 @@ import {
   Title,
 } from "./ModalStyles";
 import { usePATCH } from "../hooks/useServer";
+import { serverUrl } from "../config";
 
 const Modal = ({ toggle }) => {
   const { address } = useAccount();
@@ -50,7 +51,7 @@ const Modal = ({ toggle }) => {
     isLoading: isPatchLoading,
     isError: isPatchError,
     error: patchError,
-  } = usePATCH(`http://localhost:3333/api/v1/clusters/${clusterId}`, {
+  } = usePATCH(`${serverUrl}/clusters/${clusterId}`, {
     onSuccess: (data) => {
       console.log("Resource updated successfully:", data);
     },

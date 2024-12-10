@@ -34,6 +34,7 @@ import RunModal from "../components/RunModal";
 import AddRollupModal from "../components/AddRollupModal";
 import Button from "../components/Button";
 import { formatAddress } from "../utils/formatAddress";
+import { serverUrl } from "../config";
 
 const ClusterDetails = () => {
   const { clusterId } = useParams();
@@ -62,7 +63,7 @@ const ClusterDetails = () => {
     refetch: refetchSequencers,
   } = useGET(
     ["cluster", clusterId],
-    `http://localhost:3333/api/v1/clusters/${clusterId}`,
+    `${serverUrl}/clusters/${clusterId}`,
     true,
     3000
   );

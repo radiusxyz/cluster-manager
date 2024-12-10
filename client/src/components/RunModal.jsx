@@ -1,3 +1,4 @@
+import { serverUrl } from "../config";
 import Button from "./Button";
 import Loader from "./Loader";
 import {
@@ -67,10 +68,7 @@ const RunModal = ({ toggle, cluster }) => {
         <Buttons>
           <SubmitBtnContainer>
             <Button onClick={download}>Download Scripts</Button>
-            <DownloadBinBtn
-              href="http://localhost:3333/api/v1/sequencer/download"
-              download
-            >
+            <DownloadBinBtn href={`${serverUrl}/sequencer/download`} download>
               Download Binary
             </DownloadBinBtn>
           </SubmitBtnContainer>

@@ -16,7 +16,7 @@ import {
 } from "./ModalStyles";
 import { usePATCH } from "../hooks/useServer";
 import { signMessage } from "@wagmi/core";
-import { config } from "../config";
+import { config, serverUrl } from "../config";
 
 const UpdateExecutorDetailsModal = ({
   toggle,
@@ -42,7 +42,7 @@ const UpdateExecutorDetailsModal = ({
     isLoading: isPatchLoading,
     isError: isPatchError,
     error: patchError,
-  } = usePATCH(`http://localhost:3333/api/v1/clusters/${clusterId}`, {
+  } = usePATCH(`${serverUrl}/clusters/${clusterId}`, {
     onSuccess: (data) => {
       console.log("Resource updated successfully:", data);
       toggle();

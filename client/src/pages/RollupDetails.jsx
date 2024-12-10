@@ -41,6 +41,7 @@ import VaultModal from "../components/VaultModal";
 import RegisterExecutorModal from "../components/RegisterExecutorModal";
 import UpdateExecutorDetailsModal from "../components/UpdateExecutorDetailsModal";
 import Button from "../components/Button";
+import { serverUrl } from "../config";
 
 const RollupDetails = () => {
   const { clusterId, rollupId } = useParams();
@@ -72,14 +73,14 @@ const RollupDetails = () => {
 
   const { data: rollup } = useGET(
     ["rollup", rollupId],
-    `http://localhost:3333/api/v1/clusters/${clusterId}/rollups/${rollupId}`,
+    `${serverUrl}/clusters/${clusterId}/rollups/${rollupId}`,
     true,
     3000
   );
 
   const { data: cluster } = useGET(
     ["cluster", clusterId],
-    `http://localhost:3333/api/v1/clusters/${clusterId}`,
+    `${serverUrl}/clusters/${clusterId}`,
     true,
     3000
   );

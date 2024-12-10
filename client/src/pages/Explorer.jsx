@@ -32,6 +32,7 @@ import {
 } from "./TableStyles";
 import { useAccount } from "wagmi";
 import InitializeClusterModal from "../components/InitializeClusterModal";
+import { serverUrl } from "../config";
 
 const Explorer = () => {
   const [clusters, setClusters] = useState([]);
@@ -45,7 +46,7 @@ const Explorer = () => {
   };
 
   const [key, setKey] = useState(["clusters"]);
-  const [url, setUrl] = useState("http://localhost:3333/api/v1/clusters");
+  const [url, setUrl] = useState(`${serverUrl}/clusters`);
 
   const {
     isPending: isPendingClusters,
@@ -71,17 +72,13 @@ const Explorer = () => {
   useEffect(() => {
     if (activeTab === "all") {
       setKey(["clusters"]);
-      setUrl("http://localhost:3333/api/v1/clusters");
+      setUrl(`${serverUrl}/clusters`);
     } else if (activeTab === "joined") {
       setKey(["clustersJoined", address]);
-      setUrl(
-        `http://localhost:3333/api/v1/addresses/${address}/clusters/joined`
-      );
+      setUrl(`${serverUrl}/addresses/${address}/clusters/joined`);
     } else if (activeTab === "generated") {
       setKey(["clustersGenerated", address]);
-      setUrl(
-        `http://localhost:3333/api/v1/addresses/${address}/clusters/generated`
-      );
+      setUrl(`${serverUrl}/addresses/${address}/clusters/generated`);
     }
   }, [activeTab, address]);
   return (
