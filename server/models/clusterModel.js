@@ -94,14 +94,17 @@ $SEQUENCER_BIN_PATH start --path $DATA_PATH`,
   },
 });
 
-const ClusterSchema = new Schema({
-  clusterId: { type: String, required: true },
-  owner: { type: String, required: true },
-  sequencers: [{ type: String }],
-  rollups: [RollupSchema],
-  maxSequencerNumber: { type: Number, default: 0 },
-  active: { type: Boolean, default: true },
-});
+const ClusterSchema = new Schema(
+  {
+    clusterId: { type: String, required: true },
+    owner: { type: String, required: true },
+    sequencers: [{ type: String }],
+    rollups: [RollupSchema],
+    maxSequencerNumber: { type: Number, default: 0 },
+    active: { type: Boolean, default: true },
+  },
+  { timestamps: true }
+);
 
 const Cluster = mongoose.model("Cluster", ClusterSchema);
 
