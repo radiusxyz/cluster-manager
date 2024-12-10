@@ -11,16 +11,6 @@ export const PageContainer = styled.div`
   max-height: 840px;
 `;
 
-// export const Title = styled.p`
-//   font-family: var(--sds-typography-heading-font-family);
-//   font-size: 36px;
-//   font-weight: 600;
-//   line-height: 43.2px;
-//   letter-spacing: -0.02em;
-//   text-align: left;
-//   margin-bottom: 67px;
-// `;
-
 export const ActionsContainer = styled.div`
   display: flex;
   align-items: center;
@@ -62,13 +52,6 @@ export const GenerateBtn = styled(StyledButton)`
   margin-left: auto;
 `;
 
-export const TitleJoinBtnContainer = styled.div`
-  display: flex;
-  align-items: center;
-
-  margin-bottom: 10px;
-`;
-
 export const TitleRow = styled.div`
   display: flex;
   justify-content: space-between;
@@ -76,7 +59,6 @@ export const TitleRow = styled.div`
 `;
 
 export const Title = styled.p`
-  font-family: var(--sds-typography-heading-font-family);
   font-size: 36px;
   font-weight: 600;
   line-height: 43.2px;
@@ -99,4 +81,16 @@ export const BtnsContainer = styled.div`
 
 export const InitializeClusterBtn = styled(StyledButton)`
   align-self: flex-end;
+`;
+
+export const TabsWrapper = styled.div`
+  display: flex;
+  gap: 25px;
+  align-items: center;
+`;
+
+export const Tab = styled(Title)`
+  color: ${(props) => (props.$active ? "#000000" : "#DDDDDD")};
+  margin-bottom: 0;
+  cursor: pointer;
 `;

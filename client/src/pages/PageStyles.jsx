@@ -14,20 +14,13 @@ export const PageContainer = styled.div`
   gap: 10px;
 `;
 
-export const TitleJoinBtnContainer = styled.div`
-  display: flex;
-  align-items: center;
-
-  margin-bottom: 10px;
-`;
-
 export const Title = styled.p`
-  font-family: var(--sds-typography-heading-font-family);
   font-size: 36px;
   font-weight: 600;
   line-height: 43.2px;
   letter-spacing: -0.02em;
   text-align: left;
+  margin-bottom: 10px;
 `;
 
 export const BtnsContainer = styled.div`
@@ -38,11 +31,11 @@ export const BtnsContainer = styled.div`
   margin-top: auto;
 `;
 
-export const JoinBtn = styled(StyledButton)`
-  align-self: flex-start;
+export const Infos = styled.div`
+  display: flex;
+  gap: 10px;
+  width: 100%;
 `;
-
-export const RunBtn = styled(StyledButton)``;
 
 export const Container = styled.div`
   display: flex;
@@ -50,18 +43,17 @@ export const Container = styled.div`
   gap: 20px;
   padding: 20px;
   border-radius: 5px;
-
   border: 1px solid #e1e1e1;
+`;
+
+export const InfoContainer = styled(Container)`
+  flex: 1;
 `;
 
 export const TitleRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
-
-export const AddRollupBtn = styled(StyledButton)`
-  align-self: flex-end;
 `;
 
 export const SubTitle = styled.p`
@@ -90,56 +82,6 @@ export const Property = styled.p`
 export const Value = styled.p`
   flex: 1;
   font-weight: 600;
-`;
-
-export const Table = styled.div``;
-
-export const Headers = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-`;
-
-export const Header = styled.div`
-  font-family: Inter;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 19.36px;
-  flex: 1;
-`;
-
-export const Rows = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`;
-
-export const Row = styled.div`
-  text-decoration: none;
-  color: black;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  cursor: pointer;
-  &:hover {
-    background-color: #000;
-    color: #fff;
-  }
-`;
-
-export const Cell = styled.div`
-  display: flex;
-  flex: 1;
-  align-items: center;
-`;
-
-export const CellTxt = styled.span`
-  font-family: Inter;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 19.36px;
 `;
 
 export const Message = styled.p`

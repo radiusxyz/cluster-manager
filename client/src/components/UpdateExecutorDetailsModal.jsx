@@ -15,6 +15,8 @@ import {
   Title,
 } from "./ModalStyles";
 import { usePATCH } from "../hooks/useServer";
+import { signMessage } from "@wagmi/core";
+import { config } from "../config";
 
 const UpdateExecutorDetailsModal = ({
   toggle,
@@ -52,8 +54,8 @@ const UpdateExecutorDetailsModal = ({
     },
   });
 
-  const handleUpdateExecutorDetails = () => {
-    const data = {
+  const handleUpdateExecutorDetails = async () => {
+    const dataToSign = {
       from: address,
       rollupId,
       executorAddress: executor.address,
@@ -61,8 +63,14 @@ const UpdateExecutorDetailsModal = ({
       blockExplorerUrl,
       webSocketUrl: webSocketUrl,
     };
-    patchData(data);
-    console.log("data", data);
+
+    const signature = await signMessage(config, {
+      message: JSON.stringify(dataToSign),
+    });
+
+    const dataToPatch = { ...dataToSign, signature: signature };
+
+    patchData(dataToPatch);
   };
 
   return (

@@ -1,3 +1,4 @@
+import { verifyMessage } from "viem";
 import Cluster from "../models/clusterModel.js";
 
 const getAllClusters = async () => {
@@ -153,10 +154,6 @@ const registerRollupExecutor = async ({
       throw new Error(`Rollup with ID ${rollupId} not found`);
     }
 
-    if (rollup.owner !== from) {
-      throw new Error("Only the rollup owner can register an executor");
-    }
-
     const executor = rollup.executors.find(
       (executor) => executor.address === executorAddress
     );
@@ -186,10 +183,30 @@ const registerRollupExecutor = async ({
 };
 
 const updateRollupExecutorDetails = async (clusterId, updateData) => {
-  const { rollupId, executorAddress, rpcUrl, blockExplorerUrl, webSocketUrl } =
-    updateData;
+  const {
+    from,
+    rollupId,
+    executorAddress,
+    rpcUrl,
+    blockExplorerUrl,
+    webSocketUrl,
+  } = updateData;
 
   try {
+    const { signature, ...dataToVerify } = updateData;
+
+    const isValidSignature = await verifyMessage({
+      address: from,
+      message: JSON.stringify(dataToVerify),
+      signature,
+    });
+
+    console.log("isValidSignature", isValidSignature);
+
+    if (!isValidSignature) {
+      throw new Error("Invalid signature");
+    }
+
     const cluster = await Cluster.findOne({ clusterId });
     if (!cluster) {
       throw new Error(`Cluster with ID ${clusterId} not found`);
@@ -206,6 +223,10 @@ const updateRollupExecutorDetails = async (clusterId, updateData) => {
 
     if (!executor) {
       throw new Error(`Executor with address ${executorAddress} not found`);
+    }
+
+    if (rollup.owner !== from) {
+      throw new Error("Only the rollup owner can update executor details");
     }
 
     executor.rpcUrl = rpcUrl;
