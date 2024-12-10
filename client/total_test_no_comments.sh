@@ -1,0 +1,172 @@
+RPC_URL="http://127.0.0.1:8545"
+
+
+NETWORK_ADDRESS="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+NETWORK_PRIVATE_KEY="0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+SUBNETWORK="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266000000000000000000000000"
+
+
+VAULT_OWNER_ADDRESS="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+VAULT_OWNER_PRIVATE_KEY="0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+
+
+NETWORK_MIDDLEWARE_SERVICE_CONTRACT_ADDRESS="0xa513E6E4b8f2a923D98304ec87F64353C4D5C853"
+OPERATOR_REGISTRY_CONTRACT_ADDRESS="0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+NETWORK_REGISTRY_CONTRACT_ADDRESS="0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+OPERATOR_NETWORK_OPT_IN_SERVICE_CONTRACT_ADDRESS="0x8A791620dd6260079BF849Dc5567aDC3F2FdC318"
+OPERATOR_VAULT_OPT_IN_SERVICE_CONTRACT_ADDRESS="0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6"
+VAULT_FACTORY_CONTRACT_ADDRESS="0x5FbDB2315678afecb367f032d93F642f64180aa3"
+
+
+
+VAULT_CONTRACT_ADDRESS="0x9ECba85638eB1A9F8C2C03c26467ee81234bc7d4"
+DELEGATOR_CONTRACT_ADDRESS="0xAbbe45B805160ce782c03cF29dA959F0f332319E"
+
+
+
+LIVENESS_CONTRACT_ADDRESS="0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB"
+
+
+
+VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS="0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690"
+
+
+
+OPERATOR_ADDRESS="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+OPERATOR_PRIVATE_KEY="0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+OPERATING_ADDRESS="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+OPERATING_PRIVATE_KEY="0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+
+
+
+TOKEN_CONTRACT_OWNER_ADDRESS="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+TOKEN_CONTRACT_OWNER_PRIVATE_KEY="0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+TOKEN_CONTRACT_ADDRESS="0x59b670e9fA9D0A427751Af201D676719a970857b"
+
+COLLATERAL_OWNER_ADDRESS="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+COLLATERAL_OWNER_PRIVATE_KEY="0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+COLLATERAL_CONTRACT_ADDRESS="0x0665FbB86a3acECa91Df68388EC4BBE11556DDce"
+
+
+
+cast call $VAULT_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"delegator()(address)"
+
+
+cast call $VAULT_CONTRACT_ADDRESS --rpc-url $RPC_URL "totalStake()(uint256)"
+cast call $VAULT_CONTRACT_ADDRESS --rpc-url $RPC_URL "activeStake()(uint256)"
+
+cast send $TOKEN_CONTRACT_ADDRESS --rpc-url $RPC_URL --private-key $TOKEN_CONTRACT_OWNER_PRIVATE_KEY \
+"approve(address spender, uint256 value)(bool)" $COLLATERAL_CONTRACT_ADDRESS 1000
+
+cast send $COLLATERAL_CONTRACT_ADDRESS --rpc-url $RPC_URL --private-key $COLLATERAL_OWNER_PRIVATE_KEY \
+"deposit(address recipient, uint256 amount)(uint256)" $TOKEN_CONTRACT_OWNER_ADDRESS 1000
+
+cast send $COLLATERAL_CONTRACT_ADDRESS --rpc-url $RPC_URL --private-key $TOKEN_CONTRACT_OWNER_PRIVATE_KEY \
+"approve(address spender, uint256 value)(bool)" $VAULT_CONTRACT_ADDRESS 100
+
+cast send $VAULT_CONTRACT_ADDRESS --rpc-url $RPC_URL --private-key $TOKEN_CONTRACT_OWNER_PRIVATE_KEY \
+"deposit(address onBehalfOf, uint256 amount)(uint256 depositedAmount, uint256 mintedShares)" $TOKEN_CONTRACT_OWNER_ADDRESS 100
+
+
+
+cast call $OPERATOR_REGISTRY_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"isEntity(address who)(bool)" $OPERATOR_ADDRESS
+
+cast send $OPERATOR_REGISTRY_CONTRACT_ADDRESS --rpc-url $RPC_URL --private-key $OPERATOR_PRIVATE_KEY \
+"registerOperator()"
+
+
+
+cast call $NETWORK_REGISTRY_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"isEntity(address who)(bool)" $NETWORK_ADDRESS
+
+cast send $NETWORK_REGISTRY_CONTRACT_ADDRESS --rpc-url $RPC_URL --private-key $NETWORK_PRIVATE_KEY \
+"registerNetwork()"
+
+
+
+cast call $NETWORK_MIDDLEWARE_SERVICE_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"middleware(address networkAddress)(address middlewareAddress)" $NETWORK_ADDRESS
+
+cast send $NETWORK_MIDDLEWARE_SERVICE_CONTRACT_ADDRESS --rpc-url $RPC_URL --private-key $NETWORK_PRIVATE_KEY \
+"setMiddleware(address middlewareAddress)" $VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS
+
+
+
+cast call $OPERATOR_NETWORK_OPT_IN_SERVICE_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"isOptedIn(address who, address where)(bool)" $OPERATOR_ADDRESS $NETWORK_ADDRESS
+
+cast send $OPERATOR_NETWORK_OPT_IN_SERVICE_CONTRACT_ADDRESS --rpc-url $RPC_URL --private-key $OPERATOR_PRIVATE_KEY \
+"optIn(address network)" $NETWORK_ADDRESS
+
+
+
+cast call $OPERATOR_VAULT_OPT_IN_SERVICE_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"isOptedIn(address who, address where)(bool)" $OPERATOR_ADDRESS $VAULT_CONTRACT_ADDRESS
+
+cast send $OPERATOR_VAULT_OPT_IN_SERVICE_CONTRACT_ADDRESS --rpc-url $RPC_URL --private-key $OPERATOR_PRIVATE_KEY \
+"optIn(address vault)" $VAULT_CONTRACT_ADDRESS
+
+
+
+cast call $VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"vaultLen()(uint256)" 
+cast call $VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"getCurrentVaults()(address[])" 
+cast call $VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"isActiveVault(address vault)(bool)" $VAULT_CONTRACT_ADDRESS
+
+cast send $VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $RPC_URL --private-key $NETWORK_PRIVATE_KEY \
+"registerToken(address tokenAddress)" $TOKEN_CONTRACT_ADDRESS
+
+cast send $VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $RPC_URL --private-key $NETWORK_PRIVATE_KEY \
+"registerVault(address vaultAddress)" $VAULT_CONTRACT_ADDRESS
+
+
+
+cast call $VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"getCurrentOperatorInfos()((address, address, (address, uint256)[], uint256)[])"
+
+cast send $VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $RPC_URL --private-key $NETWORK_PRIVATE_KEY \
+"registerOperator(address operatorAddress, address operatingAddress)" $OPERATOR_ADDRESS $OPERATING_ADDRESS
+
+
+
+cast call $DELEGATOR_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"maxNetworkLimit(bytes32 subnetwork)(uint256 maxNetworkLimit)" $SUBNETWORK
+
+cast send $DELEGATOR_CONTRACT_ADDRESS --rpc-url $RPC_URL --private-key $NETWORK_PRIVATE_KEY \
+"setMaxNetworkLimit(uint96 identifier, uint256 amount)" 0 10000
+
+
+
+cast call $DELEGATOR_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"networkLimit(bytes32 subnetwork)(uint256 networkLimit)" $SUBNETWORK
+
+cast send $DELEGATOR_CONTRACT_ADDRESS --rpc-url $RPC_URL --private-key $VAULT_OWNER_PRIVATE_KEY \
+"setNetworkLimit(bytes32 subnetwork, uint256 amount)" $SUBNETWORK 100
+
+
+
+cast call $DELEGATOR_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"operatorNetworkShares(bytes32 subnetwork, address operator)(uint256)" $SUBNETWORK $OPERATOR_ADDRESS
+cast call $DELEGATOR_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"totalOperatorNetworkShares(bytes32 subnetwork)(uint256)" $SUBNETWORK
+cast call $DELEGATOR_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"stake(bytes32 subnetwork, address operator)(uint256)" $SUBNETWORK $OPERATOR_ADDRESS
+
+cast send $DELEGATOR_CONTRACT_ADDRESS --rpc-url $RPC_URL --private-key $VAULT_OWNER_PRIVATE_KEY \
+"setOperatorNetworkShares(bytes32 subnetwork, address operator, uint256 shares)" $SUBNETWORK $OPERATOR_ADDRESS 100
+
+
+cast call $VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"getCurrentTotalStake()(uint256)"
+cast call $VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"getCurrentTokenTotalStake(address token)(uint256)" $TOKEN_CONTRACT_ADDRESS
+cast call $VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"getCurrentOperatorStake(address operator)(uint256)" $OPERATOR_ADDRESS
+cast call $VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"getCurrentOperatorEachTokenStake(address operator)((address, uint256)[])" $OPERATOR_ADDRESS
+cast call $VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+"getCurrentOperatorTokenStake(address operator, address token)(uint256)" $OPERATOR_ADDRESS $TOKEN_CONTRACT_ADDRESS

@@ -143,8 +143,12 @@ const OperatorDetails = () => {
                 <Cell>
                   <CellTxt>
                     {tokenStake.stake > 0
-                      ? Math.floor(tokenStake.stake / operatorStake) * 100
-                      : String(tokenStake.stake)}
+                      ? Math.floor(
+                          (Number(tokenStake.stake) /
+                            Number(operatorStake?.result)) *
+                            100
+                        )
+                      : 0}
                   </CellTxt>
                 </Cell>
               </Row>
