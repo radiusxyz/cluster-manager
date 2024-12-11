@@ -7,7 +7,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { config } from "./config.js";
 
 import { WagmiProvider } from "wagmi";
-import Alerts from "./components/Alerts.jsx";
+
+import Alert from "./components/Alert.jsx";
 const queryClient = new QueryClient();
 
 document.getElementById("root") &&
@@ -16,7 +17,7 @@ document.getElementById("root") &&
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
           {/* <App /> */}
-          <Alerts />
+          <Alert error={false} />
         </QueryClientProvider>
       </WagmiProvider>
     </React.StrictMode>
