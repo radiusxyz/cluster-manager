@@ -6,8 +6,6 @@ import Modal from "../components/Modal";
 import {
   ActionsContainer,
   Filter,
-  GenerateBtn,
-  InitializeClusterBtn,
   Input,
   PageContainer,
   SearchInput,
@@ -34,9 +32,9 @@ import { apiEndpoint } from "../config";
 import Alert from "../components/Alert";
 import { useQuery } from "@tanstack/react-query";
 import { GET } from "../utils/api";
+import Button from "../components/Button";
 
 const Explorer = () => {
-  const [clusters, setClusters] = useState([]);
   const { address } = useAccount();
   const [shouldGetClusters, setShouldGetClusters] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -53,7 +51,7 @@ const Explorer = () => {
   const {
     isPending: isPendingClusters,
     error: errorClusters,
-    data: dataClusters,
+    data: clusters,
     refetch: refetchClusters,
     isFetching: isFetchingClusters,
   } = useQuery({
@@ -62,13 +60,6 @@ const Explorer = () => {
     enabled: true,
     refetchInterval: 3000,
   });
-
-  useEffect(() => {
-    if (dataClusters) {
-      console.log("dataClusters: ", dataClusters);
-      setClusters(dataClusters);
-    }
-  }, [dataClusters]);
 
   const [activeTab, setActiveTab] = useState("all");
 
@@ -103,12 +94,9 @@ const Explorer = () => {
             Joined
           </Tab>
         </TabsWrapper>
-        <InitializeClusterBtn
-          onClick={toggleInitializeClusterModal}
-          disabled={!isConnected}
-        >
+        <Button onClick={toggleInitializeClusterModal} disabled={!isConnected}>
           Generate Cluster
-        </InitializeClusterBtn>
+        </Button>
       </TitleRow>
       <ActionsContainer></ActionsContainer>
       <Table>

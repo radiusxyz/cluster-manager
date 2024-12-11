@@ -48,9 +48,6 @@ export const Filter = styled.div`
   padding: 5px 10px;
   border-radius: 5px;
 `;
-export const GenerateBtn = styled(StyledButton)`
-  margin-left: auto;
-`;
 
 export const TitleRow = styled.div`
   display: flex;
@@ -77,10 +74,6 @@ export const BtnsContainer = styled.div`
   align-items: center;
   margin-left: auto;
   margin-top: auto;
-`;
-
-export const InitializeClusterBtn = styled(StyledButton)`
-  align-self: flex-end;
 `;
 
 export const TabsWrapper = styled.div`
