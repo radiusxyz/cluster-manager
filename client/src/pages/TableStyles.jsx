@@ -26,14 +26,26 @@ export const Rows = styled.div`
 
 export const Row = styled(Link)`
   text-decoration: none;
-  color: ${(props) => (props.$error ? "white" : "black")};
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   cursor: pointer;
   padding: 5px 10px;
-  background-color: ${(props) => (props.$error ? "red" : "white")};
+  background-color: white;
+
+  &:nth-child(odd) {
+    background-color: ${(props) =>
+      props.$error ? "red" : "#f9f9f9"}; /* Light grey for odd rows */
+    color: ${(props) => (props.$error ? "white" : "black")};
+  }
+
+  &:nth-child(even) {
+    background-color: ${(props) =>
+      props.$error ? "red" : "#ffffff"}; /* White for even rows */
+    color: ${(props) => (props.$error ? "white" : "black")};
+  }
+
   &:hover {
     background-color: #000;
     color: #fff;
