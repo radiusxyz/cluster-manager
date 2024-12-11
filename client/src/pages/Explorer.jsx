@@ -113,7 +113,7 @@ const Explorer = () => {
           <Header>Quota</Header>
         </Headers>
         <Rows>
-          {isPendingClusters || isFetchingClusters ? (
+          {isPendingClusters ? (
             <Loader />
           ) : (
             clusters.map((cluster) => (
