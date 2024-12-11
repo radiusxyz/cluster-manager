@@ -33,11 +33,13 @@ import {
 import { useAccount } from "wagmi";
 import InitializeClusterModal from "../components/InitializeClusterModal";
 import { serverUrl } from "../config";
+import Alert from "../components/Alert";
 
 const Explorer = () => {
   const [clusters, setClusters] = useState([]);
   const { address } = useAccount();
   const [shouldGetClusters, setShouldGetClusters] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   const { isConnected } = useAccount();
   const [showInitializeClusterModal, setShowInitializeClusterModal] =
     useState(false);
@@ -83,6 +85,7 @@ const Explorer = () => {
   }, [activeTab, address]);
   return (
     <PageContainer>
+      {showAlert && <Alert error={errorClusters} />}
       <TitleRow>
         <TabsWrapper>
           <Tab $active={activeTab === "all" ? 1 : 0} onClick={toggleTab}>
@@ -110,7 +113,7 @@ const Explorer = () => {
           <Header>Quota</Header>
         </Headers>
         <Rows>
-          {isPendingClusters ? (
+          {isPendingClusters || isFetchingClusters ? (
             <Loader />
           ) : (
             clusters.map((cluster) => (

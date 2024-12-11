@@ -16,8 +16,8 @@ document.getElementById("root") &&
     <React.StrictMode>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          {/* <App /> */}
-          <Alert error={false} />
+          <App />
+          {/* <Alert error={false} /> */}
         </QueryClientProvider>
       </WagmiProvider>
     </React.StrictMode>
