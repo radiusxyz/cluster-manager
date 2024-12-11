@@ -22,14 +22,7 @@ const InitializeClusterModal = ({ toggle, handleAlert }) => {
   const [clusterId, setClusterId] = useState("cluster_id");
   const [maxSequencerNumber, setMaxSequencerNumber] = useState(30);
 
-  const { writeContract, data, isPending } = useWriteContract();
-
-  useEffect(() => {
-    if (data) {
-      handleAlert("processing", `Transaction hash: ${data}`);
-      toggle();
-    }
-  }, [data]);
+  const { writeContract, data, isPending, error } = useWriteContract();
 
   const handleInitializeCluster = () => {
     writeContract({
@@ -43,10 +36,13 @@ const InitializeClusterModal = ({ toggle, handleAlert }) => {
 
   useEffect(() => {
     if (data) {
-      console.log("Cluster initialized successfully:", data);
+      handleAlert("processing", `Transaction hash: ${data}`);
       toggle();
     }
-  }, [data]);
+    if (error) {
+      handleAlert("error", error.message);
+    }
+  }, [data, error]);
 
   return (
     <Overlay onClick={toggle}>

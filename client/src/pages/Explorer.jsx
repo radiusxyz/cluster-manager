@@ -52,7 +52,7 @@ const Explorer = () => {
     setAlertMessage(message);
     setTimeout(() => {
       setShowAlert(false);
-    }, 5000);
+    }, 1000);
   };
 
   const [key, setKey] = useState(["clusters"]);
