@@ -20,7 +20,7 @@ import {
   Row,
   Cell,
   CellTxt,
-} from "./TableStyles";
+} from "../components/TableStyles";
 
 import { useLocation } from "react-router";
 import Loader from "../components/Loader";

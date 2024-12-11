@@ -27,7 +27,7 @@ import {
   Row,
   Rows,
   Table,
-} from "./TableStyles";
+} from "../components/TableStyles";
 import { useAccount } from "wagmi";
 import InitializeClusterModal from "../components/InitializeClusterModal";
 import { apiEndpoint } from "../config";
