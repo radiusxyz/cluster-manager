@@ -26,7 +26,6 @@ import {
 } from "./TableStyles";
 
 import { useNavigate, useParams } from "react-router";
-import { useGET } from "../hooks/useServer";
 import Loader from "../components/Loader";
 import useWrite from "../hooks/useContract";
 import { useAccount } from "wagmi";
@@ -34,7 +33,9 @@ import RunModal from "../components/RunModal";
 import AddRollupModal from "../components/AddRollupModal";
 import Button from "../components/Button";
 import { formatAddress } from "../utils/formatAddress";
-import { serverUrl } from "../config";
+import { apiEndpoint } from "../config";
+import { GET } from "../utils/api";
+import { useQuery } from "@tanstack/react-query";
 
 const ClusterDetails = () => {
   const { clusterId } = useParams();
@@ -61,12 +62,12 @@ const ClusterDetails = () => {
     error,
     data,
     refetch: refetchSequencers,
-  } = useGET(
-    ["cluster", clusterId],
-    `${serverUrl}/clusters/${clusterId}`,
-    true,
-    3000
-  );
+  } = useQuery({
+    queryKey: ["cluster", clusterId],
+    queryFn: () => GET(`${apiEndpoint}/clusters/${clusterId}`),
+    enabled: true,
+    refetchInterval: 3000,
+  });
 
   const handleJoinLeave = () => {
     if (cluster.sequencers.includes(address)) {

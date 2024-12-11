@@ -14,9 +14,8 @@ import {
   SubmitBtnContainer,
   Title,
 } from "./ModalStyles";
-import { usePATCH } from "../hooks/useServer";
 import { signMessage } from "@wagmi/core";
-import { config, serverUrl } from "../config";
+import { config, apiEndpoint } from "../config";
 
 const UpdateExecutorDetailsModal = ({
   toggle,
@@ -42,14 +41,14 @@ const UpdateExecutorDetailsModal = ({
     isLoading: isPatchLoading,
     isError: isPatchError,
     error: patchError,
-  } = usePATCH(`${serverUrl}/clusters/${clusterId}`, {
+  } = useMutation({
+    mutationFn: (data) => PATCH(`${apiEndpoint}/clusters/${clusterId}`, data),
     onSuccess: (data) => {
       console.log("Resource updated successfully:", data);
       toggle();
     },
     onError: (error) => {
       console.log(data);
-
       console.error("Error updating resource:", error);
     },
   });

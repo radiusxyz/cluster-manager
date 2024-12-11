@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import Loader from "../components/Loader";
 
-import { useGET } from "../hooks/useServer";
-
 import Modal from "../components/Modal";
 import {
   ActionsContainer,
@@ -32,8 +30,10 @@ import {
 } from "./TableStyles";
 import { useAccount } from "wagmi";
 import InitializeClusterModal from "../components/InitializeClusterModal";
-import { serverUrl } from "../config";
+import { apiEndpoint } from "../config";
 import Alert from "../components/Alert";
+import { useQuery } from "@tanstack/react-query";
+import { GET } from "../utils/api";
 
 const Explorer = () => {
   const [clusters, setClusters] = useState([]);
@@ -48,7 +48,7 @@ const Explorer = () => {
   };
 
   const [key, setKey] = useState(["clusters"]);
-  const [url, setUrl] = useState(`${serverUrl}/clusters`);
+  const [url, setUrl] = useState(`${apiEndpoint}/clusters`);
 
   const {
     isPending: isPendingClusters,
@@ -56,7 +56,12 @@ const Explorer = () => {
     data: dataClusters,
     refetch: refetchClusters,
     isFetching: isFetchingClusters,
-  } = useGET(key, url, true, 3000);
+  } = useQuery({
+    queryKey: key,
+    queryFn: () => GET(url),
+    enabled: true,
+    refetchInterval: 3000,
+  });
 
   useEffect(() => {
     if (dataClusters) {
@@ -74,13 +79,13 @@ const Explorer = () => {
   useEffect(() => {
     if (activeTab === "all") {
       setKey(["clusters"]);
-      setUrl(`${serverUrl}/clusters`);
+      setUrl(`${apiEndpoint}/clusters`);
     } else if (activeTab === "joined") {
       setKey(["clustersJoined", address]);
-      setUrl(`${serverUrl}/addresses/${address}/clusters/joined`);
+      setUrl(`${apiEndpoint}/addresses/${address}/clusters/joined`);
     } else if (activeTab === "generated") {
       setKey(["clustersGenerated", address]);
-      setUrl(`${serverUrl}/addresses/${address}/clusters/generated`);
+      setUrl(`${apiEndpoint}/addresses/${address}/clusters/generated`);
     }
   }, [activeTab, address]);
   return (

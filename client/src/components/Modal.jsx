@@ -17,8 +17,9 @@ import {
   SubmitBtnContainer,
   Title,
 } from "./ModalStyles";
-import { usePATCH } from "../hooks/useServer";
-import { serverUrl } from "../config";
+import { apiEndpoint } from "../config";
+import { PATCH } from "../utils/api";
+import { useMutation } from "@tanstack/react-query";
 
 const Modal = ({ toggle }) => {
   const { address } = useAccount();
@@ -51,13 +52,13 @@ const Modal = ({ toggle }) => {
     isLoading: isPatchLoading,
     isError: isPatchError,
     error: patchError,
-  } = usePATCH(`${serverUrl}/clusters/${clusterId}`, {
+  } = useMutation({
+    mutationFn: (data) => PATCH(`${apiEndpoint}/clusters/${clusterId}`, data),
     onSuccess: (data) => {
       console.log("Resource updated successfully:", data);
     },
     onError: (error) => {
       console.log(data);
-
       console.error("Error updating resource:", error);
     },
   });

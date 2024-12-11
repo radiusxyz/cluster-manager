@@ -23,4 +23,4 @@ export const config = createConfig({
   connectors: [injected()],
 });
 
-export const serverUrl = "http://localhost:3333/api/v1";
+export const apiEndpoint = "http://localhost:3333/api/v1";
