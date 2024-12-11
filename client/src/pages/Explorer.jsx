@@ -68,7 +68,7 @@ const Explorer = () => {
     queryKey: key,
     queryFn: () => GET(url),
     enabled: true,
-    refetchInterval: 3000,
+    refetchInterval: 1000,
   });
 
   useEffect(() => {
@@ -79,9 +79,9 @@ const Explorer = () => {
       handleAlert("processing", "Fetching data...");
     }
     if (clusters) {
-      handleAlert("serverSuccess", "Data fetched successfully");
+      handleAlert("serverSuccess", "Clusters are fetched successfully");
     }
-  }, [error, clusters]);
+  }, [error, clusters, isPending]);
 
   const [activeTab, setActiveTab] = useState("all");
 

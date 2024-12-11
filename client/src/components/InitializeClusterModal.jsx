@@ -26,11 +26,7 @@ const InitializeClusterModal = ({ toggle, handleAlert }) => {
 
   useEffect(() => {
     if (data) {
-      console.log("Cluster initialized successfully:", data);
-      handleAlert(
-        "processing",
-        `Transaction with hash ${data} sent. Processing`
-      );
+      handleAlert("processing", `Transaction hash: ${data}`);
       toggle();
     }
   }, [data]);
