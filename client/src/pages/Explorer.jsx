@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import Loader from "../components/Loader";
 
-import Modal from "../components/Modal";
 import {
   ActionsContainer,
   Filter,
@@ -38,6 +37,8 @@ const Explorer = () => {
   const { address } = useAccount();
   const [shouldGetClusters, setShouldGetClusters] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [alertStatus, setAlertStatus] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
   const { isConnected } = useAccount();
   const [showInitializeClusterModal, setShowInitializeClusterModal] =
     useState(false);
@@ -45,21 +46,42 @@ const Explorer = () => {
     setShowInitializeClusterModal(!showInitializeClusterModal);
   };
 
+  const handleAlert = (status, message) => {
+    setShowAlert(true);
+    setAlertStatus(status);
+    setAlertMessage(message);
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 5000);
+  };
+
   const [key, setKey] = useState(["clusters"]);
   const [url, setUrl] = useState(`${apiEndpoint}/clusters`);
 
   const {
-    isPending: isPendingClusters,
-    error: errorClusters,
+    isPending,
+    error,
     data: clusters,
-    refetch: refetchClusters,
-    isFetching: isFetchingClusters,
+    refetch,
+    isFetching,
   } = useQuery({
     queryKey: key,
     queryFn: () => GET(url),
     enabled: true,
     refetchInterval: 3000,
   });
+
+  useEffect(() => {
+    if (error) {
+      handleAlert("error", error.message);
+    }
+    if (isPending) {
+      handleAlert("processing", "Fetching data...");
+    }
+    if (clusters) {
+      handleAlert("serverSuccess", "Data fetched successfully");
+    }
+  }, [error, clusters]);
 
   const [activeTab, setActiveTab] = useState("all");
 
@@ -81,7 +103,7 @@ const Explorer = () => {
   }, [activeTab, address]);
   return (
     <PageContainer>
-      {showAlert && <Alert error={errorClusters} />}
+      {showAlert && <Alert status={alertStatus} message={alertMessage} />}
       <TitleRow>
         <TabsWrapper>
           <Tab $active={activeTab === "all" ? 1 : 0} onClick={toggleTab}>
@@ -106,7 +128,7 @@ const Explorer = () => {
           <Header>Quota</Header>
         </Headers>
         <Rows>
-          {isPendingClusters ? (
+          {isPending ? (
             <Loader />
           ) : (
             clusters.map((cluster) => (
@@ -135,7 +157,10 @@ const Explorer = () => {
         </Rows>
       </Table>
       {showInitializeClusterModal && (
-        <InitializeClusterModal toggle={toggleInitializeClusterModal} />
+        <InitializeClusterModal
+          toggle={toggleInitializeClusterModal}
+          handleAlert={handleAlert}
+        />
       )}
     </PageContainer>
   );

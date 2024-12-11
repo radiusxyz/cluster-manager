@@ -16,13 +16,24 @@ import {
 } from "./ModalStyles";
 import { livenessRadiusAbi, livenessRadius } from "../../../common";
 
-const InitializeClusterModal = ({ toggle }) => {
+const InitializeClusterModal = ({ toggle, handleAlert }) => {
   const { address } = useAccount();
 
   const [clusterId, setClusterId] = useState("cluster_id");
   const [maxSequencerNumber, setMaxSequencerNumber] = useState(30);
 
   const { writeContract, data, isPending } = useWriteContract();
+
+  useEffect(() => {
+    if (data) {
+      console.log("Cluster initialized successfully:", data);
+      handleAlert(
+        "processing",
+        `Transaction with hash ${data} sent. Processing`
+      );
+      toggle();
+    }
+  }, [data]);
 
   const handleInitializeCluster = () => {
     writeContract({

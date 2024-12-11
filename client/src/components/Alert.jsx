@@ -1,25 +1,16 @@
 import React from "react";
 import { Container, Title, Message } from "./AlertStyles";
 
-const Alert = ({
-  error,
-  processing,
-  contractSuccess,
-  serverSuccess,
-  transactionHash,
-}) => (
-  <Container $error={error} $processing={processing}>
-    <Title $error={error} $processing={processing}>
-      {(error && "Error") ||
-        (processing && "Processing") ||
-        (contractSuccess && "Transaction Sent") ||
-        (serverSuccess && "Completed")}
+const Alert = ({ status, message }) => (
+  <Container $error={status === "error"} $processing={status === "processing"}>
+    <Title $error={status === "error"} $processing={status === "processing"}>
+      {(status === "error" && "Error") ||
+        (status === "processing" && "Processing") ||
+        (status === "contractSuccess" && "Transaction Sent") ||
+        (status === "serverSuccess" && "Completed")}
     </Title>
-    <Message $error={error} $processing={processing}>
-      {(error && error) ||
-        (processing && "Awaiting server update...") ||
-        (contractSuccess && `Transaction hash: ${transactionHash}`) ||
-        (serverSuccess && "Successfully updated the server.")}
+    <Message $error={status === "error"} $processing={status === "processing"}>
+      {message}
     </Message>
   </Container>
 );
