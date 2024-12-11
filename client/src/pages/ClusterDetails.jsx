@@ -27,8 +27,7 @@ import {
 
 import { useNavigate, useParams } from "react-router";
 import Loader from "../components/Loader";
-import useWrite from "../hooks/useContract";
-import { useAccount } from "wagmi";
+import { useAccount, useWriteContract } from "wagmi";
 import RunModal from "../components/RunModal";
 import AddRollupModal from "../components/AddRollupModal";
 import Button from "../components/Button";
@@ -36,6 +35,7 @@ import { formatAddress } from "../utils/formatAddress";
 import { apiEndpoint } from "../config";
 import { GET } from "../utils/api";
 import { useQuery } from "@tanstack/react-query";
+import { livenessRadius, livenessRadiusAbi } from "../../../common";
 
 const ClusterDetails = () => {
   const { clusterId } = useParams();
@@ -55,7 +55,7 @@ const ClusterDetails = () => {
     setShowRunModal(!showRunModal);
   };
 
-  const { write, hash, isHashPending } = useWrite();
+  const { writeContract, hash, isHashPending } = useWriteContract();
 
   const {
     isPending,
@@ -71,9 +71,21 @@ const ClusterDetails = () => {
 
   const handleJoinLeave = () => {
     if (cluster.sequencers.includes(address)) {
-      write("deregisterSequencer", [clusterId]);
+      writeContract({
+        abi: livenessRadiusAbi,
+        address: livenessRadius,
+        functionName: "deregisterSequencer",
+        args: [clusterId],
+        account: address,
+      });
     } else {
-      write("registerSequencer", [clusterId]);
+      writeContract({
+        abi: livenessRadiusAbi,
+        address: livenessRadius,
+        functionName: "registerSequencer",
+        args: [clusterId],
+        account: address,
+      });
     }
   };
 

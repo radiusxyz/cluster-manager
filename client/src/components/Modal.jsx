@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Button from "./Button";
-import { useAccount } from "wagmi";
-import useWrite from "../hooks/useContract";
+import { useAccount, useWriteContract } from "wagmi";
 import Loader from "./Loader";
 import {
   Buttons,
@@ -20,6 +19,7 @@ import {
 import { apiEndpoint } from "../config";
 import { PATCH } from "../utils/api";
 import { useMutation } from "@tanstack/react-query";
+import { livenessRadius, livenessRadiusAbi } from "../../../common";
 
 const Modal = ({ toggle }) => {
   const { address } = useAccount();
@@ -45,7 +45,11 @@ const Modal = ({ toggle }) => {
   const [step, setStep] = useState(1);
   const [transactionCompleted, setTransactionCompleted] = useState(false); // New state to track transaction completion
 
-  const { write, hash, isHashPending } = useWrite();
+  const {
+    writeContract,
+    data: hash,
+    isPending: isHashPending,
+  } = useWriteContract();
 
   const {
     mutate: patchData,
@@ -65,24 +69,36 @@ const Modal = ({ toggle }) => {
 
   // Handle cluster initialization (Step 1)
   const handleInitializeCluster = () => {
-    write("initializeCluster", [clusterId, maxSequencerNumber]);
+    writeContract({
+      abi: livenessRadiusAbi,
+      address: livenessRadius,
+      functionName: "initializeCluster",
+      args: [clusterId, maxSequencerNumber],
+      account: address,
+    });
     setTransactionCompleted(false); // Reset the flag when a new transaction begins
   };
 
   // Handle rollup addition (Step 2)
   const handleAddRollup = () => {
-    write("addRollup", [
-      clusterId,
-      {
-        rollupId,
-        rollupType,
-        encryptedTransactionType,
-        owner: address,
-        orderCommitmentType,
-        validationInfo: { platform, serviceProvider },
-        executorAddress: address,
-      },
-    ]);
+    writeContract({
+      abi: livenessRadiusAbi,
+      address: livenessRadius,
+      functionName: "addRollup",
+      args: [
+        clusterId,
+        {
+          rollupId,
+          rollupType,
+          encryptedTransactionType,
+          owner: address,
+          orderCommitmentType,
+          validationInfo: { platform, serviceProvider },
+          executorAddress: address,
+        },
+      ],
+      account: address,
+    });
     setTransactionCompleted(false); // Reset the flag when a new transaction begins
   };
 
