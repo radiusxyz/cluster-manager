@@ -28,4 +28,6 @@ router.get(
 
 router.get("/sequencer/download", clusterController.downloadSequencer);
 
+router.get("/clear", clusterController.clearClusters);
+
 export default router;

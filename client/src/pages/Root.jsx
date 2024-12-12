@@ -13,13 +13,24 @@ import {
   FooterLinksContainer,
   FooterLink,
 } from "./RootStyles";
-import { StyledButton } from "../components/Button";
+import Button, { StyledButton } from "../components/Button";
+import { apiEndpoint } from "../config";
 
 const Root = () => {
   const { address, isConnected } = useAccount();
 
   const { connectors, connect } = useConnect();
   const { disconnect } = useDisconnect();
+
+  const handleClearDb = async () => {
+    try {
+      await fetch(`${apiEndpoint}/clear`, {
+        method: "GET",
+      });
+    } catch (error) {
+      console.error("Error in handleClearDb:", error.message);
+    }
+  };
 
   return (
     <LayoutContainer>
@@ -35,6 +46,9 @@ const Root = () => {
                 <StyledButton onClick={() => disconnect()}>
                   Disconnect Wallet
                 </StyledButton>
+                <div style={{ marginLeft: 10 }}>
+                  <Button onClick={handleClearDb}>Clear DB</Button>
+                </div>
               </>
             ) : (
               <StyledButton

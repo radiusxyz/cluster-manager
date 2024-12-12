@@ -120,6 +120,15 @@ const getRollupById = async (req, res) => {
   }
 };
 
+const clearClusters = async (_, res) => {
+  try {
+    await clusterService.clearClusters();
+    res.status(200).json({ message: "All clusters cleared" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 const clusterController = {
   getAllClusters,
   getGeneratedClusters,
@@ -129,6 +138,7 @@ const clusterController = {
   downloadSequencer,
   getRollupsOfCluster,
   getRollupById,
+  clearClusters,
 };
 
 export default clusterController;
