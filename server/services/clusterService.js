@@ -1,5 +1,6 @@
 import { verifyMessage } from "viem";
 import Cluster from "../models/clusterModel.js";
+import { configString } from "../config.js";
 
 const getAllClusters = async () => {
   return await Cluster.find().sort({ createdAt: -1 });
@@ -29,6 +30,9 @@ const initializeCluster = async ({ clusterId, owner, maxSequencerNumber }) => {
       ),
       rollups: [],
       maxSequencerNumber,
+      fileStrings: {
+        config: configString,
+      },
     });
 
     await newCluster.save();
