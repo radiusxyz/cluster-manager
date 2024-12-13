@@ -32,14 +32,13 @@ import Alert from "../components/Alert";
 import { useQuery } from "@tanstack/react-query";
 import { GET } from "../utils/api";
 import Button from "../components/Button";
+import useAlert from "../hooks/useAlert";
 
 const Explorer = () => {
   const { address } = useAccount();
   const [shouldGetClusters, setShouldGetClusters] = useState(false);
   const [clusters, setClusters] = useState([]);
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertStatus, setAlertStatus] = useState("");
-  const [alertMessage, setAlertMessage] = useState("");
+
   const { isConnected } = useAccount();
   const [showInitializeClusterModal, setShowInitializeClusterModal] =
     useState(false);
@@ -47,16 +46,7 @@ const Explorer = () => {
     setShowInitializeClusterModal(!showInitializeClusterModal);
   };
 
-  const handleAlert = (status, message, duration) => {
-    setShowAlert(true);
-    setAlertStatus(status);
-    setAlertMessage(message);
-    if (duration) {
-      setTimeout(() => {
-        setShowAlert(false);
-      }, duration);
-    }
-  };
+  const { showAlert, alertStatus, alertMessage, handleAlert } = useAlert();
 
   const [key, setKey] = useState(["clusters"]);
   const [url, setUrl] = useState(`${apiEndpoint}/clusters`);
@@ -76,13 +66,18 @@ const Explorer = () => {
 
   useEffect(() => {
     if (error) {
-      handleAlert("error", error.message, 3000);
+      handleAlert(true, "error", error.message, 3000);
     }
     if (isPending) {
-      handleAlert("processing", "Fetching data...");
+      handleAlert(true, "processing", "Fetching data...");
     }
     if (fetchedClusters && fetchedClusters.length !== clusters.length) {
-      handleAlert("serverSuccess", "Clusters are fetched successfully", 2000);
+      handleAlert(
+        true,
+        "serverSuccess",
+        "Clusters are fetched successfully",
+        2000
+      );
       setClusters(fetchedClusters);
     }
   }, [error, fetchedClusters, isPending]);
