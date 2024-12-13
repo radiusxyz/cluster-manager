@@ -1,5 +1,4 @@
 import { validationServiceManagerAbi } from "../../common.js";
-import { configString } from "../config.js";
 import clusterService from "../services/clusterService.js";
 import { getRollupInfoList } from "./contractService.js";
 
@@ -56,9 +55,6 @@ const handleAddRollup = async (
         webSocketUrl: "not added",
         blockExplorerUrl: "not added",
       })),
-      fileStrings: {
-        config: configString,
-      },
     };
 
     await clusterService.addRollup(rollupData);

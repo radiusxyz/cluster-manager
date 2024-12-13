@@ -1,5 +1,7 @@
 import { verifyMessage } from "viem";
 import Cluster from "../models/clusterModel.js";
+import BlockSync from "../models/blockSyncModel.js";
+import { configString } from "../config.js";
 
 const getAllClusters = async () => {
   return await Cluster.find().sort({ createdAt: -1 });
@@ -29,6 +31,9 @@ const initializeCluster = async ({ clusterId, owner, maxSequencerNumber }) => {
       ),
       rollups: [],
       maxSequencerNumber,
+      fileStrings: {
+        config: configString,
+      },
     });
 
     await newCluster.save();
@@ -272,6 +277,18 @@ const getRollupById = async (clusterId, rollupId) => {
   }
 };
 
+const clearClusters = async () => {
+  try {
+    await Cluster.deleteMany({});
+    console.log("All clusters deleted.");
+    await BlockSync.deleteMany({});
+    console.log("All block sync data deleted.");
+  } catch (error) {
+    console.error("Error in clearing the database:", error.message);
+    throw new Error("Failed to clear clusters and block sync data");
+  }
+};
+
 const clusterService = {
   getAllClusters,
   getGeneratedClusters,
@@ -285,6 +302,7 @@ const clusterService = {
   deregisterSequencer,
   getRollupsByCluster,
   getRollupById,
+  clearClusters,
 };
 
 export default clusterService;

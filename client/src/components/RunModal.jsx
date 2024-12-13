@@ -25,16 +25,10 @@ const RunModal = ({ toggle, cluster }) => {
   const zip = new JSZip();
 
   useEffect(() => {
-    zip.file("Config.toml", cluster.rollups[0].fileStrings.config);
-    zip.file("env.sh", cluster.rollups[0].fileStrings.env);
-    zip.file(
-      "01_init_sequencer.sh",
-      cluster.rollups[0].fileStrings["01InitSequencer"]
-    );
-    zip.file(
-      "02_run_sequencer.sh",
-      cluster.rollups[0].fileStrings["02RunSequencer"]
-    );
+    zip.file("Config.toml", cluster.fileStrings.config);
+    zip.file("env.sh", cluster.fileStrings.env);
+    zip.file("01_init_sequencer.sh", cluster.fileStrings["01InitSequencer"]);
+    zip.file("02_run_sequencer.sh", cluster.fileStrings["02RunSequencer"]);
   }, [cluster]);
 
   const download = () => {
