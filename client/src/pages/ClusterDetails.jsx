@@ -43,31 +43,26 @@ import { areEqual } from "../utils/areEqual";
 const ClusterDetails = () => {
   const { clusterId } = useParams();
   const { address, isConnected } = useAccount();
-  const [cluster, setCluster] = useState(null);
-  const [selectedRollupId, setSelectedRollupId] = useState(null);
-  const [shouldGetSequencers, setShouldGetSequencers] = useState(false);
-  const [showAddRollupModal, setShowAddRollupModal] = useState(false);
-  const [sequencers, setSequencers] = useState([]);
 
-  const toggleAddRollupModal = () => {
-    setShowAddRollupModal(!showAddRollupModal);
-  };
+  const [state, setState] = useState({
+    selectedRollupId: null,
+    showAddRollupModal: false,
+    showRunModal: false,
+    sequencers: [],
+  });
 
-  const [showRunModal, setShowRunModal] = useState(false);
-  const toggleRunModal = () => {
-    setShowRunModal(!showRunModal);
+  const toggleModal = (key) => {
+    setState((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   const { writeContract, hash, isHashPending } = useWriteContract({
     mutation: {
-      onSuccess: (data) => {
-        handleAlert(true, "processing", `Transaction hash: ${data}`);
-      },
-      onError: (error) => {
-        handleAlert(true, "error", error.message, 3000);
-      },
+      onSuccess: (data) =>
+        handleAlert(true, "processing", `Transaction hash: ${data}`),
+      onError: (error) => handleAlert(true, "error", error.message, 3000),
     },
   });
+
   const { showAlert, alertStatus, alertMessage, handleAlert } = useAlert();
 
   const {
@@ -83,27 +78,17 @@ const ClusterDetails = () => {
   });
 
   const handleJoinLeave = () => {
-    if (fetchedCluster.sequencers.includes(address)) {
-      writeContract({
-        abi: livenessRadiusAbi,
-        address: livenessRadius,
-        functionName: "deregisterSequencer",
-        args: [clusterId],
-        account: address,
-      });
-    } else {
-      writeContract({
-        abi: livenessRadiusAbi,
-        address: livenessRadius,
-        functionName: "registerSequencer",
-        args: [clusterId],
-        account: address,
-      });
-    }
-  };
+    const functionName = fetchedCluster.sequencers.includes(address)
+      ? "deregisterSequencer"
+      : "registerSequencer";
 
-  const handleRun = () => {
-    toggleRunModal();
+    writeContract({
+      abi: livenessRadiusAbi,
+      address: livenessRadius,
+      functionName,
+      args: [clusterId],
+      account: address,
+    });
   };
 
   useEffect(() => {
@@ -116,16 +101,11 @@ const ClusterDetails = () => {
       return;
     }
     if (fetchedCluster) {
-      if (
-        !sequencers.length ||
-        areEqual(fetchedCluster.sequencers, sequencers)
-      ) {
+      const { sequencers } = fetchedCluster;
+
+      if (!state.sequencers.length || areEqual(sequencers, state.sequencers)) {
         handleAlert(false);
-      }
-      if (
-        sequencers.length &&
-        !areEqual(fetchedCluster.sequencers, sequencers)
-      ) {
+      } else {
         handleAlert(
           true,
           "serverSuccess",
@@ -133,7 +113,7 @@ const ClusterDetails = () => {
           2000
         );
       }
-      setSequencers(fetchedCluster.sequencers);
+      setState((prev) => ({ ...prev, sequencers }));
     }
   }, [error, hash, fetchedCluster, isClusterPending]);
 
@@ -168,7 +148,7 @@ const ClusterDetails = () => {
                       ).length
                     }
                     /{fetchedCluster.sequencers.length}
-                  </Value>{" "}
+                  </Value>
                 </InfoItem>
                 <InfoItem>
                   <Property>Status</Property>
@@ -181,11 +161,11 @@ const ClusterDetails = () => {
               <Container>
                 <TitleRow>
                   <SubTitle>Sequencers</SubTitle>
-                  {address &&
-                  fetchedCluster &&
-                  fetchedCluster.sequencers.includes(address) ? (
+                  {address && fetchedCluster.sequencers.includes(address) ? (
                     <BtnsContainer>
-                      <Button onClick={handleRun}>Run</Button>
+                      <Button onClick={() => toggleModal("showRunModal")}>
+                        Run
+                      </Button>
                       <Button onClick={handleJoinLeave}>Leave</Button>
                     </BtnsContainer>
                   ) : (
@@ -217,11 +197,14 @@ const ClusterDetails = () => {
                   </Rows>
                 </Table>
               </Container>
+
               <Container>
                 <TitleRow>
                   <SubTitle>Rollups</SubTitle>
                   {fetchedCluster.owner === address && (
-                    <Button onClick={toggleAddRollupModal}>Add rollup</Button>
+                    <Button onClick={() => toggleModal("showAddRollupModal")}>
+                      Add rollup
+                    </Button>
                   )}
                 </TitleRow>
                 <Table>
@@ -233,7 +216,6 @@ const ClusterDetails = () => {
                     <Header>Service Provider</Header>
                     <Header>Order Commitment Type</Header>
                   </Headers>
-
                   <Rows>
                     {(fetchedCluster.rollups.length &&
                       fetchedCluster.rollups.map((rollup, index) => (
@@ -271,33 +253,20 @@ const ClusterDetails = () => {
         </InfoContainer>
       </Infos>
 
-      {showRunModal && (
-        <RunModal toggle={toggleRunModal} cluster={fetchedCluster} />
+      {state.showRunModal && (
+        <RunModal
+          toggle={() => toggleModal("showRunModal")}
+          cluster={fetchedCluster}
+        />
       )}
-      {showAddRollupModal && (
-        <AddRollupModal toggle={toggleAddRollupModal} clusterId={clusterId} />
+      {state.showAddRollupModal && (
+        <AddRollupModal
+          toggle={() => toggleModal("showAddRollupModal")}
+          clusterId={clusterId}
+        />
       )}
     </PageContainer>
   );
 };
 
 export default ClusterDetails;
-
-/* 
-        
-          handleAlert(
-            true,
-            "serverSuccess",
-            "Rollup list updated successfully",
-            2000
-          );
-
-
-            handleAlert(
-            true,
-            "serverSuccess",
-            "Sequencer list updated successfully",
-            2000
-          );
-
-*/
