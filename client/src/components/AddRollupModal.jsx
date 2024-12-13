@@ -1,6 +1,4 @@
-import React from "react";
-
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import { useAccount, useWriteContract } from "wagmi";
 import Loader from "./Loader";
@@ -20,19 +18,22 @@ import { livenessRadiusAbi, livenessRadius } from "../../../common";
 
 const AddRollupModal = ({ toggle, clusterId }) => {
   const { address } = useAccount();
+  const initialFormState = {
+    rollupId: "rollup_id",
+    executorAddress: address,
+    rollupType: "polygon_cdk",
+    orderCommitmentType: "transaction_hash",
+    encryptedTransactionType: "skde",
+    platform: "ethereum",
+    serviceProvider: "symbiotic",
+    validationServiceManager: "0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690",
+  };
 
-  const [rollupId, setRollupId] = useState("rollup_id");
-  const [executorAddress, setExecutorAddress] = useState(address);
-  const [rollupType, setRollupType] = useState("polygon_cdk");
-  const [orderCommitmentType, setOrderCommitmentType] =
-    useState("transaction_hash");
-  const [encryptedTransactionType, setEncryptedTransactionType] =
-    useState("skde");
-  const [platform, setPlatform] = useState("ethereum");
-  const [serviceProvider, setServiceProvider] = useState("symbiotic");
-  const [validationServiceManager, setValidationServiceManager] = useState(
-    "0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690"
-  );
+  const [formState, setFormState] = useState(initialFormState);
+
+  const handleChange = (field) => (e) => {
+    setFormState((prev) => ({ ...prev, [field]: e.target.value }));
+  };
 
   const { writeContract, data, isPending, error } = useWriteContract();
 
@@ -44,17 +45,13 @@ const AddRollupModal = ({ toggle, clusterId }) => {
       args: [
         clusterId,
         {
-          rollupId,
-          rollupType,
-          encryptedTransactionType,
+          ...formState,
           owner: address,
-          orderCommitmentType,
           validationInfo: {
-            platform,
-            serviceProvider,
-            validationServiceManager,
+            platform: formState.platform,
+            serviceProvider: formState.serviceProvider,
+            validationServiceManager: formState.validationServiceManager,
           },
-          executorAddress: address,
         },
       ],
       account: address,
@@ -62,7 +59,9 @@ const AddRollupModal = ({ toggle, clusterId }) => {
   };
 
   useEffect(() => {
-    console.log("error", error);
+    if (error) {
+      console.error("Error adding rollup:", error);
+    }
   }, [error]);
 
   useEffect(() => {
@@ -74,11 +73,7 @@ const AddRollupModal = ({ toggle, clusterId }) => {
 
   return (
     <Overlay onClick={toggle}>
-      <ModalContainer
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
+      <ModalContainer onClick={(e) => e.stopPropagation()}>
         <Title>
           <span>Add Rollup</span>
         </Title>
@@ -90,93 +85,97 @@ const AddRollupModal = ({ toggle, clusterId }) => {
             <InputContainer>
               <Label>Rollup Id</Label>
               <Input
-                value={rollupId}
+                value={formState.rollupId}
                 type="text"
-                onChange={(e) => {
-                  setRollupId(e.target.value);
-                }}
+                onChange={handleChange("rollupId")}
               />
             </InputContainer>
+
             <InputContainer>
               <Label>Executor Address</Label>
               <Input
-                value={executorAddress}
+                value={formState.executorAddress}
                 type="text"
-                onChange={(e) => {
-                  setExecutorAddress(e.target.value);
-                }}
+                onChange={handleChange("executorAddress")}
               />
             </InputContainer>
+
             <InputContainer>
               <Label>Rollup Type</Label>
-              <SelectBox onChange={(e) => setRollupType(e.target.value)}>
+              <SelectBox
+                value={formState.rollupType}
+                onChange={handleChange("rollupType")}
+              >
                 <option value="polygon_cdk">Polygon CDK</option>
               </SelectBox>
-            </InputContainer>{" "}
+            </InputContainer>
+
             <InputContainer>
               <Label>Encrypted Transaction Type</Label>
               <SelectBox
-                onChange={(e) => setEncryptedTransactionType(e.target.value)}
+                value={formState.encryptedTransactionType}
+                onChange={handleChange("encryptedTransactionType")}
               >
                 <option value="skde">SKDE</option>
                 <option value="pvde">PVDE</option>
               </SelectBox>
-            </InputContainer>{" "}
+            </InputContainer>
+
             <InputContainer>
               <Label>Order Commitment Type</Label>
               <SelectBox
-                onChange={(e) => setOrderCommitmentType(e.target.value)}
+                value={formState.orderCommitmentType}
+                onChange={handleChange("orderCommitmentType")}
               >
                 <option value="transaction_hash">Transaction Hash</option>
                 <option value="sign">Sign</option>
               </SelectBox>
-            </InputContainer>{" "}
+            </InputContainer>
+
             <InputContainer>
-              <Label>Validation Info</Label>
-            </InputContainer>{" "}
-            <div
-              style={{
-                display: "flex",
-                gap: "10px",
-                flexDirection: "column",
-                paddingLeft: "15px",
-              }}
-            >
+              <Label>Platform</Label>
+              <SelectBox
+                value={formState.platform}
+                onChange={handleChange("platform")}
+              >
+                <option value="ethereum">Ethereum</option>
+              </SelectBox>
+            </InputContainer>
+
+            <InputContainer>
+              <Label>Service Provider</Label>
+              <SelectBox
+                value={formState.serviceProvider}
+                onChange={handleChange("serviceProvider")}
+              >
+                <option value="symbiotic">Symbiotic</option>
+                <option value="eigen_layer">Eigen Layer</option>
+              </SelectBox>
+            </InputContainer>
+
+            {formState.serviceProvider === "symbiotic" && (
               <InputContainer>
-                <SubLabel>Platform</SubLabel>
-                <SelectBox onChange={(e) => setPlatform(e.target.value)}>
-                  <option value="ethereum">Ethereum</option>
-                </SelectBox>
-              </InputContainer>{" "}
-              <InputContainer>
-                <SubLabel>Service provider</SubLabel>
-                <SelectBox onChange={(e) => setServiceProvider(e.target.value)}>
-                  <option value="symbiotic">Symbiotic</option>
-                  <option value="eigen_layer">Eigenlayer</option>
-                </SelectBox>
-              </InputContainer>{" "}
-              {serviceProvider === "symbiotic" && (
-                <InputContainer>
-                  <SubLabel>Contract address</SubLabel>
-                  <Input
-                    value={validationServiceManager}
-                    type="text"
-                    onChange={(e) => {
-                      setValidationServiceManager(e.target.value);
-                    }}
-                  />
-                </InputContainer>
-              )}
-            </div>
+                <SubLabel>Contract Address</SubLabel>
+                <Input
+                  value={formState.validationServiceManager}
+                  type="text"
+                  onChange={handleChange("validationServiceManager")}
+                />
+              </InputContainer>
+            )}
+
+            <Buttons>
+              <SubmitBtnContainer>
+                <Button
+                  onClick={handleAddRollup}
+                  disabled={!formState.rollupId}
+                >
+                  Add Rollup
+                </Button>
+              </SubmitBtnContainer>
+            </Buttons>
           </>
         )}
-        <Buttons>
-          <SubmitBtnContainer>
-            <Button onClick={handleAddRollup} disabled={!rollupId}>
-              Add Rollup
-            </Button>
-          </SubmitBtnContainer>
-        </Buttons>
       </ModalContainer>
     </Overlay>
   );
