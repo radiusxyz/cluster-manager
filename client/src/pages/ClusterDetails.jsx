@@ -23,17 +23,19 @@ import {
   Row,
   Cell,
   CellTxt,
-} from "./TableStyles";
+} from "../components/TableStyles";
 
 import { useNavigate, useParams } from "react-router";
-import { useGET } from "../hooks/useServer";
 import Loader from "../components/Loader";
-import useWrite from "../hooks/useContract";
-import { useAccount } from "wagmi";
+import { useAccount, useWriteContract } from "wagmi";
 import RunModal from "../components/RunModal";
 import AddRollupModal from "../components/AddRollupModal";
 import Button from "../components/Button";
 import { formatAddress } from "../utils/formatAddress";
+import { apiEndpoint } from "../config";
+import { GET } from "../utils/api";
+import { useQuery } from "@tanstack/react-query";
+import { livenessRadius, livenessRadiusAbi } from "../../../common";
 
 const ClusterDetails = () => {
   const { clusterId } = useParams();
@@ -53,25 +55,37 @@ const ClusterDetails = () => {
     setShowRunModal(!showRunModal);
   };
 
-  const { write, hash, isHashPending } = useWrite();
+  const { writeContract, hash, isHashPending } = useWriteContract();
 
   const {
     isPending,
     error,
     data,
     refetch: refetchSequencers,
-  } = useGET(
-    ["cluster", clusterId],
-    `http://localhost:3333/api/v1/clusters/${clusterId}`,
-    true,
-    3000
-  );
+  } = useQuery({
+    queryKey: ["cluster", clusterId],
+    queryFn: () => GET(`${apiEndpoint}/clusters/${clusterId}`),
+    enabled: true,
+    refetchInterval: 3000,
+  });
 
   const handleJoinLeave = () => {
     if (cluster.sequencers.includes(address)) {
-      write("deregisterSequencer", [clusterId]);
+      writeContract({
+        abi: livenessRadiusAbi,
+        address: livenessRadius,
+        functionName: "deregisterSequencer",
+        args: [clusterId],
+        account: address,
+      });
     } else {
-      write("registerSequencer", [clusterId]);
+      writeContract({
+        abi: livenessRadiusAbi,
+        address: livenessRadius,
+        functionName: "registerSequencer",
+        args: [clusterId],
+        account: address,
+      });
     }
   };
 

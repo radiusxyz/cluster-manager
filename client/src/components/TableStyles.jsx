@@ -1,5 +1,10 @@
 import { Link } from "react-router-dom";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+
+const blinkAnimation = keyframes`
+  0% { background-color: yellow; }
+  100% { background-color: white; }
+`;
 
 export const Table = styled.div``;
 
@@ -26,18 +31,32 @@ export const Rows = styled.div`
 
 export const Row = styled(Link)`
   text-decoration: none;
-  color: ${(props) => (props.$error ? "white" : "black")};
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   cursor: pointer;
   padding: 5px 10px;
-  background-color: ${(props) => (props.$error ? "red" : "white")};
+  background-color: white;
+  transition: background-color 0.3s ease;
+
+  &:nth-child(odd) {
+    background-color: ${(props) => (props.$error ? "red" : "#f9f9f9")};
+    color: ${(props) => (props.$error ? "white" : "black")};
+  }
+
+  &:nth-child(even) {
+    background-color: ${(props) => (props.$error ? "red" : "#ffffff")};
+    color: ${(props) => (props.$error ? "white" : "black")};
+  }
+
   &:hover {
     background-color: #000;
     color: #fff;
   }
+
+  animation: ${(props) =>
+    props.isNew ? `${blinkAnimation} 2s ease-out` : "none"};
 `;
 
 export const Cell = styled.div`

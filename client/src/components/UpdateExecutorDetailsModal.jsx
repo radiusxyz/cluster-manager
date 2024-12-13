@@ -14,9 +14,10 @@ import {
   SubmitBtnContainer,
   Title,
 } from "./ModalStyles";
-import { usePATCH } from "../hooks/useServer";
 import { signMessage } from "@wagmi/core";
-import { config } from "../config";
+import { config, apiEndpoint } from "../config";
+import { useMutation } from "@tanstack/react-query";
+import { PATCH } from "../utils/api";
 
 const UpdateExecutorDetailsModal = ({
   toggle,
@@ -38,18 +39,17 @@ const UpdateExecutorDetailsModal = ({
   );
 
   const {
-    mutate: patchData,
+    mutate: updateExecutorDetails,
     isLoading: isPatchLoading,
     isError: isPatchError,
     error: patchError,
-  } = usePATCH(`http://localhost:3333/api/v1/clusters/${clusterId}`, {
+  } = useMutation({
+    mutationFn: (data) => PATCH(`${apiEndpoint}/clusters/${clusterId}`, data),
     onSuccess: (data) => {
       console.log("Resource updated successfully:", data);
       toggle();
     },
     onError: (error) => {
-      console.log(data);
-
       console.error("Error updating resource:", error);
     },
   });
@@ -70,7 +70,7 @@ const UpdateExecutorDetailsModal = ({
 
     const dataToPatch = { ...dataToSign, signature: signature };
 
-    patchData(dataToPatch);
+    updateExecutorDetails(dataToPatch);
   };
 
   return (

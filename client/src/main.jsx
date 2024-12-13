@@ -7,6 +7,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { config } from "./config.js";
 
 import { WagmiProvider } from "wagmi";
+
+import Alert from "./components/Alert.jsx";
 const queryClient = new QueryClient();
 
 document.getElementById("root") &&

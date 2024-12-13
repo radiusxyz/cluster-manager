@@ -22,7 +22,7 @@ import {
   Row,
   Cell,
   CellTxt,
-} from "./TableStyles";
+} from "../components/TableStyles";
 
 import { useParams } from "react-router";
 import Loader from "../components/Loader";
@@ -32,7 +32,6 @@ import {
   useReadContract,
   useReadContracts,
 } from "wagmi";
-import { useGET } from "../hooks/useServer";
 
 import { validationServiceManagerAbi } from "../../../common";
 import { formatAddress } from "../utils/formatAddress";
@@ -41,6 +40,9 @@ import VaultModal from "../components/VaultModal";
 import RegisterExecutorModal from "../components/RegisterExecutorModal";
 import UpdateExecutorDetailsModal from "../components/UpdateExecutorDetailsModal";
 import Button from "../components/Button";
+import { apiEndpoint } from "../config";
+import { GET } from "../utils/api";
+import { useQuery } from "@tanstack/react-query";
 
 const RollupDetails = () => {
   const { clusterId, rollupId } = useParams();
@@ -70,19 +72,20 @@ const RollupDetails = () => {
     setShowVaultModal(!showVaultModal);
   };
 
-  const { data: rollup } = useGET(
-    ["rollup", rollupId],
-    `http://localhost:3333/api/v1/clusters/${clusterId}/rollups/${rollupId}`,
-    true,
-    3000
-  );
+  const { data: rollup } = useQuery({
+    queryKey: ["rollup", rollupId],
+    queryFn: () =>
+      GET(`${apiEndpoint}/clusters/${clusterId}/rollups/${rollupId}`),
+    enabled: true,
+    refetchInterval: 3000,
+  });
 
-  const { data: cluster } = useGET(
-    ["cluster", clusterId],
-    `http://localhost:3333/api/v1/clusters/${clusterId}`,
-    true,
-    3000
-  );
+  const { data: cluster } = useQuery({
+    queryKey: ["cluster", clusterId],
+    queryFn: () => GET(`${apiEndpoint}/clusters/${clusterId}`),
+    enabled: true,
+    refetchInterval: 3000,
+  });
 
   console.log("rollup", rollup);
 
