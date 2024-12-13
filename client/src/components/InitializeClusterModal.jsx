@@ -40,7 +40,8 @@ const InitializeClusterModal = ({ toggle, handleAlert }) => {
       toggle();
     }
     if (error) {
-      handleAlert("error", error.message);
+      handleAlert("error", error.message, 3000);
+      toggle();
     }
   }, [data, error]);
 

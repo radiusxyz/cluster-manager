@@ -36,6 +36,7 @@ import Button from "../components/Button";
 const Explorer = () => {
   const { address } = useAccount();
   const [shouldGetClusters, setShouldGetClusters] = useState(false);
+  const [clusters, setClusters] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [alertStatus, setAlertStatus] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
@@ -46,13 +47,15 @@ const Explorer = () => {
     setShowInitializeClusterModal(!showInitializeClusterModal);
   };
 
-  const handleAlert = (status, message) => {
+  const handleAlert = (status, message, duration) => {
     setShowAlert(true);
     setAlertStatus(status);
     setAlertMessage(message);
-    setTimeout(() => {
-      setShowAlert(false);
-    }, 1000);
+    if (duration) {
+      setTimeout(() => {
+        setShowAlert(false);
+      }, duration);
+    }
   };
 
   const [key, setKey] = useState(["clusters"]);
@@ -61,7 +64,7 @@ const Explorer = () => {
   const {
     isPending,
     error,
-    data: clusters,
+    data: fetchedClusters,
     refetch,
     isFetching,
   } = useQuery({
@@ -73,15 +76,17 @@ const Explorer = () => {
 
   useEffect(() => {
     if (error) {
-      handleAlert("error", error.message);
+      handleAlert("error", error.message, 3000);
     }
     if (isPending) {
       handleAlert("processing", "Fetching data...");
     }
-    if (clusters) {
-      handleAlert("serverSuccess", "Clusters are fetched successfully");
+    if (fetchedClusters) {
+      console.log(fetchedClusters !== clusters);
+      setClusters(fetchedClusters);
+      handleAlert("serverSuccess", "Clusters are fetched successfully", 2000);
     }
-  }, [error, clusters, isPending]);
+  }, [error, fetchedClusters, isPending]);
 
   const [activeTab, setActiveTab] = useState("all");
 
