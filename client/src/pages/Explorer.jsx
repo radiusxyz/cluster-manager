@@ -81,10 +81,9 @@ const Explorer = () => {
     if (isPending) {
       handleAlert("processing", "Fetching data...");
     }
-    if (fetchedClusters) {
-      console.log(fetchedClusters !== clusters);
-      setClusters(fetchedClusters);
+    if (fetchedClusters && fetchedClusters.length !== clusters.length) {
       handleAlert("serverSuccess", "Clusters are fetched successfully", 2000);
+      setClusters(fetchedClusters);
     }
   }, [error, fetchedClusters, isPending]);
 
@@ -114,12 +113,19 @@ const Explorer = () => {
           <Tab $active={activeTab === "all" ? 1 : 0} onClick={toggleTab}>
             All
           </Tab>
-          <Tab $active={activeTab === "generated" ? 1 : 0} onClick={toggleTab}>
-            Generated
-          </Tab>
-          <Tab $active={activeTab === "joined" ? 1 : 0} onClick={toggleTab}>
-            Joined
-          </Tab>
+          {address && (
+            <Tab
+              $active={activeTab === "generated" ? 1 : 0}
+              onClick={toggleTab}
+            >
+              Generated
+            </Tab>
+          )}
+          {address && (
+            <Tab $active={activeTab === "joined" ? 1 : 0} onClick={toggleTab}>
+              Joined
+            </Tab>
+          )}
         </TabsWrapper>
         <Button onClick={toggleInitializeClusterModal} disabled={!isConnected}>
           Generate Cluster
