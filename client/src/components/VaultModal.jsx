@@ -14,46 +14,16 @@ import { vaultAbi } from "../../../common";
 import { useBlockNumber, useReadContracts } from "wagmi";
 
 const VaultModal = ({ toggle, vault }) => {
-  const handleClose = () => toggle();
-  console.log(vault);
-
-  const contractConfig = vault
-    ? {
-        address: vault,
-        abi: vaultAbi,
-      }
-    : null;
+  const contractConfig = vault ? { address: vault, abi: vaultAbi } : null;
 
   const { data, refetch } = useReadContracts({
     contracts: [
-      {
-        ...contractConfig,
-        functionName: "isInitialized",
-      },
-      {
-        ...contractConfig,
-        functionName: "totalStake",
-      },
-
-      {
-        ...contractConfig,
-        functionName: "owner",
-      },
-
-      {
-        ...contractConfig,
-        functionName: "collateral",
-      },
-
-      {
-        ...contractConfig,
-        functionName: "epochDuration",
-      },
-
-      {
-        ...contractConfig,
-        functionName: "burner",
-      },
+      { ...contractConfig, functionName: "isInitialized" },
+      { ...contractConfig, functionName: "totalStake" },
+      { ...contractConfig, functionName: "owner" },
+      { ...contractConfig, functionName: "collateral" },
+      { ...contractConfig, functionName: "epochDuration" },
+      { ...contractConfig, functionName: "burner" },
     ],
     enabled: !!contractConfig,
   });
@@ -64,18 +34,12 @@ const VaultModal = ({ toggle, vault }) => {
     data || [];
 
   useEffect(() => {
-    // want to refetch every `n` block instead? use the modulo operator!
-    // if (blockNumber % 5 === 0) refetch() // refetch every 5 blocks
     refetch();
   }, [blockNumber]);
 
   return (
     <Overlay onClick={toggle}>
-      <ModalContainer
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
+      <ModalContainer onClick={(e) => e.stopPropagation()}>
         <Title>
           <span>Vault Details</span>
         </Title>
@@ -113,7 +77,7 @@ const VaultModal = ({ toggle, vault }) => {
         </InputContainer>
         <Buttons>
           <SubmitBtnContainer>
-            <Button onClick={handleClose}>Close</Button>
+            <Button onClick={toggle}>Close</Button>
           </SubmitBtnContainer>
         </Buttons>
       </ModalContainer>
