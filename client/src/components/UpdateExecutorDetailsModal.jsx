@@ -1,6 +1,4 @@
-import React from "react";
-
-import { useState } from "react";
+import React, { useState } from "react";
 import Button from "./Button";
 import { useAccount } from "wagmi";
 import Loader from "./Loader";
@@ -26,60 +24,47 @@ const UpdateExecutorDetailsModal = ({
   executor,
 }) => {
   const { address } = useAccount();
-  console.log("executor", executor);
-
-  const [rpcUrl, setRpcUrl] = useState(
-    executor.rpcUrl || "https://www.google.ru/"
-  );
-  const [webSocketUrl, setWebSocketUrl] = useState(
-    executor.webSocketUrl || "https://www.naver.com/"
-  );
-  const [blockExplorerUrl, setBlockExplorerUrl] = useState(
-    executor.blockExplorerUrl || "https://www.hello-world.com/"
-  );
-
-  const {
-    mutate: updateExecutorDetails,
-    isLoading: isPatchLoading,
-    isError: isPatchError,
-    error: patchError,
-  } = useMutation({
-    mutationFn: (data) => PATCH(`${apiEndpoint}/clusters/${clusterId}`, data),
-    onSuccess: (data) => {
-      console.log("Resource updated successfully:", data);
-      toggle();
-    },
-    onError: (error) => {
-      console.error("Error updating resource:", error);
-    },
+  const [formState, setFormState] = useState({
+    rpcUrl: executor.rpcUrl || "https://www.google.ru/",
+    webSocketUrl: executor.webSocketUrl || "https://www.naver.com/",
+    blockExplorerUrl:
+      executor.blockExplorerUrl || "https://www.hello-world.com/",
   });
+
+  const handleChange = (field) => (e) => {
+    setFormState((prev) => ({ ...prev, [field]: e.target.value }));
+  };
+
+  const { mutate: updateExecutorDetails, isLoading: isPatchLoading } =
+    useMutation({
+      mutationFn: (data) => PATCH(`${apiEndpoint}/clusters/${clusterId}`, data),
+      onSuccess: (data) => {
+        console.log("Resource updated successfully:", data);
+        toggle();
+      },
+      onError: (error) => {
+        console.error("Error updating resource:", error);
+      },
+    });
 
   const handleUpdateExecutorDetails = async () => {
     const dataToSign = {
       from: address,
       rollupId,
       executorAddress: executor.address,
-      rpcUrl,
-      blockExplorerUrl,
-      webSocketUrl: webSocketUrl,
+      ...formState,
     };
 
     const signature = await signMessage(config, {
       message: JSON.stringify(dataToSign),
     });
 
-    const dataToPatch = { ...dataToSign, signature: signature };
-
-    updateExecutorDetails(dataToPatch);
+    updateExecutorDetails({ ...dataToSign, signature });
   };
 
   return (
     <Overlay onClick={toggle}>
-      <ModalContainer
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
+      <ModalContainer onClick={(e) => e.stopPropagation()}>
         <Title>
           <span>Update Executor Details</span>
         </Title>
@@ -92,38 +77,36 @@ const UpdateExecutorDetailsModal = ({
               <Label>Address</Label>
               <Input value={executor.address} readOnly type="text" />
             </InputContainer>
+
             <InputContainer>
               <Label>RPC URL</Label>
               <Input
-                value={rpcUrl}
+                value={formState.rpcUrl}
                 type="text"
-                onChange={(e) => {
-                  setRpcUrl(e.target.value);
-                }}
+                onChange={handleChange("rpcUrl")}
               />
             </InputContainer>
+
             <InputContainer>
               <Label>Web-Socket URL</Label>
               <Input
+                value={formState.webSocketUrl}
                 type="text"
-                value={webSocketUrl}
-                onChange={(e) => {
-                  setWebSocketUrl(e.target.value);
-                }}
+                onChange={handleChange("webSocketUrl")}
               />
             </InputContainer>
+
             <InputContainer>
               <Label>Block Explorer URL</Label>
               <Input
-                value={blockExplorerUrl}
+                value={formState.blockExplorerUrl}
                 type="text"
-                onChange={(e) => {
-                  setBlockExplorerUrl(e.target.value);
-                }}
+                onChange={handleChange("blockExplorerUrl")}
               />
             </InputContainer>
           </>
         )}
+
         <Buttons>
           <SubmitBtnContainer>
             <Button onClick={handleUpdateExecutorDetails}>Update</Button>
