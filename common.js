@@ -2540,6 +2540,5 @@ export {
   livenessRadiusAbi,
   validationServiceManagerAbi,
   vaultAbi,
-  radiusTestERC20,
   radiusTestERC20Abi,
 };
