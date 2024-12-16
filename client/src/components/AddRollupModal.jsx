@@ -16,7 +16,7 @@ import {
 } from "./ModalStyles";
 import { livenessRadiusAbi, livenessRadius } from "../../../common";
 
-const AddRollupModal = ({ toggle, clusterId }) => {
+const AddRollupModal = ({ toggle, clusterId, handleAlert }) => {
   const { address } = useAccount();
   const initialFormState = {
     rollupId: "rollup_id",
@@ -35,7 +35,18 @@ const AddRollupModal = ({ toggle, clusterId }) => {
     setFormState((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
-  const { writeContract, data, isPending, error } = useWriteContract();
+  const { writeContract, data, isPending, error } = useWriteContract({
+    mutation: {
+      onSuccess: (data) => {
+        handleAlert(true, "processing", `Transaction hash: ${data}`);
+        toggle();
+      },
+      onError: (error) => {
+        handleAlert(true, "error", error.message, 3000);
+        toggle();
+      },
+    },
+  });
 
   const handleAddRollup = () => {
     writeContract({
@@ -57,19 +68,6 @@ const AddRollupModal = ({ toggle, clusterId }) => {
       account: address,
     });
   };
-
-  useEffect(() => {
-    if (error) {
-      console.error("Error adding rollup:", error);
-    }
-  }, [error]);
-
-  useEffect(() => {
-    if (data) {
-      console.log("Rollup added successfully:", data);
-      toggle();
-    }
-  }, [data]);
 
   return (
     <Overlay onClick={toggle}>

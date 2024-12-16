@@ -49,6 +49,7 @@ const ClusterDetails = () => {
     showAddRollupModal: false,
     showRunModal: false,
     sequencers: [],
+    rollups: [],
   });
 
   const toggleModal = (key) => {
@@ -101,7 +102,7 @@ const ClusterDetails = () => {
       return;
     }
     if (fetchedCluster) {
-      const { sequencers } = fetchedCluster;
+      const { sequencers, rollups } = fetchedCluster;
 
       if (!state.sequencers.length || areEqual(sequencers, state.sequencers)) {
         handleAlert(false);
@@ -113,7 +114,18 @@ const ClusterDetails = () => {
           2000
         );
       }
-      setState((prev) => ({ ...prev, sequencers }));
+
+      if (!state.rollups.length || areEqual(rollups, state.rollups)) {
+        handleAlert(false);
+      } else {
+        handleAlert(
+          true,
+          "serverSuccess",
+          "Rollup list updated successfully",
+          2000
+        );
+      }
+      setState((prev) => ({ ...prev, sequencers, rollups }));
     }
   }, [error, hash, fetchedCluster, isClusterPending]);
 
@@ -263,6 +275,7 @@ const ClusterDetails = () => {
         <AddRollupModal
           toggle={() => toggleModal("showAddRollupModal")}
           clusterId={clusterId}
+          handleAlert={handleAlert}
         />
       )}
     </PageContainer>
