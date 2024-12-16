@@ -25,7 +25,7 @@ import {
   CellTxt,
 } from "../components/TableStyles";
 
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import Loader from "../components/Loader";
 import { useAccount, useWriteContract } from "wagmi";
 import RunModal from "../components/RunModal";
@@ -36,32 +36,40 @@ import { apiEndpoint } from "../config";
 import { GET } from "../utils/api";
 import { useQuery } from "@tanstack/react-query";
 import { livenessRadius, livenessRadiusAbi } from "../../../common";
+import useAlert from "../hooks/useAlert";
+import Alert from "../components/Alert";
+import { areEqual } from "../utils/areEqual";
 
 const ClusterDetails = () => {
   const { clusterId } = useParams();
   const { address, isConnected } = useAccount();
-  const [cluster, setCluster] = useState(null);
-  const [selectedRollupId, setSelectedRollupId] = useState(null);
-  const [shouldGetSequencers, setShouldGetSequencers] = useState(false);
-  const [showAddRollupModal, setShowAddRollupModal] = useState(false);
-  const navigate = useNavigate();
 
-  const toggleAddRollupModal = () => {
-    setShowAddRollupModal(!showAddRollupModal);
+  const [state, setState] = useState({
+    selectedRollupId: null,
+    showAddRollupModal: false,
+    showRunModal: false,
+    sequencers: [],
+  });
+
+  const toggleModal = (key) => {
+    setState((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const [showRunModal, setShowRunModal] = useState(false);
-  const toggleRunModal = () => {
-    setShowRunModal(!showRunModal);
-  };
+  const { writeContract, hash, isHashPending } = useWriteContract({
+    mutation: {
+      onSuccess: (data) =>
+        handleAlert(true, "processing", `Transaction hash: ${data}`),
+      onError: (error) => handleAlert(true, "error", error.message, 3000),
+    },
+  });
 
-  const { writeContract, hash, isHashPending } = useWriteContract();
+  const { showAlert, alertStatus, alertMessage, handleAlert } = useAlert();
 
   const {
-    isPending,
+    isPending: isClusterPending,
     error,
-    data,
-    refetch: refetchSequencers,
+    data: fetchedCluster,
+    refetch,
   } = useQuery({
     queryKey: ["cluster", clusterId],
     queryFn: () => GET(`${apiEndpoint}/clusters/${clusterId}`),
@@ -70,168 +78,192 @@ const ClusterDetails = () => {
   });
 
   const handleJoinLeave = () => {
-    if (cluster.sequencers.includes(address)) {
-      writeContract({
-        abi: livenessRadiusAbi,
-        address: livenessRadius,
-        functionName: "deregisterSequencer",
-        args: [clusterId],
-        account: address,
-      });
-    } else {
-      writeContract({
-        abi: livenessRadiusAbi,
-        address: livenessRadius,
-        functionName: "registerSequencer",
-        args: [clusterId],
-        account: address,
-      });
-    }
-  };
+    const functionName = fetchedCluster.sequencers.includes(address)
+      ? "deregisterSequencer"
+      : "registerSequencer";
 
-  const handleRun = () => {
-    toggleRunModal();
+    writeContract({
+      abi: livenessRadiusAbi,
+      address: livenessRadius,
+      functionName,
+      args: [clusterId],
+      account: address,
+    });
   };
 
   useEffect(() => {
-    if (data) {
-      console.log("cluster: ", data);
-      setCluster(data);
+    if (error) {
+      handleAlert(true, "error", error.message, 3000);
+      return;
     }
-  }, [data]);
+    if (isClusterPending) {
+      handleAlert(true, "processing", "Fetching the cluster data...");
+      return;
+    }
+    if (fetchedCluster) {
+      const { sequencers } = fetchedCluster;
+
+      if (!state.sequencers.length || areEqual(sequencers, state.sequencers)) {
+        handleAlert(false);
+      } else {
+        handleAlert(
+          true,
+          "serverSuccess",
+          "Sequencer list updated successfully",
+          2000
+        );
+      }
+      setState((prev) => ({ ...prev, sequencers }));
+    }
+  }, [error, hash, fetchedCluster, isClusterPending]);
 
   return (
     <PageContainer>
+      {showAlert && <Alert status={alertStatus} message={alertMessage} />}
       <Title>Cluster details</Title>
       <Infos>
         <InfoContainer>
           <SubTitle>Cluster Info</SubTitle>
-          {(!cluster && <Loader />) || (
-            <InfoItems>
-              <InfoItem>
-                <Property>Id</Property>
-                <Value>{cluster.clusterId}</Value>
-              </InfoItem>
-              <InfoItem>
-                <Property>Owner</Property>
-                <Value>{formatAddress(cluster.owner)}</Value>
-              </InfoItem>
-              <InfoItem>
-                <Property>Quota</Property>
-                <Value>
-                  {
-                    cluster.sequencers.filter(
-                      (sequencer) =>
-                        sequencer !==
-                        "0x0000000000000000000000000000000000000000"
-                    ).length
-                  }
-                  /{cluster.sequencers.length}
-                </Value>{" "}
-              </InfoItem>
-              <InfoItem>
-                <Property>Status</Property>
-                <Value>{(cluster.active && "Active") || "Inactive"}</Value>
-              </InfoItem>
-            </InfoItems>
-          )}
-          {cluster && (
-            <Container>
-              <TitleRow>
-                <SubTitle>Sequencers</SubTitle>
-                {address && cluster && cluster.sequencers.includes(address) ? (
-                  <BtnsContainer>
-                    <Button onClick={handleRun}>Run</Button>
-                    <Button onClick={handleJoinLeave}>Leave</Button>
-                  </BtnsContainer>
-                ) : (
-                  <BtnsContainer>
-                    <Button disabled={!isConnected} onClick={handleJoinLeave}>
-                      Join as sequencer
+          {!fetchedCluster ? (
+            <Loader />
+          ) : (
+            <>
+              <InfoItems>
+                <InfoItem>
+                  <Property>Id</Property>
+                  <Value>{fetchedCluster.clusterId}</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Property>Owner</Property>
+                  <Value>{formatAddress(fetchedCluster.owner)}</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Property>Quota</Property>
+                  <Value>
+                    {
+                      fetchedCluster.sequencers.filter(
+                        (sequencer) =>
+                          sequencer !==
+                          "0x0000000000000000000000000000000000000000"
+                      ).length
+                    }
+                    /{fetchedCluster.sequencers.length}
+                  </Value>
+                </InfoItem>
+                <InfoItem>
+                  <Property>Status</Property>
+                  <Value>
+                    {(fetchedCluster.active && "Active") || "Inactive"}
+                  </Value>
+                </InfoItem>
+              </InfoItems>
+
+              <Container>
+                <TitleRow>
+                  <SubTitle>Sequencers</SubTitle>
+                  {address && fetchedCluster.sequencers.includes(address) ? (
+                    <BtnsContainer>
+                      <Button onClick={() => toggleModal("showRunModal")}>
+                        Run
+                      </Button>
+                      <Button onClick={handleJoinLeave}>Leave</Button>
+                    </BtnsContainer>
+                  ) : (
+                    <BtnsContainer>
+                      <Button disabled={!isConnected} onClick={handleJoinLeave}>
+                        Join as sequencer
+                      </Button>
+                    </BtnsContainer>
+                  )}
+                </TitleRow>
+                <Table>
+                  <Headers>
+                    <Header>Address</Header>
+                  </Headers>
+                  <Rows>
+                    {fetchedCluster.sequencers
+                      .filter(
+                        (sequencer) =>
+                          sequencer !==
+                          "0x0000000000000000000000000000000000000000"
+                      )
+                      .map((sequencer, index) => (
+                        <Row key={sequencer + index}>
+                          <Cell>
+                            <CellTxt>{sequencer}</CellTxt>
+                          </Cell>
+                        </Row>
+                      ))}
+                  </Rows>
+                </Table>
+              </Container>
+
+              <Container>
+                <TitleRow>
+                  <SubTitle>Rollups</SubTitle>
+                  {fetchedCluster.owner === address && (
+                    <Button onClick={() => toggleModal("showAddRollupModal")}>
+                      Add rollup
                     </Button>
-                  </BtnsContainer>
-                )}
-              </TitleRow>
-              <Table>
-                <Headers>
-                  <Header>Address</Header>
-                </Headers>
-                <Rows>
-                  {cluster.sequencers
-                    .filter(
-                      (sequencer) =>
-                        sequencer !==
-                        "0x0000000000000000000000000000000000000000"
-                    )
-                    .map((sequencer, index) => (
-                      <Row key={sequencer + index}>
-                        <Cell>
-                          <CellTxt>{sequencer}</CellTxt>
-                        </Cell>
-                      </Row>
-                    ))}
-                </Rows>
-              </Table>
-            </Container>
-          )}
-          {cluster && (
-            <Container>
-              <TitleRow>
-                <SubTitle>Rollups</SubTitle>
-                {cluster.owner === address && (
-                  <Button onClick={toggleAddRollupModal}>Add rollup</Button>
-                )}
-              </TitleRow>
-
-              <Table>
-                <Headers>
-                  <Header>Id</Header>
-                  <Header>Type</Header>
-                  <Header>Encrypted Tx. Type</Header>
-                  <Header>Platform</Header>
-                  <Header>Service Provider</Header>
-                  <Header>Order Commitment Type</Header>
-                </Headers>
-
-                <Rows>
-                  {(cluster.rollups.length &&
-                    cluster.rollups.map((rollup, index) => (
-                      <Row
-                        to={`rollup/${rollup.rollupId}`}
-                        key={rollup.rollupId + index}
-                      >
-                        <Cell>
-                          <CellTxt>{rollup.rollupId}</CellTxt>
-                        </Cell>
-                        <Cell>
-                          <CellTxt>{rollup.type}</CellTxt>
-                        </Cell>
-                        <Cell>
-                          <CellTxt>{rollup.encryptedTransactionType}</CellTxt>
-                        </Cell>
-                        <Cell>
-                          <CellTxt>{rollup.validationInfo.platform}</CellTxt>
-                        </Cell>
-                        <Cell>
-                          <CellTxt>
-                            {rollup.validationInfo.serviceProvider}
-                          </CellTxt>
-                        </Cell>
-                        <Cell>
-                          <CellTxt>{rollup.orderCommitmentType}</CellTxt>
-                        </Cell>
-                      </Row>
-                    ))) || <Message>No rollups added</Message>}
-                </Rows>
-              </Table>
-            </Container>
+                  )}
+                </TitleRow>
+                <Table>
+                  <Headers>
+                    <Header>Id</Header>
+                    <Header>Type</Header>
+                    <Header>Encrypted Tx. Type</Header>
+                    <Header>Platform</Header>
+                    <Header>Service Provider</Header>
+                    <Header>Order Commitment Type</Header>
+                  </Headers>
+                  <Rows>
+                    {(fetchedCluster.rollups.length &&
+                      fetchedCluster.rollups.map((rollup, index) => (
+                        <Row
+                          to={`rollup/${rollup.rollupId}`}
+                          key={rollup.rollupId + index}
+                        >
+                          <Cell>
+                            <CellTxt>{rollup.rollupId}</CellTxt>
+                          </Cell>
+                          <Cell>
+                            <CellTxt>{rollup.type}</CellTxt>
+                          </Cell>
+                          <Cell>
+                            <CellTxt>{rollup.encryptedTransactionType}</CellTxt>
+                          </Cell>
+                          <Cell>
+                            <CellTxt>{rollup.validationInfo.platform}</CellTxt>
+                          </Cell>
+                          <Cell>
+                            <CellTxt>
+                              {rollup.validationInfo.serviceProvider}
+                            </CellTxt>
+                          </Cell>
+                          <Cell>
+                            <CellTxt>{rollup.orderCommitmentType}</CellTxt>
+                          </Cell>
+                        </Row>
+                      ))) || <Message>No rollups added</Message>}
+                  </Rows>
+                </Table>
+              </Container>
+            </>
           )}
         </InfoContainer>
       </Infos>
 
-      {showRunModal && <RunModal toggle={toggleRunModal} cluster={cluster} />}
-      {showAddRollupModal && (
-        <AddRollupModal toggle={toggleAddRollupModal} clusterId={clusterId} />
+      {state.showRunModal && (
+        <RunModal
+          toggle={() => toggleModal("showRunModal")}
+          cluster={fetchedCluster}
+        />
+      )}
+      {state.showAddRollupModal && (
+        <AddRollupModal
+          toggle={() => toggleModal("showAddRollupModal")}
+          clusterId={clusterId}
+        />
       )}
     </PageContainer>
   );

@@ -43,10 +43,13 @@ import Button from "../components/Button";
 import { apiEndpoint } from "../config";
 import { GET } from "../utils/api";
 import { useQuery } from "@tanstack/react-query";
+import useAlert from "../hooks/useAlert";
 
 const RollupDetails = () => {
   const { clusterId, rollupId } = useParams();
   const { address, isConnected } = useAccount();
+  const { showAlert, alertStatus, alertMessage, handleAlert } = useAlert();
+
   const { statefulData, setStatefulData } = useState([]);
   const [validationServiceManager, setValidationServiceManager] =
     useState(null);

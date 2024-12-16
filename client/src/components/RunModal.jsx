@@ -1,40 +1,30 @@
-import { apiEndpoint } from "../config";
+import React, { useEffect } from "react";
+import JSZip from "jszip";
 import Button from "./Button";
-import Loader from "./Loader";
 import {
   Buttons,
   Files,
-  Input,
-  InputContainer,
-  Label,
-  DownloadBinBtn,
   ModalContainer,
   Overlay,
-  SelectBox,
-  Step,
-  StepsContainer,
-  SubLabel,
   SubmitBtnContainer,
   Title,
+  DownloadBinBtn,
 } from "./ModalStyles";
-import JSZip from "jszip";
-
-import React, { useEffect } from "react";
+import { apiEndpoint } from "../config";
 
 const RunModal = ({ toggle, cluster }) => {
   const zip = new JSZip();
 
   useEffect(() => {
-    zip.file("Config.toml", cluster.fileStrings.config);
-    zip.file("env.sh", cluster.fileStrings.env);
-    zip.file("01_init_sequencer.sh", cluster.fileStrings["01InitSequencer"]);
-    zip.file("02_run_sequencer.sh", cluster.fileStrings["02RunSequencer"]);
-  }, [cluster]);
+    const { fileStrings } = cluster;
+    zip.file("Config.toml", fileStrings.config);
+    zip.file("env.sh", fileStrings.env);
+    zip.file("01_init_sequencer.sh", fileStrings["01InitSequencer"]);
+    zip.file("02_run_sequencer.sh", fileStrings["02RunSequencer"]);
+  }, [cluster, zip]);
 
   const download = () => {
-    // Generate the zip file
-    zip.generateAsync({ type: "blob" }).then(function (content) {
-      // Trigger a download of the ZIP file
+    zip.generateAsync({ type: "blob" }).then((content) => {
       const element = document.createElement("a");
       element.href = URL.createObjectURL(content);
       element.download = "run_sequencer.zip";
@@ -46,12 +36,8 @@ const RunModal = ({ toggle, cluster }) => {
 
   return (
     <Overlay onClick={toggle}>
-      <ModalContainer
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
-        <Title>Run a sequencer</Title>
+      <ModalContainer onClick={(e) => e.stopPropagation()}>
+        <Title>Run a Sequencer</Title>
         <Files>
           <span>Config.toml</span>
           <span>env.sh</span>

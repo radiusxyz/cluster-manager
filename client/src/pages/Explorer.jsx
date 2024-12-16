@@ -32,13 +32,13 @@ import Alert from "../components/Alert";
 import { useQuery } from "@tanstack/react-query";
 import { GET } from "../utils/api";
 import Button from "../components/Button";
+import useAlert from "../hooks/useAlert";
 
 const Explorer = () => {
   const { address } = useAccount();
   const [shouldGetClusters, setShouldGetClusters] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertStatus, setAlertStatus] = useState("");
-  const [alertMessage, setAlertMessage] = useState("");
+  const [clusters, setClusters] = useState([]);
+
   const { isConnected } = useAccount();
   const [showInitializeClusterModal, setShowInitializeClusterModal] =
     useState(false);
@@ -46,14 +46,7 @@ const Explorer = () => {
     setShowInitializeClusterModal(!showInitializeClusterModal);
   };
 
-  const handleAlert = (status, message) => {
-    setShowAlert(true);
-    setAlertStatus(status);
-    setAlertMessage(message);
-    setTimeout(() => {
-      setShowAlert(false);
-    }, 1000);
-  };
+  const { showAlert, alertStatus, alertMessage, handleAlert } = useAlert();
 
   const [key, setKey] = useState(["clusters"]);
   const [url, setUrl] = useState(`${apiEndpoint}/clusters`);
@@ -61,7 +54,7 @@ const Explorer = () => {
   const {
     isPending,
     error,
-    data: clusters,
+    data: fetchedClusters,
     refetch,
     isFetching,
   } = useQuery({
@@ -73,15 +66,21 @@ const Explorer = () => {
 
   useEffect(() => {
     if (error) {
-      handleAlert("error", error.message);
+      handleAlert(true, "error", error.message, 3000);
     }
     if (isPending) {
-      handleAlert("processing", "Fetching data...");
+      handleAlert(true, "processing", "Fetching data...");
     }
-    if (clusters) {
-      handleAlert("serverSuccess", "Clusters are fetched successfully");
+    if (fetchedClusters && fetchedClusters.length !== clusters.length) {
+      handleAlert(
+        true,
+        "serverSuccess",
+        "Clusters are fetched successfully",
+        2000
+      );
+      setClusters(fetchedClusters);
     }
-  }, [error, clusters, isPending]);
+  }, [error, fetchedClusters, isPending]);
 
   const [activeTab, setActiveTab] = useState("all");
 
@@ -109,12 +108,19 @@ const Explorer = () => {
           <Tab $active={activeTab === "all" ? 1 : 0} onClick={toggleTab}>
             All
           </Tab>
-          <Tab $active={activeTab === "generated" ? 1 : 0} onClick={toggleTab}>
-            Generated
-          </Tab>
-          <Tab $active={activeTab === "joined" ? 1 : 0} onClick={toggleTab}>
-            Joined
-          </Tab>
+          {address && (
+            <Tab
+              $active={activeTab === "generated" ? 1 : 0}
+              onClick={toggleTab}
+            >
+              Generated
+            </Tab>
+          )}
+          {address && (
+            <Tab $active={activeTab === "joined" ? 1 : 0} onClick={toggleTab}>
+              Joined
+            </Tab>
+          )}
         </TabsWrapper>
         <Button onClick={toggleInitializeClusterModal} disabled={!isConnected}>
           Generate Cluster
